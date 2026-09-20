@@ -42,7 +42,7 @@ export type SettingsTabType =
 
 export const MessSettingsPage: React.FC = () => {
   const { activeMess, refreshMesses } = useAuth();
-  const messId = activeMess?.id || 'c3a66302-28a7-48a9-bb71-f500b36e6ea0';
+  const messId = activeMess?.id || '';
   const isManager = activeMess?.myRole === 'MANAGER' || activeMess?.myRole === 'OWNER';
 
   const [mess, setMess] = useState<Mess | null>(null);

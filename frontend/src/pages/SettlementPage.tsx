@@ -30,7 +30,7 @@ import {
 
 export const SettlementPage: React.FC = () => {
   const { activeMess } = useAuth();
-  const messId = activeMess?.id || 'c3a66302-28a7-48a9-bb71-f500b36e6ea0';
+  const messId = activeMess?.id || '';
 
   const [billingPeriod, setBillingPeriod] = useState<string>(
     new Date().toISOString().slice(0, 7)
@@ -212,7 +212,7 @@ export const SettlementPage: React.FC = () => {
   }
 
   const items = settlementPlan?.items || [];
-  const totalPool = settlementPlan?.totalDebtPool || 4000.0;
+  const totalPool = settlementPlan?.totalDebtPool ?? (financialSummary?.pendingSettlementPool ?? 0);
   const totalSettled = items.reduce((s, it) => s + (it.settledAmount || 0), 0);
   const settledPercent = totalPool > 0 ? Math.min(100, Math.round((totalSettled / totalPool) * 100)) : 100;
 
@@ -313,7 +313,7 @@ export const SettlementPage: React.FC = () => {
             </div>
           </div>
           <div className="text-2xl font-black text-rose-600 tracking-tight">
-            {financialSummary?.membersOwingCount || 4} Members
+            {financialSummary?.membersOwingCount ?? 0} {(financialSummary?.membersOwingCount === 1) ? 'Member' : 'Members'}
           </div>
           <p className="text-xs text-slate-500 mt-1.5">
             Total Debits &gt; Deposits
@@ -329,7 +329,7 @@ export const SettlementPage: React.FC = () => {
             </div>
           </div>
           <div className="text-2xl font-black text-emerald-600 tracking-tight">
-            {financialSummary?.membersReceivingCount || 1} Member
+            {financialSummary?.membersReceivingCount ?? 0} {(financialSummary?.membersReceivingCount === 1) ? 'Member' : 'Members'}
           </div>
           <p className="text-xs text-slate-500 mt-1.5">
             Paid bazar/advances in excess

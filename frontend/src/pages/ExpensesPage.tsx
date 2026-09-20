@@ -18,7 +18,7 @@ import { Expense, ExpenseStatus, ExpenseType, MessMember } from '../types/index.
 
 export const ExpensesPage: React.FC = () => {
   const { activeMess } = useAuth();
-  const messId = activeMess?.id || 'c3a66302-28a7-48a9-bb71-f500b36e6ea0';
+  const messId = activeMess?.id || '';
 
   const [expenses, setExpenses] = useState<Expense[]>(() => {
     try {

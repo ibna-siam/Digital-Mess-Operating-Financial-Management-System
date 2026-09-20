@@ -23,8 +23,8 @@ import { Skeleton } from '../../components/ui/StateComponents.js';
 export const DashboardView: React.FC = () => {
   const { user, activeMess } = useAuth();
   const navigate = useNavigate();
-  const messId = activeMess?.id || 'c3a66302-28a7-48a9-bb71-f500b36e6ea0';
-  const userName = user?.name ? user.name.split(' ')[0] : 'Siam';
+  const messId = activeMess?.id || '';
+  const userName = user?.name ? user.name.split(' ')[0] : 'Member';
 
   const [stats, setStats] = useState<DashboardStats | null>(() => {
     if (!messId) return null;

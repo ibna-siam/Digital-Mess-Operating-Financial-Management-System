@@ -28,7 +28,7 @@ import { MemberListItem, InvitationItem, MemberPagination } from '../types/membe
 export const MembersPage: React.FC = () => {
   const { activeMess } = useAuth();
   const navigate = useNavigate();
-  const messId = activeMess?.id || 'c3a66302-28a7-48a9-bb71-f500b36e6ea0';
+  const messId = activeMess?.id || '';
   const isManager = activeMess?.myRole === 'MANAGER' || activeMess?.myRole === 'OWNER';
 
   const [members, setMembers] = useState<MemberListItem[]>(() => {

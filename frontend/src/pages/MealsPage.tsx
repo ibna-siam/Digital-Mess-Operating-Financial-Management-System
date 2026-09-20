@@ -9,7 +9,7 @@ import { MealRecord, MealSummary } from '../types/index.js';
 
 export const MealsPage: React.FC = () => {
   const { user, activeMess } = useAuth();
-  const messId = activeMess?.id || 'c3a66302-28a7-48a9-bb71-f500b36e6ea0';
+  const messId = activeMess?.id || '';
 
   const [currentDate, setCurrentDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [activeTab, setActiveTab] = useState<'daily' | 'calendar'>('daily');
