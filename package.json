@@ -5,7 +5,8 @@
   "description": "Digital Mess Operating & Financial Management System",
   "scripts": {
     "dev:backend": "npm --prefix backend run dev",
-    "dev:frontend": "npm --prefix frontend run dev",
+    "build": "npm --prefix backend install && npm --prefix backend run build",
+    "start": "node backend/dist/server.js",
     "build:backend": "npm --prefix backend run build",
     "build:frontend": "npm --prefix frontend run build",
     "start:backend": "node backend/dist/server.js",
