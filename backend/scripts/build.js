@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const backendDir = path.resolve(__dirname, '..');
 
-const require = createRequire(import.meta.url);
+const require = createRequire(path.resolve(backendDir, 'package.json'));
 const prismaBin = require.resolve('prisma/build/index.js');
 const tscBin = require.resolve('typescript/bin/tsc');
 
