@@ -17,7 +17,7 @@ export const MemberStatementPage: React.FC = () => {
   const { memberId } = useParams<{ memberId: string }>();
   const navigate = useNavigate();
   const { activeMess } = useAuth();
-  const messId = activeMess?.id || 'mess-greenview-01';
+  const messId = activeMess?.id || '';
 
   const [selectedPeriodKey, setSelectedPeriodKey] = useState<string>(
     new Date().toISOString().slice(0, 7)

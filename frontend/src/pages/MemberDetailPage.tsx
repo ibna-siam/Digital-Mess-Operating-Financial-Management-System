@@ -34,7 +34,7 @@ export const MemberDetailPage: React.FC = () => {
   const { memberId } = useParams<{ memberId: string }>();
   const navigate = useNavigate();
   const { activeMess } = useAuth();
-  const messId = activeMess?.id || 'mess-greenview-01';
+  const messId = activeMess?.id || '';
 
   const [member, setMember] = useState<MessMember | null>(null);
   const [rooms, setRooms] = useState<Room[]>([]);

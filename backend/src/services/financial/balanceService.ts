@@ -31,6 +31,8 @@ export interface MessFinancialSummary {
   displayMealRate: string;
   totalFixedExpenses: number;
   totalVariableExpenses: number;
+  totalRentExpenses?: number;
+  totalUtilityExpenses?: number;
   totalMessExpenses: number;
   totalContributions: number;
   pendingSettlementPool: number; // Total debt owed by all debtors
@@ -153,8 +155,8 @@ export class BalanceService {
       isDb = false;
     }
 
-    if (members.length === 0) {
-      // Fallback in-memory list
+    if (members.length === 0 && !isDb && process.env.NODE_ENV === 'test') {
+      // Fallback in-memory list ONLY for offline unit tests
       members = [
         { id: 'mem-1', name: 'Rahim Ahmed', role: 'MEMBER', roomNo: 'Room 101' },
         { id: 'mem-2', name: 'Siam Al-Mahmud', role: 'OWNER', roomNo: 'Room 102' },
@@ -165,12 +167,29 @@ export class BalanceService {
     }
 
     let fixedOverheadTotal = 0;
-    if (isDb && (bills.length > 0 || utilityBills.length > 0)) {
-      for (const b of bills) fixedOverheadTotal += Number(b.amount);
-      for (const u of utilityBills) fixedOverheadTotal += Number(u.amount);
+    let rentTotal = 0;
+    let utilityTotal = 0;
+
+    if (isDb) {
+      for (const b of bills) {
+        fixedOverheadTotal += Number(b.amount);
+        if (b.category === 'RENT') {
+          rentTotal += Number(b.amount);
+        } else {
+          utilityTotal += Number(b.amount);
+        }
+      }
+      for (const u of utilityBills) {
+        fixedOverheadTotal += Number(u.amount);
+        utilityTotal += Number(u.amount);
+      }
       fixedOverheadTotal = RoundingService.roundMoney(fixedOverheadTotal);
-    } else {
-      fixedOverheadTotal = 26100; // In-memory fallback
+      rentTotal = RoundingService.roundMoney(rentTotal);
+      utilityTotal = RoundingService.roundMoney(utilityTotal);
+    } else if (process.env.NODE_ENV === 'test') {
+      fixedOverheadTotal = 26100; // In-memory fallback strictly for offline unit tests
+      rentTotal = 20000;
+      utilityTotal = 6100;
     }
 
     // 3. Calculate balances per member
@@ -190,24 +209,27 @@ export class BalanceService {
       let utilityShare = 0;
       const variableShare = 0;
 
-      if (isDb && (bills.length > 0 || utilityBills.length > 0)) {
-        for (const b of bills) {
-          const alloc = b.allocations?.find((a: any) => a.memberId === mem.id);
-          const amt = alloc ? Number(alloc.amount) : Number(b.amount) / members.length;
-          if (b.category === 'RENT') {
-            rentShare += amt;
-          } else {
+      if (isDb) {
+        if (bills.length > 0 || utilityBills.length > 0) {
+          const divisor = members.length || 1;
+          for (const b of bills) {
+            const alloc = b.allocations?.find((a: any) => a.memberId === mem.id);
+            const amt = alloc ? Number(alloc.amount) : Number(b.amount) / divisor;
+            if (b.category === 'RENT') {
+              rentShare += amt;
+            } else {
+              utilityShare += amt;
+            }
+          }
+          for (const u of utilityBills) {
+            const alloc = u.allocations?.find((a: any) => a.memberId === mem.id);
+            const amt = alloc ? Number(alloc.amount) : Number(u.amount) / divisor;
             utilityShare += amt;
           }
+          rentShare = RoundingService.roundMoney(rentShare);
+          utilityShare = RoundingService.roundMoney(utilityShare);
         }
-        for (const u of utilityBills) {
-          const alloc = u.allocations?.find((a: any) => a.memberId === mem.id);
-          const amt = alloc ? Number(alloc.amount) : Number(u.amount) / members.length;
-          utilityShare += amt;
-        }
-        rentShare = RoundingService.roundMoney(rentShare);
-        utilityShare = RoundingService.roundMoney(utilityShare);
-      } else {
+      } else if (process.env.NODE_ENV === 'test') {
         rentShare = 4000;
         utilityShare = 1000;
       }
@@ -222,7 +244,7 @@ export class BalanceService {
       if (isDb) {
         bazarPaid = Number(bazarGrouped.find((b) => b.buyerMemberId === mem.id)?._sum?.amount || 0);
         advancePaid = Number(advanceGrouped.find((a) => a.memberId === mem.id)?._sum?.amount || 0);
-      } else {
+      } else if (process.env.NODE_ENV === 'test') {
         if (mem.id === 'mem-1') {
           bazarPaid = 12000;
           advancePaid = 0;
@@ -291,6 +313,8 @@ export class BalanceService {
       displayMealRate: mealRateRes.displayMealRate,
       totalFixedExpenses: fixedOverheadTotal,
       totalVariableExpenses: mealRateRes.totalFoodCost,
+      totalRentExpenses: rentTotal,
+      totalUtilityExpenses: utilityTotal,
       totalMessExpenses,
       totalContributions: RoundingService.roundMoney(totalContributions),
       pendingSettlementPool: RoundingService.roundMoney(totalDebtPool),

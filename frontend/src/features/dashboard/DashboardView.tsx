@@ -109,15 +109,17 @@ export const DashboardView: React.FC = () => {
 
   // Dynamic calculation for donut SVG slices
   let accumulatedOffset = 0;
-  const donutSlices = expenseByCategory.map((cat) => {
-    const slice = {
-      ...cat,
-      strokeDasharray: `${cat.percentage} ${100 - cat.percentage}`,
-      strokeDashoffset: -accumulatedOffset,
-    };
-    accumulatedOffset += cat.percentage;
-    return slice;
-  });
+  const donutSlices = expenseByCategory
+    .filter((cat) => cat.percentage > 0)
+    .map((cat) => {
+      const slice = {
+        ...cat,
+        strokeDasharray: `${cat.percentage} ${100 - cat.percentage}`,
+        strokeDashoffset: -accumulatedOffset,
+      };
+      accumulatedOffset += cat.percentage;
+      return slice;
+    });
 
   return (
     <div>
@@ -126,7 +128,7 @@ export const DashboardView: React.FC = () => {
         <div>
           <h2 className="greeting-title">Good Day, {userName}! 👋</h2>
           <p className="greeting-subtext">
-            Operating dashboard for {activeMess?.name || stats?.messName || 'Green View Mess'}
+            Operating dashboard for {activeMess?.name || stats?.messName || 'My Mess'}
           </p>
         </div>
         <div className="date-pill-badge">
@@ -291,10 +293,10 @@ export const DashboardView: React.FC = () => {
             <div style={{ height: 210, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-around', padding: '10px 10px 0 10px', borderBottom: '1px solid #f1f5f9' }}>
               {monthlyOverview.map((col, i) => {
                 const maxVal = Math.max(1, col.food, col.rent, col.utilities, col.other);
-                const hFood = Math.max(8, Math.round((col.food / maxVal) * 140));
-                const hRent = Math.max(8, Math.round((col.rent / maxVal) * 140));
-                const hUtil = Math.max(8, Math.round((col.utilities / maxVal) * 140));
-                const hOther = Math.max(8, Math.round((col.other / maxVal) * 140));
+                const hFood = col.food > 0 ? Math.max(8, Math.round((col.food / maxVal) * 140)) : 4;
+                const hRent = col.rent > 0 ? Math.max(8, Math.round((col.rent / maxVal) * 140)) : 4;
+                const hUtil = col.utilities > 0 ? Math.max(8, Math.round((col.utilities / maxVal) * 140)) : 4;
+                const hOther = col.other > 0 ? Math.max(8, Math.round((col.other / maxVal) * 140)) : 4;
 
                 return (
                   <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>

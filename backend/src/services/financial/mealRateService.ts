@@ -177,8 +177,21 @@ export class MealRateService {
         memberShares,
       };
     } catch {
-      // In-memory deterministic fallback for test and offline environments
-      return this.fallbackCalculate(messId, billingPeriod);
+      // In-memory deterministic fallback ONLY for test and offline environments
+      if (process.env.NODE_ENV === 'test') {
+        return this.fallbackCalculate(messId, billingPeriod);
+      }
+      return {
+        messId,
+        billingPeriod,
+        totalFoodCost: 0,
+        totalMeals: 0,
+        mealRate: 0,
+        displayMealRate: '৳ 0.00',
+        isCalculated: false,
+        reason: 'No meal data available',
+        memberShares: [],
+      };
     }
   }
 

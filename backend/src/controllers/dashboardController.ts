@@ -36,6 +36,7 @@ export async function getDashboardStats(req: Request, res: Response, next: NextF
 
     // Fetch operational and financial metrics in parallel with targeted queries
     const [
+      mess,
       members,
       mealSummary,
       recentBazar,
@@ -45,6 +46,7 @@ export async function getDashboardStats(req: Request, res: Response, next: NextF
       upcomingBills,
       messBalances,
     ] = await Promise.all([
+      prisma.mess.findUnique({ where: { id: messId } }),
       MemberService.getMembers(messId),
       MealService.getMealSummary(messId, todayStr),
       prisma.bazarEntry.findMany({
@@ -69,8 +71,8 @@ export async function getDashboardStats(req: Request, res: Response, next: NextF
 
     // Financial breakdown from authoritative BalanceService
     const foodAmount = messBalances.totalFoodCost;
-    const rentAmount = messBalances.totalFixedExpenses;
-    const utilitiesAmount = messBalances.totalVariableExpenses;
+    const rentAmount = messBalances.totalRentExpenses ?? 0;
+    const utilitiesAmount = messBalances.totalUtilityExpenses ?? 0;
     const otherAmount = 0;
     const finalTotalExpense = messBalances.totalMessExpenses;
 
@@ -116,12 +118,14 @@ export async function getDashboardStats(req: Request, res: Response, next: NextF
       { month: currentMonthName, food: foodAmount, rent: rentAmount, utilities: utilitiesAmount, other: otherAmount },
     ];
 
+    const messLocation = [mess?.area, mess?.city].filter(Boolean).join(', ') || mess?.address || 'Bangladesh';
+
     const stats = {
       messId,
-      messName: 'Green View Mess',
-      location: 'Dhaka, Bangladesh',
-      status: 'Active',
-      currencySymbol: '৳',
+      messName: mess?.name || 'My Mess',
+      location: messLocation,
+      status: mess?.status === 'ACTIVE' ? 'Active' : (mess?.status || 'Active'),
+      currencySymbol: mess?.currency === 'BDT' ? '৳' : (mess?.currency || '৳'),
       kpis: {
         totalMembers: {
           value: members.length,

@@ -329,7 +329,7 @@ export const ProfileSettingsPage: React.FC = () => {
             >
               <div>
                 <span style={{ color: 'var(--text-muted)' }}>Mess Code:</span>
-                <div style={{ fontWeight: 700, color: 'var(--text-main)' }}>{activeMess?.code || 'GREENVIEW-01'}</div>
+                <div style={{ fontWeight: 700, color: 'var(--text-main)' }}>{activeMess?.code || '—'}</div>
               </div>
               <div>
                 <span style={{ color: 'var(--text-muted)' }}>Currency:</span>
