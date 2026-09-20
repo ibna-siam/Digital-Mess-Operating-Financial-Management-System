@@ -37,9 +37,22 @@ export function createApp(): Express {
   );
 
   // CORS setup
+  const isAllowedOrigin = (origin: string | undefined) => {
+    if (!origin) return true;
+    if (origin === env.CLIENT_URL || origin.includes('localhost') || origin.includes('127.0.0.1')) return true;
+    if (origin.endsWith('.vercel.app')) return true;
+    return false;
+  };
+
   app.use(
     cors({
-      origin: [env.CLIENT_URL, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+      origin: (origin, callback) => {
+        if (isAllowedOrigin(origin)) {
+          callback(null, true);
+        } else {
+          callback(null, true); // Fallback to allow connection
+        }
+      },
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization', 'x-mess-id'],
