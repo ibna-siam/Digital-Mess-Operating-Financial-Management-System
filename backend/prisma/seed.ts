@@ -12,16 +12,22 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 const prisma = new PrismaClient();
 
 async function main() {
-  if (process.env.NODE_ENV === 'production' && process.env.ALLOW_PRODUCTION_SEED !== 'true') {
-    console.error('❌ FATAL: Database seeding is blocked in PRODUCTION unless ALLOW_PRODUCTION_SEED=true is explicitly set.');
+  if (process.env.NODE_ENV === 'production') {
+    console.error('❌ CRITICAL: Database seeding is STRICTLY FORBIDDEN in PRODUCTION environments.');
     process.exit(1);
+  }
+
+  if (process.env.ALLOW_DEVELOPMENT_SEED !== 'true') {
+    console.log('ℹ️ Seeding skipped. Set ALLOW_DEVELOPMENT_SEED=true to seed mock records in local development.');
+    return;
   }
 
   console.log('🌱 Seeding development database...');
 
   // Hash password
+  const devPassword = process.env.DEV_SEED_PASSWORD || 'DevAdmin@MessMate2026';
   const salt = await bcrypt.genSalt(10);
-  const passwordHash = await bcrypt.hash('Password@123', salt);
+  const passwordHash = await bcrypt.hash(devPassword, salt);
 
   // Upsert development admin user
   const adminUser = await prisma.user.upsert({
