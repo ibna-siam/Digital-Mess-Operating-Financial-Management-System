@@ -177,7 +177,7 @@ describe('Phase 7: Advanced Member & Mess Management System', () => {
       const searchResult = await MemberService.getMembersPaginated(messId, {
         search: 'Siam',
       });
-      expect(searchResult.members.some((m) => m.name.toLowerCase().includes('siam'))).toBe(true);
+      expect(searchResult.members.some((m: any) => m.name.toLowerCase().includes('siam'))).toBe(true);
     });
 
     it('should retrieve single member details with full profile and financial summary', async () => {
