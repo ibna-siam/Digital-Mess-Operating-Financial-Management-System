@@ -487,10 +487,73 @@ export const BillsUtilitiesPage: React.FC = () => {
         </div>
       )}
 
-      {/* 2. Monthly Summary Metrics (Mobile & Desktop Responsive) */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+      {/* 2. Monthly Summary Metrics (Mobile Hero + Desktop 5-Grid) */}
+      {/* Mobile Card (< lg) */}
+      <div className="block lg:hidden">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-850 to-slate-950 text-white p-5 shadow-xl border border-slate-800">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              Total Household Commitments
+            </span>
+            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono">
+              {currentPeriod}
+            </span>
+          </div>
+
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-3xl font-black text-white font-mono tracking-tight">
+              ৳{summary.totalMonthlyCost.toLocaleString()}
+            </span>
+            <span className="text-xs text-slate-400 font-medium">
+              ({summary.billsCount} records)
+            </span>
+          </div>
+
+          {/* 4-Stat Mobile Sub-Grid */}
+          <div className="mt-4 pt-3.5 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
+            <div className="p-2 rounded-xl bg-white/5 border border-white/5">
+              <div className="text-[10px] text-indigo-300 font-bold uppercase tracking-wider flex items-center gap-1">
+                <Receipt size={11} /> Fixed Bills
+              </div>
+              <div className="text-sm font-black text-white font-mono mt-0.5">
+                ৳{summary.totalBills.toLocaleString()}
+              </div>
+            </div>
+
+            <div className="p-2 rounded-xl bg-white/5 border border-white/5">
+              <div className="text-[10px] text-amber-300 font-bold uppercase tracking-wider flex items-center gap-1">
+                <Zap size={11} /> Utilities
+              </div>
+              <div className="text-sm font-black text-white font-mono mt-0.5">
+                ৳{summary.totalUtilities.toLocaleString()}
+              </div>
+            </div>
+
+            <div className="p-2 rounded-xl bg-white/5 border border-white/5">
+              <div className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1">
+                <CheckCircle2 size={11} /> Cleared
+              </div>
+              <div className="text-sm font-black text-emerald-400 font-mono mt-0.5">
+                ৳{summary.totalPaid.toLocaleString()}
+              </div>
+            </div>
+
+            <div className="p-2 rounded-xl bg-white/5 border border-white/5">
+              <div className="text-[10px] text-rose-400 font-bold uppercase tracking-wider flex items-center gap-1">
+                <Clock size={11} /> Pending
+              </div>
+              <div className="text-sm font-black text-rose-400 font-mono mt-0.5">
+                ৳{summary.totalPending.toLocaleString()}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop 5-Grid (hidden on mobile, lg:grid) */}
+      <div className="hidden lg:grid grid-cols-5 gap-3">
         {/* Total Cost */}
-        <div className="kpi-card col-span-2 sm:col-span-1 p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-xs relative overflow-hidden">
+        <div className="kpi-card p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200/80 dark:border-slate-700 shadow-xs relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Monthly Cost</span>
             <div className="p-1.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg">
@@ -498,7 +561,7 @@ export const BillsUtilitiesPage: React.FC = () => {
             </div>
           </div>
           <div className="mt-2">
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-mono">
+            <h2 className="text-2xl font-black text-slate-900 dark:text-white font-mono">
               ৳{summary.totalMonthlyCost.toLocaleString()}
             </h2>
             <p className="text-[11px] text-slate-500 mt-0.5">{summary.billsCount} records in {currentPeriod}</p>
@@ -514,7 +577,7 @@ export const BillsUtilitiesPage: React.FC = () => {
             </div>
           </div>
           <div className="mt-2">
-            <h2 className="text-lg sm:text-xl font-black text-indigo-600 dark:text-indigo-400 font-mono">
+            <h2 className="text-xl font-black text-indigo-600 dark:text-indigo-400 font-mono">
               ৳{summary.totalBills.toLocaleString()}
             </h2>
             <p className="text-[11px] text-slate-500 mt-0.5">Rent, WiFi, Maid Salary</p>
@@ -530,7 +593,7 @@ export const BillsUtilitiesPage: React.FC = () => {
             </div>
           </div>
           <div className="mt-2">
-            <h2 className="text-lg sm:text-xl font-black text-amber-600 dark:text-amber-400 font-mono">
+            <h2 className="text-xl font-black text-amber-600 dark:text-amber-400 font-mono">
               ৳{summary.totalUtilities.toLocaleString()}
             </h2>
             <p className="text-[11px] text-slate-500 mt-0.5">Electricity, Gas, Water</p>
@@ -546,7 +609,7 @@ export const BillsUtilitiesPage: React.FC = () => {
             </div>
           </div>
           <div className="mt-2">
-            <h2 className="text-lg sm:text-xl font-black text-emerald-600 dark:text-emerald-400 font-mono">
+            <h2 className="text-xl font-black text-emerald-600 dark:text-emerald-400 font-mono">
               ৳{summary.totalPaid.toLocaleString()}
             </h2>
             <p className="text-[11px] text-emerald-600/80 mt-0.5">Cleared in ledger</p>
@@ -562,7 +625,7 @@ export const BillsUtilitiesPage: React.FC = () => {
             </div>
           </div>
           <div className="mt-2">
-            <h2 className="text-lg sm:text-xl font-black text-rose-600 dark:text-rose-400 font-mono">
+            <h2 className="text-xl font-black text-rose-600 dark:text-rose-400 font-mono">
               ৳{summary.totalPending.toLocaleString()}
             </h2>
             <p className="text-[11px] text-slate-500 mt-0.5">Awaiting payment / post</p>
@@ -570,66 +633,76 @@ export const BillsUtilitiesPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 3. Navigation Tabs Bar */}
-      <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 overflow-x-auto gap-2">
-        <div className="flex items-center gap-1 sm:gap-2">
-          <button
-            onClick={() => setActiveTab('overview')}
-            className={`flex items-center gap-2 py-3 px-3 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${
-              activeTab === 'overview'
-                ? 'border-emerald-600 text-emerald-600 dark:text-emerald-400'
-                : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            <Gauge size={16} />
-            <span>Overview</span>
-          </button>
+      {/* 3. Modern Segmented Tab Navigation Slider */}
+      <div className="bg-slate-100/90 dark:bg-slate-800/90 p-1.5 rounded-2xl flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+        <button
+          onClick={() => setActiveTab('overview')}
+          className={`flex items-center gap-2 py-2 px-3.5 rounded-xl text-xs sm:text-sm font-bold transition-all shrink-0 touch-spring active:scale-95 ${
+            activeTab === 'overview'
+              ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs font-black'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+          }`}
+        >
+          <Gauge size={15} />
+          <span>Overview</span>
+        </button>
 
-          <button
-            onClick={() => setActiveTab('fixed')}
-            className={`flex items-center gap-2 py-3 px-3 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${
-              activeTab === 'fixed'
-                ? 'border-emerald-600 text-emerald-600 dark:text-emerald-400'
-                : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            <Receipt size={16} />
-            <span>Fixed / Recurring</span>
-            <span className="ml-1 text-[11px] px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-              {data?.fixedBills.length || 0}
-            </span>
-          </button>
+        <button
+          onClick={() => setActiveTab('fixed')}
+          className={`flex items-center gap-2 py-2 px-3.5 rounded-xl text-xs sm:text-sm font-bold transition-all shrink-0 touch-spring active:scale-95 ${
+            activeTab === 'fixed'
+              ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs font-black'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+          }`}
+        >
+          <Receipt size={15} />
+          <span>Fixed Bills</span>
+          <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+            activeTab === 'fixed'
+              ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 font-black'
+              : 'bg-slate-200/80 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
+          }`}>
+            {data?.fixedBills.length || 0}
+          </span>
+        </button>
 
-          <button
-            onClick={() => setActiveTab('utilities')}
-            className={`flex items-center gap-2 py-3 px-3 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${
-              activeTab === 'utilities'
-                ? 'border-emerald-600 text-emerald-600 dark:text-emerald-400'
-                : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            <Zap size={16} />
-            <span>Utilities</span>
-            <span className="ml-1 text-[11px] px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-              {data?.utilities.length || 0}
-            </span>
-          </button>
+        <button
+          onClick={() => setActiveTab('utilities')}
+          className={`flex items-center gap-2 py-2 px-3.5 rounded-xl text-xs sm:text-sm font-bold transition-all shrink-0 touch-spring active:scale-95 ${
+            activeTab === 'utilities'
+              ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs font-black'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+          }`}
+        >
+          <Zap size={15} />
+          <span>Utilities</span>
+          <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+            activeTab === 'utilities'
+              ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 font-black'
+              : 'bg-slate-200/80 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
+          }`}>
+            {data?.utilities.length || 0}
+          </span>
+        </button>
 
-          <button
-            onClick={() => setActiveTab('payments')}
-            className={`flex items-center gap-2 py-3 px-3 sm:px-4 text-xs sm:text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${
-              activeTab === 'payments'
-                ? 'border-emerald-600 text-emerald-600 dark:text-emerald-400'
-                : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            <CreditCard size={16} />
-            <span>Payment History</span>
-            <span className="ml-1 text-[11px] px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-              {data?.paymentHistory.length || 0}
-            </span>
-          </button>
-        </div>
+        <button
+          onClick={() => setActiveTab('payments')}
+          className={`flex items-center gap-2 py-2 px-3.5 rounded-xl text-xs sm:text-sm font-bold transition-all shrink-0 touch-spring active:scale-95 ${
+            activeTab === 'payments'
+              ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs font-black'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+          }`}
+        >
+          <CreditCard size={15} />
+          <span>Payments</span>
+          <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+            activeTab === 'payments'
+              ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 font-black'
+              : 'bg-slate-200/80 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
+          }`}>
+            {data?.paymentHistory.length || 0}
+          </span>
+        </button>
       </div>
 
       {/* 4. Tab Contents */}

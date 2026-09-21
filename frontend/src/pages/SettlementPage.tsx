@@ -264,8 +264,66 @@ export const SettlementPage: React.FC = () => {
         </div>
       </div>
 
-      {/* KPI Cards: Settlement Pool Health */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* KPI Cards: Settlement Pool Health (Mobile Hero + Desktop 4-Grid) */}
+      {/* Mobile Settlement Health Hero (< sm) */}
+      <div className="block sm:hidden">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-850 to-slate-950 text-white p-5 shadow-xl border border-slate-800">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              Settlement Pool
+            </span>
+            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-mono">
+              {billingPeriod}
+            </span>
+          </div>
+
+          <div className="mt-2.5 flex items-baseline gap-2">
+            <span className="text-3xl font-black text-white font-mono tracking-tight">
+              ৳ {totalPool.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            </span>
+            <span className="text-xs text-slate-400 font-medium">
+              across {items.length} transfers
+            </span>
+          </div>
+
+          {/* Progress bar */}
+          <div className="mt-3">
+            <div className="flex items-center justify-between text-[11px] font-bold mb-1">
+              <span className="text-slate-400">Settlement Progress</span>
+              <span className="text-emerald-400">{settledPercent}% cleared</span>
+            </div>
+            <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+              <div
+                className="bg-emerald-500 h-full rounded-full transition-all duration-500"
+                style={{ width: `${settledPercent}%` }}
+              />
+            </div>
+          </div>
+
+          {/* 2-Column Debtor vs Creditor Sub-Bar */}
+          <div className="mt-4 pt-3.5 border-t border-white/10 grid grid-cols-2 divide-x divide-white/10 text-center">
+            <div className="pr-2 text-left">
+              <div className="text-[10px] text-rose-400 uppercase font-bold tracking-wider flex items-center gap-1">
+                <ArrowUpRight className="w-3.5 h-3.5" /> Members Owing
+              </div>
+              <div className="text-sm font-black text-white mt-0.5">
+                {financialSummary?.membersOwingCount ?? 0} {financialSummary?.membersOwingCount === 1 ? 'Resident' : 'Residents'}
+              </div>
+            </div>
+            <div className="pl-2 text-left">
+              <div className="text-[10px] text-emerald-400 uppercase font-bold tracking-wider flex items-center gap-1">
+                <ArrowDownLeft className="w-3.5 h-3.5" /> Receiving
+              </div>
+              <div className="text-sm font-black text-white mt-0.5">
+                {financialSummary?.membersReceivingCount ?? 0} {financialSummary?.membersReceivingCount === 1 ? 'Resident' : 'Residents'}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop KPI Cards (hidden on mobile, sm:grid) */}
+      <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* 1. Total Debt Pool */}
         <div className="bg-surface-card border border-surface-border/80 rounded-2xl p-5 relative overflow-hidden shadow-sm">
           <div className="flex items-center justify-between text-slate-500 mb-2">
@@ -337,42 +395,42 @@ export const SettlementPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Tabs Navigation */}
-      <div className="flex border-b border-surface-border gap-2">
+      {/* Tabs Navigation (Modern Segmented Slider) */}
+      <div className="bg-slate-100/90 dark:bg-slate-800/90 p-1.5 rounded-2xl flex items-center gap-1.5 overflow-x-auto no-scrollbar">
         <button
           onClick={() => setActiveTab('who')}
-          className={`px-5 py-3 text-sm font-semibold border-b-2 transition-all flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 shrink-0 touch-spring active:scale-95 ${
             activeTab === 'who'
-              ? 'border-primary-600 text-primary-700'
-              : 'border-transparent text-text-muted hover:text-slate-900'
+              ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs font-black'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
           }`}
         >
-          <Sparkles className="w-4 h-4" />
+          <Sparkles className="w-4 h-4 text-emerald-600" />
           <span>Who Owes Whom ({items.length})</span>
         </button>
 
         <button
           onClick={() => setActiveTab('matrix')}
-          className={`px-5 py-3 text-sm font-semibold border-b-2 transition-all flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 shrink-0 touch-spring active:scale-95 ${
             activeTab === 'matrix'
-              ? 'border-primary-600 text-primary-700'
-              : 'border-transparent text-text-muted hover:text-slate-900'
+              ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs font-black'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
           }`}
         >
-          <Users className="w-4 h-4" />
+          <Users className="w-4 h-4 text-indigo-600" />
           <span>Member Balances Matrix</span>
         </button>
 
         <button
           onClick={() => setActiveTab('history')}
-          className={`px-5 py-3 text-sm font-semibold border-b-2 transition-all flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 shrink-0 touch-spring active:scale-95 ${
             activeTab === 'history'
-              ? 'border-primary-600 text-primary-700'
-              : 'border-transparent text-text-muted hover:text-slate-900'
+              ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs font-black'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
           }`}
         >
-          <Clock className="w-4 h-4" />
-          <span>Payment Confirmations ({paymentHistory.length})</span>
+          <Clock className="w-4 h-4 text-purple-600" />
+          <span>Confirmations ({paymentHistory.length})</span>
         </button>
       </div>
 
@@ -480,12 +538,75 @@ export const SettlementPage: React.FC = () => {
       {/* TAB 2: Member Balances Matrix Table */}
       {activeTab === 'matrix' && (
         <div className="bg-surface-card border border-surface-border rounded-2xl overflow-hidden shadow-sm">
-          <div className="px-6 py-4 border-b border-surface-border flex items-center justify-between">
-            <h2 className="text-base font-semibold text-slate-900">Comprehensive Member Balance Matrix</h2>
-            <span className="text-xs text-slate-500">Net = Contributions - Total Charges</span>
+          <div className="px-5 py-3.5 border-b border-surface-border flex items-center justify-between">
+            <h2 className="text-sm sm:text-base font-bold text-slate-900">Member Balance Matrix</h2>
+            <span className="text-[11px] text-slate-400">Net = Paid − Total Charges</span>
           </div>
 
-          <div className="overflow-x-auto">
+          {/* Mobile Balances Cards (< md) */}
+          <div className="block md:hidden p-2.5 space-y-2.5">
+            {(financialSummary?.memberBalances || []).map((mb) => {
+              const isOwe = mb.netBalance < 0;
+              const isRec = mb.netBalance > 0;
+              return (
+                <div
+                  key={mb.memberId}
+                  className="p-3.5 bg-white border border-slate-200/80 rounded-3xl shadow-xs flex flex-col gap-2.5"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-indigo-50 to-slate-100 text-indigo-700 font-black text-xs flex items-center justify-center border border-indigo-100 shadow-2xs">
+                        {mb.memberName.slice(0, 1).toUpperCase()}
+                      </div>
+                      <div>
+                        <div className="text-sm font-bold text-slate-900 leading-tight">
+                          {mb.memberName}
+                        </div>
+                        <div className="text-[11px] text-slate-400 mt-0.5">
+                          {mb.roomNo || 'Resident'} • {mb.role}
+                        </div>
+                      </div>
+                    </div>
+
+                    <span
+                      className={`text-xs font-black font-mono px-2.5 py-1 rounded-full border ${
+                        isRec
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : isOwe
+                          ? 'bg-rose-50 text-rose-700 border-rose-200'
+                          : 'bg-slate-100 text-slate-600 border-slate-200'
+                      }`}
+                    >
+                      {isRec ? `+৳${mb.netBalance.toFixed(0)}` : isOwe ? `-৳${Math.abs(mb.netBalance).toFixed(0)}` : '৳0'}
+                    </span>
+                  </div>
+
+                  {/* 4-Item Breakdown Reel */}
+                  <div className="grid grid-cols-4 gap-1.5 pt-2 border-t border-slate-100 text-center font-mono">
+                    <div className="p-1 rounded-xl bg-slate-50 border border-slate-100">
+                      <div className="text-[9px] text-slate-400 font-sans font-bold uppercase">Food</div>
+                      <div className="text-xs font-bold text-slate-800 mt-0.5">৳{mb.foodShare.toFixed(0)}</div>
+                    </div>
+                    <div className="p-1 rounded-xl bg-slate-50 border border-slate-100">
+                      <div className="text-[9px] text-slate-400 font-sans font-bold uppercase">Rent</div>
+                      <div className="text-xs font-bold text-slate-800 mt-0.5">৳{mb.rentShare.toFixed(0)}</div>
+                    </div>
+                    <div className="p-1 rounded-xl bg-slate-50 border border-slate-100">
+                      <div className="text-[9px] text-slate-400 font-sans font-bold uppercase">Util</div>
+                      <div className="text-xs font-bold text-slate-800 mt-0.5">৳{mb.utilityShare.toFixed(0)}</div>
+                    </div>
+                    <div className="p-1 rounded-xl bg-emerald-50/60 border border-emerald-100">
+                      <div className="text-[9px] text-emerald-600 font-sans font-bold uppercase">Paid</div>
+                      <div className="text-xs font-bold text-emerald-700 mt-0.5">৳{mb.totalContributions.toFixed(0)}</div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop Table (hidden on mobile) */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-600 border-b border-slate-200">

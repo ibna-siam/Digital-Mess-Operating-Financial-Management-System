@@ -278,10 +278,10 @@ export const LedgerPage: React.FC = () => {
       </div>
 
       {/* Member Selector Tabs */}
-      <div className="bg-surface-card border border-surface-border rounded-2xl p-2.5 flex items-center gap-2 overflow-x-auto shadow-sm">
-        <div className="text-xs font-semibold text-slate-500 px-3 uppercase tracking-wider whitespace-nowrap flex items-center gap-1.5">
+      <div className="bg-surface-card border border-surface-border rounded-2xl p-2 flex items-center gap-2 overflow-x-auto no-scrollbar shadow-xs">
+        <div className="text-[11px] font-bold text-slate-400 px-2 uppercase tracking-wider whitespace-nowrap flex items-center gap-1.5 shrink-0">
           <User className="w-3.5 h-3.5" />
-          <span>Statement:</span>
+          <span>Member:</span>
         </div>
         {members.map((mem) => {
           const isSelected = mem.id === selectedMemberId;
@@ -289,15 +289,20 @@ export const LedgerPage: React.FC = () => {
             <button
               key={mem.id}
               onClick={() => setSelectedMemberId(mem.id)}
-              className={`px-3.5 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap flex items-center gap-2 ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-2 shrink-0 touch-spring active:scale-95 ${
                 isSelected
-                  ? 'bg-primary-600 text-white shadow-md shadow-primary-600/30'
-                  : 'text-slate-700 bg-white border border-slate-200 hover:bg-slate-100 hover:text-slate-900 hover:border-slate-300'
+                  ? 'bg-slate-900 text-white shadow-xs font-black'
+                  : 'text-slate-700 bg-white border border-slate-200/90 hover:bg-slate-50'
               }`}
             >
-              <span className="font-semibold">{mem.name || 'Member'}</span>
-              <span className={`text-xs px-2 py-0.5 rounded-md ${
-                isSelected ? 'bg-primary-700 text-primary-100' : 'bg-slate-100 text-slate-600 font-medium'
+              <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black ${
+                isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+              }`}>
+                {mem.name ? mem.name.slice(0, 1).toUpperCase() : 'M'}
+              </div>
+              <span>{mem.name || 'Member'}</span>
+              <span className={`text-[10px] px-1.5 py-0.2 rounded ${
+                isSelected ? 'bg-white/20 text-emerald-200' : 'bg-slate-100 text-slate-500'
               }`}>
                 {mem.role}
               </span>
@@ -306,8 +311,67 @@ export const LedgerPage: React.FC = () => {
         })}
       </div>
 
-      {/* KPI Cards: Individual Position for Selected Member */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* Mobile Net Balance Passbook Hero Card (< sm) */}
+      <div className="block sm:hidden">
+        <div className={`relative overflow-hidden rounded-3xl p-5 shadow-xl border text-white ${
+          isBalanced
+            ? 'bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700'
+            : isSurplus
+            ? 'bg-gradient-to-br from-slate-900 via-emerald-950/60 to-slate-900 border-emerald-800/80 shadow-emerald-950/30'
+            : 'bg-gradient-to-br from-slate-900 via-rose-950/60 to-slate-900 border-rose-800/80 shadow-rose-950/30'
+        }`}>
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+              {isBalanced ? 'Settlement Status' : isSurplus ? 'Net Surplus (You Receive)' : 'Net Due (You Owe)'}
+            </span>
+            <span className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full border ${
+              isBalanced
+                ? 'bg-slate-700 text-slate-300 border-slate-600'
+                : isSurplus
+                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                : 'bg-rose-500/20 text-rose-300 border-rose-500/30'
+            }`}>
+              {isBalanced ? 'Balanced' : isSurplus ? 'Creditor' : 'Debtor'}
+            </span>
+          </div>
+
+          <div className="mt-2.5 flex items-baseline gap-2">
+            <span className={`text-3xl font-black font-mono tracking-tight ${
+              isBalanced ? 'text-white' : isSurplus ? 'text-emerald-400' : 'text-rose-400'
+            }`}>
+              ৳ {Math.abs(currentNet).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+            </span>
+            <span className="text-xs text-slate-400">
+              for {selectedMember?.name?.split(' ')[0] || 'Member'}
+            </span>
+          </div>
+
+          {/* 3-Stat Mobile Sub-Grid */}
+          <div className="mt-4 pt-3.5 border-t border-white/10 grid grid-cols-3 divide-x divide-white/10 text-center">
+            <div className="pr-1.5">
+              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Food Share</div>
+              <div className="text-xs font-black text-amber-400 font-mono mt-0.5">
+                ৳ {memberBalance ? memberBalance.foodShare.toFixed(0) : '0'}
+              </div>
+            </div>
+            <div className="px-1.5">
+              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Fixed Rent</div>
+              <div className="text-xs font-black text-indigo-400 font-mono mt-0.5">
+                ৳ {memberBalance ? (memberBalance.rentShare + memberBalance.utilityShare).toFixed(0) : '0'}
+              </div>
+            </div>
+            <div className="pl-1.5">
+              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Deposits</div>
+              <div className="text-xs font-black text-emerald-400 font-mono mt-0.5">
+                ৳ {memberBalance ? memberBalance.totalContributions.toFixed(0) : '0'}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop KPI Cards: Individual Position for Selected Member (hidden on mobile, sm:grid) */}
+      <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* 1. Food Share */}
         <div className="bg-surface-card border border-surface-border rounded-2xl p-5 relative overflow-hidden shadow-sm hover:border-slate-300 transition-all">
           <div className="flex items-center justify-between text-slate-500 mb-2">
@@ -391,26 +455,36 @@ export const LedgerPage: React.FC = () => {
       </div>
 
       {/* Ledger Filter & Search Toolbar */}
-      <div className="bg-surface-card border border-surface-border rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider mr-1 flex items-center gap-1">
+      <div className="bg-surface-card border border-surface-border rounded-2xl p-3 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-sm">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar -mx-1 px-1 py-0.5">
+          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1 flex items-center gap-1 shrink-0">
             <Filter className="w-3.5 h-3.5" /> Filter:
           </span>
-          {['ALL', 'FOOD_SHARE', 'RENT_SHARE', 'UTILITY_SHARE', 'ADVANCE_DEPOSIT', 'SETTLEMENT_PAYMENT', 'REVERSAL'].map(
-            (type) => (
+          {[
+            { id: 'ALL', label: 'All Transactions', emoji: '✨' },
+            { id: 'FOOD_SHARE', label: 'Food Share', emoji: '🍛' },
+            { id: 'RENT_SHARE', label: 'Rent Share', emoji: '🏠' },
+            { id: 'UTILITY_SHARE', label: 'Utilities', emoji: '⚡' },
+            { id: 'ADVANCE_DEPOSIT', label: 'Deposits', emoji: '💵' },
+            { id: 'SETTLEMENT_PAYMENT', label: 'Settlement', emoji: '🤝' },
+            { id: 'REVERSAL', label: 'Reversal', emoji: '↩️' },
+          ].map((type) => {
+            const isSelected = filterType === type.id;
+            return (
               <button
-                key={type}
-                onClick={() => setFilterType(type)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                  filterType === type
-                    ? 'bg-slate-900 text-white font-semibold shadow-sm border border-slate-900'
-                    : 'text-slate-600 bg-white border border-slate-200 hover:bg-slate-100 hover:text-slate-900 hover:border-slate-300'
+                key={type.id}
+                onClick={() => setFilterType(type.id)}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all active:scale-95 touch-spring ${
+                  isSelected
+                    ? 'bg-slate-900 text-white shadow-xs font-black'
+                    : 'text-slate-600 bg-slate-100/80 hover:bg-slate-200/80'
                 }`}
               >
-                {type === 'ALL' ? 'All Transactions' : type.replace(/_/g, ' ')}
+                <span>{type.emoji}</span>
+                <span>{type.label}</span>
               </button>
-            )
-          )}
+            );
+          })}
         </div>
 
         <div className="relative w-full md:w-64">
@@ -420,25 +494,25 @@ export const LedgerPage: React.FC = () => {
             placeholder="Search description or ref..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
+            className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-primary-500 focus:bg-white"
           />
         </div>
       </div>
 
       {/* Transaction History Table */}
       <div className="bg-surface-card border border-surface-border rounded-2xl overflow-hidden shadow-sm">
-        <div className="px-6 py-4 border-b border-surface-border flex items-center justify-between">
-          <h2 className="text-base font-semibold text-slate-900 flex items-center gap-2">
-            <span>Transaction Audit Log for {selectedMember?.name || 'Selected Member'}</span>
-            <span className="text-xs px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-600 font-medium">
-              {filteredEntries.length} Records
+        <div className="px-5 py-3.5 border-b border-surface-border flex items-center justify-between">
+          <h2 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
+            <span>Passbook Statement for {selectedMember?.name || 'Selected Member'}</span>
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-bold">
+              {filteredEntries.length}
             </span>
           </h2>
-          <span className="text-xs text-slate-500">Click row for full immutable audit details</span>
+          <span className="text-[11px] text-slate-400 hidden sm:inline">Tap entry for audit trail</span>
         </div>
 
         {/* Mobile Ledger Transaction Feed (< md) */}
-        <div className="block md:hidden p-3">
+        <div className="block md:hidden p-2.5">
           {filteredEntries.length === 0 ? (
             <div className="py-8 text-center text-slate-500">
               <BookOpen className="w-8 h-8 mx-auto text-slate-400 opacity-60 mb-2" />
@@ -453,30 +527,37 @@ export const LedgerPage: React.FC = () => {
                   <div
                     key={entry.id}
                     onClick={() => setSelectedEntry(entry)}
-                    className="p-3.5 bg-white border border-slate-200/80 rounded-2xl shadow-xs cursor-pointer flex flex-col gap-2.5"
+                    className="p-3.5 bg-white border border-slate-200/80 rounded-3xl shadow-xs cursor-pointer flex flex-col gap-2.5 transition-all active:scale-[0.99] touch-spring"
                   >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0">
-                        <div className="text-sm font-bold text-slate-900 truncate">
-                          {entry.description}
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-start gap-2.5 min-w-0">
+                        <div className={`w-9 h-9 rounded-2xl flex items-center justify-center shrink-0 border ${
+                          isDebit ? 'bg-rose-50 border-rose-200 text-rose-600' : 'bg-emerald-50 border-emerald-200 text-emerald-600'
+                        }`}>
+                          {isDebit ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownLeft className="w-4 h-4" />}
                         </div>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="font-mono text-xs text-slate-500">
-                            {entry.effectiveDate?.slice(0, 10) || entry.createdAt?.slice(0, 10)}
-                          </span>
-                          {entry.referenceId && (
-                            <>
-                              <span className="text-slate-300">•</span>
-                              <span className="text-xs text-slate-500 font-mono">
-                                #{entry.referenceId}
-                              </span>
-                            </>
-                          )}
+                        <div className="min-w-0">
+                          <div className="text-sm font-bold text-slate-900 truncate">
+                            {entry.description}
+                          </div>
+                          <div className="flex items-center gap-1.5 mt-0.5 text-[11px] text-slate-500">
+                            <span className="font-mono">
+                              {entry.effectiveDate?.slice(0, 10) || entry.createdAt?.slice(0, 10)}
+                            </span>
+                            {entry.referenceId && (
+                              <>
+                                <span className="text-slate-300">•</span>
+                                <span className="font-mono text-[10px] text-slate-400">
+                                  #{entry.referenceId.slice(0, 8)}
+                                </span>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
 
                       <div className="text-right shrink-0">
-                        <div className={`text-sm font-bold font-mono ${isDebit ? 'text-rose-600' : 'text-emerald-600'}`}>
+                        <div className={`text-base font-black font-mono tracking-tight ${isDebit ? 'text-rose-600' : 'text-emerald-600'}`}>
                           {isDebit ? `-৳${entry.amount.toFixed(0)}` : `+৳${entry.amount.toFixed(0)}`}
                         </div>
                         <div className="text-[10px] uppercase font-bold text-slate-400 mt-0.5">
@@ -485,16 +566,16 @@ export const LedgerPage: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-slate-100 pt-2">
+                    <div className="flex items-center justify-between border-t border-slate-100 pt-2 text-xs">
                       <div>{getEntryBadge(entry.entryType)}</div>
-                      <div className="flex items-center gap-1.5 text-xs text-slate-500 font-mono">
+                      <div className="flex items-center gap-1 font-mono text-slate-500 text-[11px]">
                         <span>Bal:</span>
-                        <span className={`font-bold ${
+                        <span className={`font-black ${
                           entry.balanceAfter > 0 ? 'text-emerald-600' : entry.balanceAfter < 0 ? 'text-rose-600' : 'text-slate-600'
                         }`}>
                           ৳{entry.balanceAfter.toFixed(0)}
                         </span>
-                        <ChevronRight className="w-3.5 h-3.5 text-slate-400 inline" />
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-400 ml-0.5" />
                       </div>
                     </div>
                   </div>
