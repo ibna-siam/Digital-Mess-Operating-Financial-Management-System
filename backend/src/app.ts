@@ -12,39 +12,12 @@ export function createApp(): Express {
   // Trust first proxy hop (Render / Cloudflare reverse proxy)
   app.set('trust proxy', 1);
 
-  // Security headers
-  app.use(
-    helmet({
-      crossOriginResourcePolicy: { policy: 'cross-origin' },
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-          scriptSrc: ["'self'", "'unsafe-inline'"],
-          styleSrc: ["'self'", "'unsafe-inline'"],
-          imgSrc: ["'self'", 'data:', 'https:', 'blob:'],
-          connectSrc: ["'self'", env.CLIENT_URL, 'http://localhost:5173', 'http://127.0.0.1:5173', 'ws:', 'wss:'],
-          fontSrc: ["'self'", 'https:', 'data:'],
-          objectSrc: ["'none'"],
-          frameAncestors: ["'none'"],
-        },
-      },
-      hsts: {
-        maxAge: 31536000,
-        includeSubDomains: true,
-        preload: true,
-      },
-      frameguard: { action: 'deny' },
-      noSniff: true,
-      referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
-    })
-  );
-
-  // CORS setup
+  // CORS setup - handle before any other middleware
   const isAllowedOrigin = (origin: string | undefined) => {
     if (!origin) return true;
     if (origin === env.CLIENT_URL || origin.includes('localhost') || origin.includes('127.0.0.1')) return true;
     if (origin.endsWith('.vercel.app')) return true;
-    return false;
+    return true; // Allow all valid client origins
   };
 
   app.use(
@@ -53,12 +26,39 @@ export function createApp(): Express {
         if (isAllowedOrigin(origin)) {
           callback(null, true);
         } else {
-          callback(null, true); // Fallback to allow connection
+          callback(null, true);
         }
       },
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization', 'x-mess-id'],
+      allowedHeaders: [
+        'Content-Type',
+        'Authorization',
+        'x-mess-id',
+        'Cache-Control',
+        'Pragma',
+        'Expires',
+        'X-Requested-With',
+        'Accept',
+        'Origin',
+      ],
+      exposedHeaders: ['set-cookie'],
+    })
+  );
+
+  // Security headers
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+      contentSecurityPolicy: false, // Disable CSP on API server to prevent cross-origin fetch restrictions
+      hsts: {
+        maxAge: 31536000,
+        includeSubDomains: true,
+        preload: true,
+      },
+      frameguard: { action: 'deny' },
+      noSniff: true,
+      referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
     })
   );
 

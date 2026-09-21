@@ -104,8 +104,6 @@ export async function apiClient<T>(
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    'Cache-Control': 'no-cache, no-store, must-revalidate',
-    Pragma: 'no-cache',
     ...(options.headers as Record<string, string>),
   };
 
