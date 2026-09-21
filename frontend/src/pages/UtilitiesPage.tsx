@@ -714,104 +714,169 @@ export const UtilitiesPage: React.FC = () => {
                 </Button>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
-                  <thead className="bg-gray-50 dark:bg-gray-900/60 border-b border-gray-200 dark:border-gray-700 text-xs font-bold uppercase text-gray-500">
-                    <tr>
-                      <th className="py-3 px-4">Utility & Title</th>
-                      <th className="py-3 px-4">Period</th>
-                      <th className="py-3 px-4">Amount</th>
-                      <th className="py-3 px-4">Allocation</th>
-                      <th className="py-3 px-4">Payer</th>
-                      <th className="py-3 px-4">Status</th>
-                      <th className="py-3 px-4 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                    {filteredBills.map((b) => (
-                      <tr
-                        key={b.id}
-                        className="hover:bg-gray-50/80 dark:hover:bg-gray-900/30 transition-colors cursor-pointer"
-                        onClick={() => setSelectedBill(b)}
-                      >
-                        <td className="py-3 px-4">
-                          <div className="flex items-center gap-3">
-                            <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-xl">
-                              {getCategoryIcon(b.category)}
-                            </div>
-                            <div>
-                              <div className="font-semibold text-gray-900 dark:text-white">{b.title}</div>
-                              <div className="text-xs text-gray-400 capitalize">{b.category.toLowerCase()} • {b.billType.toLowerCase()}</div>
-                            </div>
+              <>
+                {/* Mobile Utility Bills Feed (< md) */}
+                <div className="block md:hidden p-3">
+              <div className="flex flex-col gap-2.5">
+                {filteredBills.map((b) => (
+                  <div
+                    key={b.id}
+                    onClick={() => setSelectedBill(b)}
+                    className="p-3.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-xs cursor-pointer flex flex-col gap-2.5"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-xl shrink-0">
+                          {getCategoryIcon(b.category)}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="font-bold text-sm text-gray-900 dark:text-white truncate">
+                            {b.title}
                           </div>
-                        </td>
+                          <div className="text-xs text-gray-400">
+                            {b.billingPeriod} • {b.category.toLowerCase()}
+                          </div>
+                        </div>
+                      </div>
 
-                        <td className="py-3 px-4">
-                          <span className="font-mono text-xs bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">
-                            {b.billingPeriod}
-                          </span>
-                        </td>
-
-                        <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">
+                      <div className="text-right shrink-0">
+                        <div className="text-base font-extrabold font-mono text-gray-900 dark:text-white">
                           ৳{b.amount.toLocaleString()}
-                        </td>
-
-                        <td className="py-3 px-4">
-                          <span className="text-xs text-gray-600 dark:text-gray-300">
-                            {b.splitMethod} ({b.allocations?.length || 0} members)
-                          </span>
-                        </td>
-
-                        <td className="py-3 px-4">
-                          <span className="text-xs text-gray-600 dark:text-gray-300">
-                            {b.paidByName || <span className="text-gray-400 italic">Not paid upfront</span>}
-                          </span>
-                        </td>
-
-                        <td className="py-3 px-4">
+                        </div>
+                        <div className="mt-0.5">
                           {b.isPosted || b.status === 'POSTED' ? (
-                            <Badge variant="success" size="sm">
-                              <CheckCircle2 size={12} className="mr-1" /> Posted
-                            </Badge>
+                            <Badge variant="success" size="sm">Posted</Badge>
                           ) : b.status === 'APPROVED' ? (
-                            <Badge variant="primary" size="sm">
-                              Approved
-                            </Badge>
-                          ) : b.status === 'VOID' ? (
-                            <Badge variant="neutral" size="sm">
-                              Void
-                            </Badge>
+                            <Badge variant="primary" size="sm">Approved</Badge>
                           ) : (
-                            <Badge variant="warning" size="sm">
-                              Pending
-                            </Badge>
+                            <Badge variant="warning" size="sm">Pending</Badge>
                           )}
-                        </td>
+                        </div>
+                      </div>
+                    </div>
 
-                        <td className="py-3 px-4 text-right" onClick={(e) => e.stopPropagation()}>
-                          <div className="flex items-center justify-end gap-1.5">
-                            {!b.isPosted && b.status !== 'POSTED' && b.status !== 'VOID' && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handlePostToLedger(b.id)}
-                                disabled={actionLoading}
-                              >
-                                Post to Ledger
-                              </Button>
-                            )}
-                            <Button variant="ghost" size="sm" onClick={() => setSelectedBill(b)}>
-                              Details <ArrowRight size={13} className="ml-1" />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    <div className="flex items-center justify-between border-t border-gray-100 dark:border-gray-700 pt-2 text-xs text-gray-500">
+                      <span>{b.splitMethod} ({b.allocations?.length || 0} mbrs)</span>
+                      <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                        {!b.isPosted && b.status !== 'POSTED' && b.status !== 'VOID' && (
+                          <button
+                            onClick={() => handlePostToLedger(b.id)}
+                            disabled={actionLoading}
+                            className="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-300 rounded-lg font-bold text-xs"
+                          >
+                            Post
+                          </button>
+                        )}
+                        <span className="text-emerald-600 font-semibold flex items-center gap-1">
+                          Details <ArrowRight size={11} />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            )}
-          </div>
+            </div>
+
+            {/* Desktop Bills List Table (hidden on mobile) */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-gray-50 dark:bg-gray-900/60 border-b border-gray-200 dark:border-gray-700 text-xs font-bold uppercase text-gray-500">
+                  <tr>
+                    <th className="py-3 px-4">Utility & Title</th>
+                    <th className="py-3 px-4">Period</th>
+                    <th className="py-3 px-4">Amount</th>
+                    <th className="py-3 px-4">Allocation</th>
+                    <th className="py-3 px-4">Payer</th>
+                    <th className="py-3 px-4">Status</th>
+                    <th className="py-3 px-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+                  {filteredBills.map((b) => (
+                    <tr
+                      key={b.id}
+                      className="hover:bg-gray-50/80 dark:hover:bg-gray-900/30 transition-colors cursor-pointer"
+                      onClick={() => setSelectedBill(b)}
+                    >
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded-xl">
+                            {getCategoryIcon(b.category)}
+                          </div>
+                          <div>
+                            <div className="font-semibold text-gray-900 dark:text-white">{b.title}</div>
+                            <div className="text-xs text-gray-400 capitalize">{b.category.toLowerCase()} • {b.billType.toLowerCase()}</div>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td className="py-3 px-4">
+                        <span className="font-mono text-xs bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">
+                          {b.billingPeriod}
+                        </span>
+                      </td>
+
+                      <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">
+                        ৳{b.amount.toLocaleString()}
+                      </td>
+
+                      <td className="py-3 px-4">
+                        <span className="text-xs text-gray-600 dark:text-gray-300">
+                          {b.splitMethod} ({b.allocations?.length || 0} members)
+                        </span>
+                      </td>
+
+                      <td className="py-3 px-4">
+                        <span className="text-xs text-gray-600 dark:text-gray-300">
+                          {b.paidByName || <span className="text-gray-400 italic">Not paid upfront</span>}
+                        </span>
+                      </td>
+
+                      <td className="py-3 px-4">
+                        {b.isPosted || b.status === 'POSTED' ? (
+                          <Badge variant="success" size="sm">
+                            <CheckCircle2 size={12} className="mr-1" /> Posted
+                          </Badge>
+                        ) : b.status === 'APPROVED' ? (
+                          <Badge variant="primary" size="sm">
+                            Approved
+                          </Badge>
+                        ) : b.status === 'VOID' ? (
+                          <Badge variant="neutral" size="sm">
+                            Void
+                          </Badge>
+                        ) : (
+                          <Badge variant="warning" size="sm">
+                            Pending
+                          </Badge>
+                        )}
+                      </td>
+
+                      <td className="py-3 px-4 text-right" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center justify-end gap-1.5">
+                          {!b.isPosted && b.status !== 'POSTED' && b.status !== 'VOID' && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handlePostToLedger(b.id)}
+                              disabled={actionLoading}
+                            >
+                              Post to Ledger
+                            </Button>
+                          )}
+                          <Button variant="ghost" size="sm" onClick={() => setSelectedBill(b)}>
+                            Details <ArrowRight size={13} className="ml-1" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+      </div>
         </div>
       )}
 

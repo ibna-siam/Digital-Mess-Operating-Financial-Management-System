@@ -309,10 +309,10 @@ export const MealsPage: React.FC = () => {
       </div>
 
       {/* Mini KPI stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 20 }}>
-        <div className="kpi-card" style={{ padding: '16px' }}>
-          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Meals (Today)</div>
-          <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-main)', marginTop: 4 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 12, marginBottom: 20 }}>
+        <div className="kpi-card" style={{ padding: '14px' }}>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Meals</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)', marginTop: 2 }}>
             {isLoading && !summary ? (
               <span className="inline-block w-12 h-6 bg-slate-200 dark:bg-slate-700 animate-pulse rounded" />
             ) : (
@@ -320,21 +320,21 @@ export const MealsPage: React.FC = () => {
             )}
           </div>
         </div>
-        <div className="kpi-card" style={{ padding: '16px' }}>
-          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 600 }}>Breakfast / Lunch / Dinner</div>
-          <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--color-primary-dark)', marginTop: 4 }}>
+        <div className="kpi-card" style={{ padding: '14px' }}>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>B / L / D</div>
+          <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--color-primary)', marginTop: 2 }}>
             {isLoading && !summary ? (
-              <span className="inline-block w-24 h-5 bg-slate-200 dark:bg-slate-700 animate-pulse rounded" />
+              <span className="inline-block w-20 h-5 bg-slate-200 dark:bg-slate-700 animate-pulse rounded" />
             ) : summary ? (
-              `${summary.totalBreakfast} / ${summary.totalLunch} / ${summary.totalDinner}`
+              `${summary.totalBreakfast}/${summary.totalLunch}/${summary.totalDinner}`
             ) : (
-              '0 / 0 / 0'
+              '0/0/0'
             )}
           </div>
         </div>
-        <div className="kpi-card" style={{ padding: '16px' }}>
-          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 600 }}>Active Members</div>
-          <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-main)', marginTop: 4 }}>
+        <div className="kpi-card" style={{ padding: '14px' }}>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Active Diners</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)', marginTop: 2 }}>
             {isLoading && !summary ? (
               <span className="inline-block w-10 h-6 bg-slate-200 dark:bg-slate-700 animate-pulse rounded" />
             ) : (
@@ -342,13 +342,13 @@ export const MealsPage: React.FC = () => {
             )}
           </div>
         </div>
-        <div className="kpi-card" style={{ padding: '16px' }}>
-          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 600 }}>Avg. Per Member</div>
-          <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-main)', marginTop: 4 }}>
+        <div className="kpi-card" style={{ padding: '14px' }}>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Avg / Member</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)', marginTop: 2 }}>
             {isLoading && !summary ? (
-              <span className="inline-block w-16 h-6 bg-slate-200 dark:bg-slate-700 animate-pulse rounded" />
+              <span className="inline-block w-14 h-6 bg-slate-200 dark:bg-slate-700 animate-pulse rounded" />
             ) : (
-              `${summary?.avgPerMember ?? 0} meals`
+              `${summary?.avgPerMember ?? 0}`
             )}
           </div>
         </div>
@@ -362,28 +362,28 @@ export const MealsPage: React.FC = () => {
               className={`table-tab ${activeTab === 'daily' ? 'active' : ''}`}
               onClick={() => setActiveTab('daily')}
             >
-              Daily Meals Table
+              Daily Meals
             </button>
             <button
               className={`table-tab ${activeTab === 'calendar' ? 'active' : ''}`}
               onClick={() => setActiveTab('calendar')}
             >
-              Monthly Meal Calendar
+              Monthly Calendar
             </button>
           </div>
         </div>
 
         {activeTab === 'calendar' ? (
-          <div style={{ padding: 24 }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 10 }}>
+          <div style={{ padding: 16 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(70px, 1fr))', gap: 8 }}>
               {calendarDays.map((cd) => (
                 <div
                   key={cd.date}
                   style={{
-                    background: cd.date === currentDate ? 'var(--color-primary-subtle)' : '#f8fafc',
+                    background: cd.date === currentDate ? 'var(--color-primary-subtle, #ecfdf5)' : '#f8fafc',
                     border: `1px solid ${cd.date === currentDate ? 'var(--color-primary)' : 'var(--color-border)'}`,
-                    borderRadius: 'var(--radius-md)',
-                    padding: 12,
+                    borderRadius: '12px',
+                    padding: '10px 6px',
                     textAlign: 'center',
                     cursor: 'pointer',
                   }}
@@ -392,13 +392,13 @@ export const MealsPage: React.FC = () => {
                     setActiveTab('daily');
                   }}
                 >
-                  <div style={{ fontSize: '0.78rem', fontWeight: 700, color: cd.date === currentDate ? 'var(--color-primary-dark)' : 'var(--text-muted)' }}>
+                  <div style={{ fontSize: '0.72rem', fontWeight: 700, color: cd.date === currentDate ? 'var(--color-primary-dark)' : 'var(--text-muted)' }}>
                     Day {cd.day}
                   </div>
-                  <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-main)', marginTop: 4 }}>
+                  <div style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-main)', marginTop: 2 }}>
                     {cd.totalMeals}
                   </div>
-                  <div style={{ fontSize: '0.68rem', color: 'var(--text-subtle)' }}>meals</div>
+                  <div style={{ fontSize: '0.62rem', color: 'var(--text-subtle)' }}>meals</div>
                 </div>
               ))}
             </div>
@@ -412,41 +412,133 @@ export const MealsPage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Member</th>
-                <th>Room</th>
-                <th>Breakfast</th>
-                <th>Lunch</th>
-                <th>Dinner</th>
-                <th>Guest Meals</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {meals.map((row) => (
-                <tr key={row.id}>
-                  <td style={{ fontWeight: 600 }}>{row.memberName}</td>
-                  <td>{row.roomNo || 'Unassigned'}</td>
-                  <td>{row.breakfast}</td>
-                  <td>{row.lunch}</td>
-                  <td>{row.dinner}</td>
-                  <td style={{ color: 'var(--text-muted)' }}>
-                    {row.guestBreakfast + row.guestLunch + row.guestDinner}
-                  </td>
-                  <td style={{ fontWeight: 800, color: 'var(--color-primary-dark)' }}>{row.total}</td>
-                </tr>
-              ))}
-              {meals.length === 0 && (
-                <tr>
-                  <td colSpan={7} style={{ textAlign: 'center', padding: '36px 0', color: 'var(--text-muted)' }}>
+          <>
+            {/* Mobile Meal Cards (< md) */}
+            <div className="block md:hidden" style={{ padding: '12px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {meals.map((row) => (
+                  <div
+                    key={row.id}
+                    style={{
+                      background: 'var(--color-card, #ffffff)',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: '16px',
+                      padding: '14px',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 10,
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <div>
+                        <div style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-main)' }}>
+                          {row.memberName}
+                        </div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                          {row.roomNo ? `Room ${row.roomNo}` : 'Unassigned'}
+                        </div>
+                      </div>
+                      <div
+                        style={{
+                          backgroundColor: 'rgba(16, 185, 129, 0.12)',
+                          color: 'var(--color-primary)',
+                          padding: '4px 10px',
+                          borderRadius: '12px',
+                          fontWeight: 800,
+                          fontSize: '0.9rem',
+                          fontFamily: 'monospace',
+                        }}
+                      >
+                        {row.total} Meals
+                      </div>
+                    </div>
+
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(4, 1fr)',
+                        gap: 6,
+                        background: '#f8fafc',
+                        padding: '8px 10px',
+                        borderRadius: '10px',
+                        textAlign: 'center',
+                      }}
+                    >
+                      <div>
+                        <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600 }}>BREAKFAST</div>
+                        <div style={{ fontWeight: 700, fontSize: '0.88rem', color: row.breakfast > 0 ? 'var(--color-primary)' : 'var(--text-muted)' }}>
+                          {row.breakfast}
+                        </div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600 }}>LUNCH</div>
+                        <div style={{ fontWeight: 700, fontSize: '0.88rem', color: row.lunch > 0 ? 'var(--color-primary)' : 'var(--text-muted)' }}>
+                          {row.lunch}
+                        </div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600 }}>DINNER</div>
+                        <div style={{ fontWeight: 700, fontSize: '0.88rem', color: row.dinner > 0 ? 'var(--color-primary)' : 'var(--text-muted)' }}>
+                          {row.dinner}
+                        </div>
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600 }}>GUESTS</div>
+                        <div style={{ fontWeight: 700, fontSize: '0.88rem', color: 'var(--text-muted)' }}>
+                          {row.guestBreakfast + row.guestLunch + row.guestDinner}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {meals.length === 0 && (
+                  <div style={{ textAlign: 'center', padding: '36px 12px', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
                     No meal records found for this date.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Desktop Table (hidden on mobile) */}
+            <div className="hidden md:block" style={{ overflowX: 'auto' }}>
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Member</th>
+                    <th>Room</th>
+                    <th>Breakfast</th>
+                    <th>Lunch</th>
+                    <th>Dinner</th>
+                    <th>Guest Meals</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {meals.map((row) => (
+                    <tr key={row.id}>
+                      <td style={{ fontWeight: 600 }}>{row.memberName}</td>
+                      <td>{row.roomNo || 'Unassigned'}</td>
+                      <td>{row.breakfast}</td>
+                      <td>{row.lunch}</td>
+                      <td>{row.dinner}</td>
+                      <td style={{ color: 'var(--text-muted)' }}>
+                        {row.guestBreakfast + row.guestLunch + row.guestDinner}
+                      </td>
+                      <td style={{ fontWeight: 800, color: 'var(--color-primary-dark)' }}>{row.total}</td>
+                    </tr>
+                  ))}
+                  {meals.length === 0 && (
+                    <tr>
+                      <td colSpan={7} style={{ textAlign: 'center', padding: '36px 0', color: 'var(--text-muted)' }}>
+                        No meal records found for this date.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 

@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar.js';
 import { Header } from './Header.js';
 import { MobileBottomNav } from './MobileBottomNav.js';
+import { MobileMoreSheet } from './MobileMoreSheet.js';
 import { OfflineStatusBar } from '../pwa/OfflineStatusBar.js';
 import { InstallPromptBanner } from '../pwa/InstallPromptBanner.js';
 import { UpdatePromptModal } from '../pwa/UpdatePromptModal.js';
@@ -11,6 +12,7 @@ import { PageLoader } from '../ui/StateComponents.js';
 
 export const AppLayout: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [moreSheetOpen, setMoreSheetOpen] = useState(false);
   const [notifPreferencesOpen, setNotifPreferencesOpen] = useState(false);
 
   return (
@@ -53,7 +55,14 @@ export const AppLayout: React.FC = () => {
       </div>
 
       {/* Mobile Bottom Navigation Bar */}
-      <MobileBottomNav onOpenMobileMenu={() => setMobileMenuOpen(true)} />
+      <MobileBottomNav onOpenMobileMenu={() => setMoreSheetOpen(true)} />
+
+      {/* Dedicated Native-Feel Mobile More Menu Sheet */}
+      <MobileMoreSheet
+        isOpen={moreSheetOpen}
+        onClose={() => setMoreSheetOpen(false)}
+        onOpenNotificationPreferences={() => setNotifPreferencesOpen(true)}
+      />
 
       {/* PWA Install Promotion Banner */}
       <InstallPromptBanner />

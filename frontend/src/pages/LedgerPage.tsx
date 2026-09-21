@@ -437,7 +437,75 @@ export const LedgerPage: React.FC = () => {
           <span className="text-xs text-slate-500">Click row for full immutable audit details</span>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Mobile Ledger Transaction Feed (< md) */}
+        <div className="block md:hidden p-3">
+          {filteredEntries.length === 0 ? (
+            <div className="py-8 text-center text-slate-500">
+              <BookOpen className="w-8 h-8 mx-auto text-slate-400 opacity-60 mb-2" />
+              <p className="font-semibold text-slate-800 text-sm">No ledger records found</p>
+              <p className="text-xs text-slate-500">No transactions match current filters.</p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2.5">
+              {filteredEntries.map((entry) => {
+                const isDebit = entry.direction === 'DEBIT';
+                return (
+                  <div
+                    key={entry.id}
+                    onClick={() => setSelectedEntry(entry)}
+                    className="p-3.5 bg-white border border-slate-200/80 rounded-2xl shadow-xs cursor-pointer flex flex-col gap-2.5"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="text-sm font-bold text-slate-900 truncate">
+                          {entry.description}
+                        </div>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="font-mono text-xs text-slate-500">
+                            {entry.effectiveDate?.slice(0, 10) || entry.createdAt?.slice(0, 10)}
+                          </span>
+                          {entry.referenceId && (
+                            <>
+                              <span className="text-slate-300">•</span>
+                              <span className="text-xs text-slate-500 font-mono">
+                                #{entry.referenceId}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="text-right shrink-0">
+                        <div className={`text-sm font-bold font-mono ${isDebit ? 'text-rose-600' : 'text-emerald-600'}`}>
+                          {isDebit ? `-৳${entry.amount.toFixed(0)}` : `+৳${entry.amount.toFixed(0)}`}
+                        </div>
+                        <div className="text-[10px] uppercase font-bold text-slate-400 mt-0.5">
+                          {isDebit ? 'Charge' : 'Deposit'}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between border-t border-slate-100 pt-2">
+                      <div>{getEntryBadge(entry.entryType)}</div>
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500 font-mono">
+                        <span>Bal:</span>
+                        <span className={`font-bold ${
+                          entry.balanceAfter > 0 ? 'text-emerald-600' : entry.balanceAfter < 0 ? 'text-rose-600' : 'text-slate-600'
+                        }`}>
+                          ৳{entry.balanceAfter.toFixed(0)}
+                        </span>
+                        <ChevronRight className="w-3.5 h-3.5 text-slate-400 inline" />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Desktop Table (hidden on mobile) */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-600 border-b border-slate-200">

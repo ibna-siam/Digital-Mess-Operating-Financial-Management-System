@@ -208,36 +208,36 @@ export const BazarPage: React.FC = () => {
       </div>
 
       {/* KPI Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 20 }}>
-        <div className="kpi-card" style={{ padding: 18 }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Bazar Expense</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--color-primary-dark)', marginTop: 4 }}>
-            {isLoading ? <Skeleton width="65%" height={28} /> : `৳ ${totalSpent.toLocaleString('en-US', { minimumFractionDigits: 2 })}`}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12, marginBottom: 20 }}>
+        <div className="kpi-card" style={{ padding: 14 }}>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Bazar</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-primary-dark)', marginTop: 2 }}>
+            {isLoading ? <Skeleton width="65%" height={24} /> : `৳ ${totalSpent.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 4 }}>Across all members</div>
+          <div style={{ fontSize: '0.68rem', color: '#64748B', marginTop: 2 }}>All members</div>
         </div>
-        <div className="kpi-card" style={{ padding: 18 }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Purchases</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-main)', marginTop: 4 }}>
-            {isLoading ? <Skeleton width="50%" height={28} /> : `${totalTrips} Trips`}
+        <div className="kpi-card" style={{ padding: 14 }}>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Purchases</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)', marginTop: 2 }}>
+            {isLoading ? <Skeleton width="50%" height={24} /> : `${totalTrips} Trips`}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#10B981', marginTop: 4 }}>Active month</div>
+          <div style={{ fontSize: '0.68rem', color: '#10B981', marginTop: 2 }}>Active month</div>
         </div>
-        <div className="kpi-card" style={{ padding: 18 }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Top Bazar Buyer</div>
-          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0EA5E9', marginTop: 4 }}>
-            {isLoading ? <Skeleton width="70%" height={24} /> : topBuyer.name}
+        <div className="kpi-card" style={{ padding: 14 }}>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Top Buyer</div>
+          <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0EA5E9', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {isLoading ? <Skeleton width="70%" height={20} /> : topBuyer.name}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 4 }}>
-            {isLoading ? <Skeleton width="55%" height={14} /> : `৳ ${topBuyer.total.toLocaleString()} spent`}
+          <div style={{ fontSize: '0.68rem', color: '#64748B', marginTop: 2 }}>
+            {isLoading ? <Skeleton width="55%" height={12} /> : `৳ ${topBuyer.total.toLocaleString()} spent`}
           </div>
         </div>
-        <div className="kpi-card" style={{ padding: 18 }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Average per Bazar</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#F59E0B', marginTop: 4 }}>
-            {isLoading ? <Skeleton width="65%" height={28} /> : `৳ ${avgTrip.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+        <div className="kpi-card" style={{ padding: 14 }}>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Avg / Bazar</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#F59E0B', marginTop: 2 }}>
+            {isLoading ? <Skeleton width="65%" height={24} /> : `৳ ${avgTrip.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 4 }}>Per grocery run</div>
+          <div style={{ fontSize: '0.68rem', color: '#64748B', marginTop: 2 }}>Per grocery run</div>
         </div>
       </div>
 
@@ -258,24 +258,22 @@ export const BazarPage: React.FC = () => {
           </div>
 
           {/* Search bar */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ position: 'relative', minWidth: 240 }}>
-              <Search
-                size={15}
-                style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#94A3B8' }}
-              />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 200, justifyContent: 'flex-end' }}>
+            <div style={{ position: 'relative', width: '100%', maxWidth: 280 }}>
+              <Search size={14} color="#94A3B8" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)' }} />
               <input
                 type="text"
-                placeholder="Search buyer, items..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search bazar..."
                 style={{
                   width: '100%',
                   padding: '7px 12px 7px 32px',
                   borderRadius: 'var(--radius-md)',
                   border: '1px solid var(--color-border)',
-                  fontSize: '0.84rem',
+                  fontSize: '0.82rem',
                   outline: 'none',
+                  backgroundColor: '#ffffff',
                 }}
               />
             </div>
@@ -293,126 +291,205 @@ export const BazarPage: React.FC = () => {
             <p style={{ fontSize: '0.82rem' }}>Record a new grocery purchase to track it here.</p>
           </div>
         ) : (
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Description</th>
-                <th>Category</th>
-                <th>Buyer</th>
-                <th>Method</th>
-                <th>Items</th>
-                <th style={{ textAlign: 'right' }}>Amount</th>
-                <th style={{ textAlign: 'center' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredEntries.map((bazar) => (
-                <tr key={bazar.id}>
-                  <td style={{ color: 'var(--text-muted)', fontSize: '0.82rem', whiteSpace: 'nowrap' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <Calendar size={13} color="#94A3B8" />
-                      {bazar.date}
-                    </div>
-                  </td>
-                  <td>
-                    <div style={{ fontWeight: 600, color: 'var(--text-main)' }}>{bazar.description}</div>
-                    {bazar.notes && <div style={{ fontSize: '0.74rem', color: '#94A3B8' }}>{bazar.notes}</div>}
-                  </td>
-                  <td>
-                    <Badge
-                      variant={
-                        bazar.category === 'Fish & Meat'
-                          ? 'danger'
-                          : bazar.category === 'Vegetables'
-                          ? 'success'
-                          : bazar.category === 'Groceries'
-                          ? 'info'
-                          : 'neutral'
-                      }
-                    >
-                      {bazar.category}
-                    </Badge>
-                  </td>
-                  <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <div
-                        style={{
-                          width: 26,
-                          height: 26,
-                          borderRadius: '50%',
-                          backgroundColor: '#E2E8F0',
-                          color: '#334155',
-                          fontSize: '0.72rem',
-                          fontWeight: 700,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        {bazar.buyerName.substring(0, 2).toUpperCase()}
+          <>
+            {/* Mobile Bazar Feed (< md) */}
+            <div className="block md:hidden" style={{ padding: '12px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {filteredEntries.map((bazar) => (
+                  <div
+                    key={bazar.id}
+                    onClick={() => setSelectedEntry(bazar)}
+                    style={{
+                      background: 'var(--color-card, #ffffff)',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: '16px',
+                      padding: '14px',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 10,
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-main)' }}>
+                          {bazar.description}
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 3 }}>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <Calendar size={11} /> {bazar.date}
+                          </span>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-subtle)' }}>•</span>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                            {bazar.buyerName}
+                          </span>
+                        </div>
                       </div>
-                      <span style={{ fontWeight: 500 }}>{bazar.buyerName}</span>
+                      <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                        <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-main)', fontFamily: 'monospace' }}>
+                          ৳{bazar.amount.toLocaleString()}
+                        </div>
+                        <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--color-primary-dark)' }}>
+                          {bazar.paymentMethod}
+                        </span>
+                      </div>
                     </div>
-                  </td>
-                  <td>
-                    <span
-                      style={{
-                        fontSize: '0.72rem',
-                        fontWeight: 700,
-                        padding: '2px 6px',
-                        borderRadius: 4,
-                        backgroundColor: '#F1F5F9',
-                        color: '#475569',
-                      }}
-                    >
-                      {bazar.paymentMethod}
-                    </span>
-                  </td>
-                  <td>
-                    {bazar.items && bazar.items.length > 0 ? (
-                      <span
-                        style={{
-                          cursor: 'pointer',
-                          color: 'var(--color-primary-dark)',
-                          fontWeight: 600,
-                          fontSize: '0.82rem',
-                        }}
-                        onClick={() => setSelectedEntry(bazar)}
-                      >
-                        {bazar.items.length} item{bazar.items.length > 1 ? 's' : ''} • View
+
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--color-border)', paddingTop: 8 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <Badge
+                          variant={
+                            bazar.category === 'Fish & Meat'
+                              ? 'danger'
+                              : bazar.category === 'Vegetables'
+                              ? 'success'
+                              : bazar.category === 'Groceries'
+                              ? 'info'
+                              : 'neutral'
+                          }
+                        >
+                          {bazar.category}
+                        </Badge>
+                        {bazar.items && bazar.items.length > 0 && (
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                            {bazar.items.length} item{bazar.items.length > 1 ? 's' : ''}
+                          </span>
+                        )}
+                      </div>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--color-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+                        View <Eye size={12} />
                       </span>
-                    ) : (
-                      <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Summary only</span>
-                    )}
-                  </td>
-                  <td style={{ textAlign: 'right', fontWeight: 800, color: 'var(--text-main)', fontSize: '0.92rem' }}>
-                    ৳ {bazar.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                  </td>
-                  <td style={{ textAlign: 'center' }}>
-                    <button
-                      onClick={() => setSelectedEntry(bazar)}
-                      style={{
-                        background: 'none',
-                        border: '1px solid var(--color-border)',
-                        padding: '5px 10px',
-                        borderRadius: 'var(--radius-sm)',
-                        fontSize: '0.75rem',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        color: 'var(--text-main)',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: 4,
-                      }}
-                    >
-                      <Eye size={12} /> Details
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Desktop Table (hidden on mobile) */}
+            <div className="hidden md:block" style={{ overflowX: 'auto' }}>
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Buyer</th>
+                    <th>Method</th>
+                    <th>Items</th>
+                    <th style={{ textAlign: 'right' }}>Amount</th>
+                    <th style={{ textAlign: 'center' }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredEntries.map((bazar) => (
+                    <tr key={bazar.id}>
+                      <td style={{ color: 'var(--text-muted)', fontSize: '0.82rem', whiteSpace: 'nowrap' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <Calendar size={13} color="#94A3B8" />
+                          {bazar.date}
+                        </div>
+                      </td>
+                      <td>
+                        <div style={{ fontWeight: 600, color: 'var(--text-main)' }}>{bazar.description}</div>
+                        {bazar.notes && <div style={{ fontSize: '0.74rem', color: '#94A3B8' }}>{bazar.notes}</div>}
+                      </td>
+                      <td>
+                        <Badge
+                          variant={
+                            bazar.category === 'Fish & Meat'
+                              ? 'danger'
+                              : bazar.category === 'Vegetables'
+                              ? 'success'
+                              : bazar.category === 'Groceries'
+                              ? 'info'
+                              : 'neutral'
+                          }
+                        >
+                          {bazar.category}
+                        </Badge>
+                      </td>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <div
+                            style={{
+                              width: 26,
+                              height: 26,
+                              borderRadius: '50%',
+                              backgroundColor: '#E2E8F0',
+                              color: '#334155',
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            {bazar.buyerName.substring(0, 2).toUpperCase()}
+                          </div>
+                          <span style={{ fontWeight: 500 }}>{bazar.buyerName}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <span
+                          style={{
+                            fontSize: '0.72rem',
+                            fontWeight: 700,
+                            padding: '2px 6px',
+                            borderRadius: 4,
+                            backgroundColor: '#F1F5F9',
+                            color: '#475569',
+                          }}
+                        >
+                          {bazar.paymentMethod}
+                        </span>
+                      </td>
+                      <td>
+                        {bazar.items && bazar.items.length > 0 ? (
+                          <span
+                            style={{
+                              cursor: 'pointer',
+                              color: 'var(--color-primary-dark)',
+                              fontWeight: 600,
+                              fontSize: '0.82rem',
+                            }}
+                            onClick={() => setSelectedEntry(bazar)}
+                          >
+                            {bazar.items.length} item{bazar.items.length > 1 ? 's' : ''} • View
+                          </span>
+                        ) : (
+                          <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Summary only</span>
+                        )}
+                      </td>
+                      <td style={{ textAlign: 'right', fontWeight: 800, color: 'var(--text-main)', fontSize: '0.92rem' }}>
+                        ৳ {bazar.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <button
+                          onClick={() => setSelectedEntry(bazar)}
+                          style={{
+                            background: 'none',
+                            border: '1px solid var(--color-border)',
+                            padding: '5px 10px',
+                            borderRadius: 'var(--radius-sm)',
+                            fontSize: '0.75rem',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            color: 'var(--text-main)',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 4,
+                          }}
+                        >
+                          <Eye size={12} /> Details
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 

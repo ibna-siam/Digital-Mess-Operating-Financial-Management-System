@@ -12,6 +12,7 @@ import {
   ShoppingCart,
   Clock,
   CheckCircle2,
+  ChevronRight,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.js';
 import { Card } from '../../components/ui/Card.js';
@@ -108,8 +109,309 @@ export const DashboardView: React.FC = () => {
 
   return (
     <div>
-      {/* Greeting Banner */}
-      <div className="dashboard-greeting-row">
+      {/* =========================================================================
+          MOBILE PURPOSE-BUILT DASHBOARD (md:hidden)
+          Modern Financial & Mess Operating Mobile App UI
+         ========================================================================= */}
+      <div className="block md:hidden space-y-3.5 pb-2">
+        {/* 1. Header & Context */}
+        <div className="flex items-center justify-between pt-0.5">
+          <div>
+            <h1 className="text-lg font-extrabold text-slate-900 tracking-tight">
+              Hello, {userName} 👋
+            </h1>
+            <p className="text-[11px] text-slate-500 font-medium">
+              {activeMess?.name || stats?.messName || 'My Mess'} · {new Date().toLocaleDateString('en-GB', { month: 'short', day: 'numeric', year: 'numeric' })}
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/70 text-[11px] font-bold">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            Live
+          </div>
+        </div>
+
+        {/* 2. Compact 2-Column Financial Summary Grid */}
+        <div className="grid grid-cols-2 gap-2.5">
+          {/* Members */}
+          <div
+            onClick={() => navigate('/members')}
+            className="p-3 bg-white rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between active:scale-[0.98] transition-transform cursor-pointer"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-slate-500">Members</span>
+              <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <Users size={13} />
+              </div>
+            </div>
+            <div className="mt-2">
+              <div className="text-xl font-extrabold text-slate-900 tracking-tight">
+                {isLoading ? <Skeleton width={40} height={22} /> : stats?.kpis.totalMembers.value || '0'}
+              </div>
+              <p className="text-[10px] text-emerald-600 font-medium truncate mt-0.5">
+                {stats?.operationalSummary ? `${stats.operationalSummary.activeMembers} Living Active` : 'Active living'}
+              </p>
+            </div>
+          </div>
+
+          {/* Expenses */}
+          <div
+            onClick={() => navigate('/expenses')}
+            className="p-3 bg-white rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between active:scale-[0.98] transition-transform cursor-pointer"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-slate-500">Total Spent</span>
+              <div className="w-6 h-6 rounded-lg bg-rose-50 text-rose-500 flex items-center justify-center">
+                <CreditCard size={13} />
+              </div>
+            </div>
+            <div className="mt-2">
+              <div className="text-xl font-extrabold text-slate-900 tracking-tight">
+                {isLoading ? <Skeleton width={60} height={22} /> : `৳${stats?.kpis.totalExpenses.value || '0'}`}
+              </div>
+              <p className="text-[10px] text-rose-500 font-medium truncate mt-0.5">
+                This Period Total
+              </p>
+            </div>
+          </div>
+
+          {/* Today Meals */}
+          <div
+            onClick={() => navigate('/meals')}
+            className="p-3 bg-white rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between active:scale-[0.98] transition-transform cursor-pointer"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-slate-500">Today Meals</span>
+              <div className="w-6 h-6 rounded-lg bg-sky-50 text-sky-500 flex items-center justify-center">
+                <Utensils size={13} />
+              </div>
+            </div>
+            <div className="mt-2">
+              <div className="text-xl font-extrabold text-slate-900 tracking-tight">
+                {isLoading ? <Skeleton width={40} height={22} /> : stats?.todayMeals?.total ?? '0'}
+              </div>
+              <p className="text-[10px] text-slate-500 font-medium truncate mt-0.5">
+                {stats?.todayMeals ? `B:${stats.todayMeals.breakfast} L:${stats.todayMeals.lunch} D:${stats.todayMeals.dinner}` : 'Daily active count'}
+              </p>
+            </div>
+          </div>
+
+          {/* Meal Rate */}
+          <div
+            onClick={() => navigate('/bazar')}
+            className="p-3 bg-white rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between active:scale-[0.98] transition-transform cursor-pointer"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-slate-500">Est. Meal Rate</span>
+              <div className="w-6 h-6 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+                <ArrowLeftRight size={13} />
+              </div>
+            </div>
+            <div className="mt-2">
+              <div className="text-xl font-extrabold text-slate-900 tracking-tight">
+                {isLoading ? <Skeleton width={50} height={22} /> : `৳${stats?.kpis.mealRate.value || '0'}`}
+              </div>
+              <p className="text-[10px] text-purple-600 font-medium truncate mt-0.5">
+                Per Meal Cost
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. Compact Quick Action Grid */}
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-3 shadow-xs">
+          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 px-0.5">
+            Quick Actions
+          </div>
+          <div className="grid grid-cols-5 gap-1.5 text-center">
+            <button
+              onClick={() => navigate('/bazar')}
+              className="flex flex-col items-center gap-1.5 p-1 rounded-xl active:bg-slate-100 transition-transform active:scale-95"
+            >
+              <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shadow-xs">
+                <ShoppingCart size={18} />
+              </div>
+              <span className="text-[10px] font-bold text-slate-700 leading-tight">Bazar</span>
+            </button>
+
+            <button
+              onClick={() => navigate('/expenses')}
+              className="flex flex-col items-center gap-1.5 p-1 rounded-xl active:bg-slate-100 transition-transform active:scale-95"
+            >
+              <div className="w-10 h-10 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center border border-rose-100 shadow-xs">
+                <PlusCircle size={18} />
+              </div>
+              <span className="text-[10px] font-bold text-slate-700 leading-tight">Expense</span>
+            </button>
+
+            <button
+              onClick={() => navigate('/meals')}
+              className="flex flex-col items-center gap-1.5 p-1 rounded-xl active:bg-slate-100 transition-transform active:scale-95"
+            >
+              <div className="w-10 h-10 rounded-2xl bg-sky-50 text-sky-500 flex items-center justify-center border border-sky-100 shadow-xs">
+                <Utensils size={18} />
+              </div>
+              <span className="text-[10px] font-bold text-slate-700 leading-tight">Meals</span>
+            </button>
+
+            <button
+              onClick={() => navigate('/settlement')}
+              className="flex flex-col items-center gap-1.5 p-1 rounded-xl active:bg-slate-100 transition-transform active:scale-95"
+            >
+              <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-100 shadow-xs">
+                <CheckCircle2 size={18} />
+              </div>
+              <span className="text-[10px] font-bold text-slate-700 leading-tight">Settle</span>
+            </button>
+
+            <button
+              onClick={() => navigate('/ledger')}
+              className="flex flex-col items-center gap-1.5 p-1 rounded-xl active:bg-slate-100 transition-transform active:scale-95"
+            >
+              <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100 shadow-xs">
+                <Receipt size={18} />
+              </div>
+              <span className="text-[10px] font-bold text-slate-700 leading-tight">Ledger</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 4. Operational Highlights */}
+        {stats?.operationalSummary && (stats.operationalSummary.pendingApprovals > 0 || stats.operationalSummary.upcomingBills > 0) && (
+          <div className="space-y-1.5">
+            {stats.operationalSummary.pendingApprovals > 0 && (
+              <div
+                onClick={() => navigate('/expenses')}
+                className="flex items-center justify-between p-2.5 rounded-xl bg-amber-50 border border-amber-200/80 text-amber-800 text-xs font-semibold active:scale-[0.99] transition-transform cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <Clock size={15} className="text-amber-600" />
+                  <span>{stats.operationalSummary.pendingApprovals} Pending Expense Approval{stats.operationalSummary.pendingApprovals > 1 ? 's' : ''}</span>
+                </div>
+                <ChevronRight size={14} className="text-amber-400" />
+              </div>
+            )}
+            {stats.operationalSummary.upcomingBills > 0 && (
+              <div
+                onClick={() => navigate('/bills')}
+                className="flex items-center justify-between p-2.5 rounded-xl bg-blue-50 border border-blue-200/80 text-blue-800 text-xs font-semibold active:scale-[0.99] transition-transform cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <Receipt size={15} className="text-blue-600" />
+                  <span>{stats.operationalSummary.upcomingBills} Fixed Bill{stats.operationalSummary.upcomingBills > 1 ? 's' : ''} Due Soon</span>
+                </div>
+                <ChevronRight size={14} className="text-blue-400" />
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 5. Expense Distribution Breakdown */}
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-3.5 shadow-xs">
+          <div className="flex items-center justify-between mb-2.5">
+            <span className="text-xs font-bold text-slate-900">Expense Distribution</span>
+            <span className="text-xs font-extrabold text-slate-900">৳{stats?.kpis.totalExpenses.value || '0'}</span>
+          </div>
+          {isLoading ? (
+            <div className="space-y-2">
+              <Skeleton width="100%" height={12} />
+              <Skeleton width="100%" height={12} />
+              <Skeleton width="100%" height={12} />
+            </div>
+          ) : expenseByCategory.length > 0 ? (
+            <div className="space-y-2.5">
+              {expenseByCategory.map((cat, i) => (
+                <div key={i}>
+                  <div className="flex justify-between text-[11px] font-semibold mb-1">
+                    <span className="flex items-center gap-1.5 text-slate-700">
+                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: cat.color }} />
+                      {cat.category}
+                    </span>
+                    <span className="text-slate-900">৳{cat.amount.toLocaleString()} ({cat.percentage}%)</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-300"
+                      style={{ width: `${cat.percentage}%`, backgroundColor: cat.color }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-slate-400 text-center py-2">No expenses recorded for this period.</p>
+          )}
+        </div>
+
+        {/* 6. Recent Activity Feed */}
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-3.5 shadow-xs">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-bold text-slate-900">Recent Activity</span>
+            <button
+              onClick={() => navigate('/ledger')}
+              className="text-[11px] font-bold text-emerald-600 hover:text-emerald-700"
+            >
+              View All
+            </button>
+          </div>
+          {isLoading ? (
+            <div className="space-y-2.5">
+              <Skeleton width="100%" height={32} />
+              <Skeleton width="100%" height={32} />
+            </div>
+          ) : recentActivities.length > 0 ? (
+            <div className="divide-y divide-slate-100">
+              {recentActivities.slice(0, 4).map((act) => (
+                <div key={act.id} className="flex items-center gap-2.5 py-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
+                    {act.category === 'Food' || act.type === 'bazar' ? (
+                      <Receipt size={14} className="text-emerald-500" />
+                    ) : act.category === 'Meals' || act.type === 'meal' ? (
+                      <Utensils size={14} className="text-sky-500" />
+                    ) : (
+                      <CreditCard size={14} className="text-purple-500" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs font-semibold text-slate-800 truncate">{act.title}</div>
+                    <div className="text-[10px] text-slate-400">{act.time}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-slate-400 text-center py-2">No recent activity.</p>
+          )}
+        </div>
+
+        {/* 7. Top Spenders Carousel */}
+        {topSpenders.length > 0 && (
+          <div className="bg-white rounded-2xl border border-slate-200/80 p-3.5 shadow-xs">
+            <div className="text-xs font-bold text-slate-900 mb-2.5">Top Mess Spenders</div>
+            <div className="flex gap-2.5 overflow-x-auto pb-1">
+              {topSpenders.map((s) => (
+                <div
+                  key={s.rank}
+                  className="flex-shrink-0 w-24 p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-center"
+                >
+                  <div className="w-7 h-7 mx-auto rounded-full bg-emerald-600 text-white font-bold text-[10px] flex items-center justify-center shadow-xs">
+                    {s.name.slice(0, 2).toUpperCase()}
+                  </div>
+                  <div className="text-[11px] font-bold text-slate-800 truncate mt-1.5">{s.name.split(' ')[0]}</div>
+                  <div className="text-[10px] font-extrabold text-emerald-600 truncate">{s.amount}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* =========================================================================
+          DESKTOP DASHBOARD (hidden md:block)
+          Preserved original full-fidelity SaaS desktop dashboard layout
+         ========================================================================= */}
+      <div className="hidden md:block">
+        {/* Greeting Banner */}
+        <div className="dashboard-greeting-row">
         <div>
           <h2 className="greeting-title">Good Day, {userName}! 👋</h2>
           <p className="greeting-subtext">
@@ -479,5 +781,6 @@ export const DashboardView: React.FC = () => {
         </Card>
       </div>
     </div>
-  );
+  </div>
+);
 };

@@ -190,41 +190,41 @@ export const ExpensesPage: React.FC = () => {
       </div>
 
       {/* KPI Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 20 }}>
-        <div className="kpi-card" style={{ padding: 18 }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Expenses</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-main)', marginTop: 4 }}>
-            ৳ {totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12, marginBottom: 20 }}>
+        <div className="kpi-card" style={{ padding: 14 }}>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Expenses</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)', marginTop: 2 }}>
+            ৳ {totalAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 4 }}>All categories</div>
+          <div style={{ fontSize: '0.68rem', color: '#64748B', marginTop: 2 }}>All categories</div>
         </div>
-        <div className="kpi-card" style={{ padding: 18 }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Variable Expenses</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--color-primary-dark)', marginTop: 4 }}>
-            ৳ {variableAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+        <div className="kpi-card" style={{ padding: 14 }}>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Variable Cost</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-primary-dark)', marginTop: 2 }}>
+            ৳ {variableAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#10B981', marginTop: 4 }}>Bazar & supplies</div>
+          <div style={{ fontSize: '0.68rem', color: '#10B981', marginTop: 2 }}>Bazar & food</div>
         </div>
-        <div className="kpi-card" style={{ padding: 18 }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Fixed Overheads</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#F59E0B', marginTop: 4 }}>
-            ৳ {fixedAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+        <div className="kpi-card" style={{ padding: 14 }}>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Fixed Overheads</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#F59E0B', marginTop: 2 }}>
+            ৳ {fixedAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 4 }}>Rent, Maid, WiFi</div>
+          <div style={{ fontSize: '0.68rem', color: '#64748B', marginTop: 2 }}>Rent, utilities</div>
         </div>
-        <div className="kpi-card" style={{ padding: 18 }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Pending Approval</div>
+        <div className="kpi-card" style={{ padding: 14 }}>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Pending</div>
           <div
             style={{
-              fontSize: '1.5rem',
+              fontSize: '1.25rem',
               fontWeight: 800,
               color: pendingCount > 0 ? '#EF4444' : 'var(--text-main)',
-              marginTop: 4,
+              marginTop: 2,
             }}
           >
             {pendingCount}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 4 }}>Requires review</div>
+          <div style={{ fontSize: '0.68rem', color: '#64748B', marginTop: 2 }}>Needs approval</div>
         </div>
       </div>
 
@@ -260,15 +260,12 @@ export const ExpensesPage: React.FC = () => {
           </div>
 
           {/* Search */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ position: 'relative', minWidth: 240 }}>
-              <Search
-                size={15}
-                style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#94A3B8' }}
-              />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 200, justifyContent: 'flex-end' }}>
+            <div style={{ position: 'relative', width: '100%', maxWidth: 280 }}>
+              <Search size={14} color="#94A3B8" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)' }} />
               <input
                 type="text"
-                placeholder="Search description, payer..."
+                placeholder="Search expenses..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{
@@ -276,8 +273,9 @@ export const ExpensesPage: React.FC = () => {
                   padding: '7px 12px 7px 32px',
                   borderRadius: 'var(--radius-md)',
                   border: '1px solid var(--color-border)',
-                  fontSize: '0.84rem',
+                  fontSize: '0.82rem',
                   outline: 'none',
+                  backgroundColor: '#ffffff',
                 }}
               />
             </div>
@@ -295,124 +293,246 @@ export const ExpensesPage: React.FC = () => {
             <p style={{ fontSize: '0.82rem' }}>Add a new expense to track mess cash flow.</p>
           </div>
         ) : (
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Description</th>
-                <th>Type</th>
-                <th>Category</th>
-                <th>Payer</th>
-                <th style={{ textAlign: 'right' }}>Amount</th>
-                <th style={{ textAlign: 'center' }}>Status</th>
-                <th style={{ textAlign: 'center' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredExpenses.map((exp) => (
-                <tr key={exp.id}>
-                  <td style={{ color: 'var(--text-muted)', fontSize: '0.82rem', whiteSpace: 'nowrap' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <Calendar size={13} color="#94A3B8" />
-                      {exp.date}
-                    </div>
-                  </td>
-                  <td>
-                    <div style={{ fontWeight: 600, color: 'var(--text-main)' }}>{exp.description}</div>
-                    <div style={{ fontSize: '0.74rem', color: '#94A3B8' }}>Period: {exp.billingPeriod}</div>
-                  </td>
-                  <td>
-                    <span
-                      style={{
-                        fontSize: '0.72rem',
-                        fontWeight: 700,
-                        padding: '2px 8px',
-                        borderRadius: 12,
-                        backgroundColor: exp.type === 'VARIABLE' ? '#ECFDF5' : '#FFFBEB',
-                        color: exp.type === 'VARIABLE' ? '#065F46' : '#B45309',
-                      }}
-                    >
-                      {exp.type}
-                    </span>
-                  </td>
-                  <td>
-                    <Badge variant={exp.category === 'Food' ? 'success' : exp.category === 'House Rent' ? 'warning' : 'info'}>
-                      {exp.category}
-                    </Badge>
-                  </td>
-                  <td>
-                    <span style={{ fontWeight: 500 }}>{exp.payerName}</span>
-                  </td>
-                  <td style={{ textAlign: 'right', fontWeight: 800, color: 'var(--text-main)', fontSize: '0.92rem' }}>
-                    ৳ {exp.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                  </td>
-                  <td style={{ textAlign: 'center' }}>
-                    <Badge
-                      variant={
-                        exp.status === 'APPROVED'
-                          ? 'success'
-                          : exp.status === 'PENDING_APPROVAL'
-                          ? 'warning'
-                          : exp.status === 'REJECTED'
-                          ? 'danger'
-                          : 'neutral'
-                      }
-                    >
-                      {exp.status === 'PENDING_APPROVAL' ? 'Pending' : exp.status}
-                    </Badge>
-                  </td>
-                  <td style={{ textAlign: 'center' }}>
-                    {exp.status === 'PENDING_APPROVAL' ? (
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-                        <button
-                          onClick={() => handleApprove(exp.id)}
-                          disabled={actionLoadingId === exp.id}
-                          title="Approve Expense"
-                          style={{
-                            backgroundColor: '#ECFDF5',
-                            border: '1px solid #10B981',
-                            color: '#065F46',
-                            padding: '4px 8px',
-                            borderRadius: 'var(--radius-sm)',
-                            cursor: 'pointer',
-                            fontSize: '0.75rem',
-                            fontWeight: 700,
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 4,
-                          }}
-                        >
-                          <CheckCircle2 size={13} color="#10B981" /> Approve
-                        </button>
-                        <button
-                          onClick={() => handleReject(exp.id)}
-                          disabled={actionLoadingId === exp.id}
-                          title="Reject Expense"
-                          style={{
-                            backgroundColor: '#FEF2F2',
-                            border: '1px solid #EF4444',
-                            color: '#991B1B',
-                            padding: '4px 8px',
-                            borderRadius: 'var(--radius-sm)',
-                            cursor: 'pointer',
-                            fontSize: '0.75rem',
-                            fontWeight: 700,
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 4,
-                          }}
-                        >
-                          <XCircle size={13} color="#EF4444" /> Reject
-                        </button>
+          <>
+            {/* Mobile Expenses Feed (< md) */}
+            <div className="block md:hidden" style={{ padding: '12px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {filteredExpenses.map((exp) => (
+                  <div
+                    key={exp.id}
+                    style={{
+                      background: 'var(--color-card, #ffffff)',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: '16px',
+                      padding: '14px',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 10,
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-main)' }}>
+                          {exp.description}
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 3 }}>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <Calendar size={11} /> {exp.date}
+                          </span>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-subtle)' }}>•</span>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                            {exp.payerName}
+                          </span>
+                        </div>
                       </div>
-                    ) : (
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Verified</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                      <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                        <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-main)', fontFamily: 'monospace' }}>
+                          ৳{exp.amount.toLocaleString()}
+                        </div>
+                        <span
+                          style={{
+                            fontSize: '0.65rem',
+                            fontWeight: 700,
+                            padding: '1px 6px',
+                            borderRadius: 6,
+                            backgroundColor: exp.type === 'VARIABLE' ? '#ECFDF5' : '#FFFBEB',
+                            color: exp.type === 'VARIABLE' ? '#065F46' : '#B45309',
+                          }}
+                        >
+                          {exp.type}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--color-border)', paddingTop: 8 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <Badge variant={exp.category === 'Food' ? 'success' : exp.category === 'House Rent' ? 'warning' : 'info'}>
+                          {exp.category}
+                        </Badge>
+                        <Badge
+                          variant={
+                            exp.status === 'APPROVED'
+                              ? 'success'
+                              : exp.status === 'PENDING_APPROVAL'
+                              ? 'warning'
+                              : 'danger'
+                          }
+                        >
+                          {exp.status === 'PENDING_APPROVAL' ? 'Pending' : exp.status}
+                        </Badge>
+                      </div>
+
+                      {exp.status === 'PENDING_APPROVAL' && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <button
+                            onClick={() => handleApprove(exp.id)}
+                            disabled={actionLoadingId === exp.id}
+                            style={{
+                              backgroundColor: '#ECFDF5',
+                              border: '1px solid #10B981',
+                              color: '#065F46',
+                              padding: '3px 8px',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 3,
+                            }}
+                          >
+                            <CheckCircle2 size={12} color="#10B981" /> Approve
+                          </button>
+                          <button
+                            onClick={() => handleReject(exp.id)}
+                            disabled={actionLoadingId === exp.id}
+                            style={{
+                              backgroundColor: '#FEF2F2',
+                              border: '1px solid #EF4444',
+                              color: '#991B1B',
+                              padding: '3px 8px',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              fontSize: '0.72rem',
+                              fontWeight: 700,
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 3,
+                            }}
+                          >
+                            <XCircle size={12} color="#EF4444" /> Reject
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Desktop Table (hidden on mobile) */}
+            <div className="hidden md:block" style={{ overflowX: 'auto' }}>
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Payer</th>
+                    <th style={{ textAlign: 'right' }}>Amount</th>
+                    <th style={{ textAlign: 'center' }}>Status</th>
+                    <th style={{ textAlign: 'center' }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredExpenses.map((exp) => (
+                    <tr key={exp.id}>
+                      <td style={{ color: 'var(--text-muted)', fontSize: '0.82rem', whiteSpace: 'nowrap' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <Calendar size={13} color="#94A3B8" />
+                          {exp.date}
+                        </div>
+                      </td>
+                      <td>
+                        <div style={{ fontWeight: 600, color: 'var(--text-main)' }}>{exp.description}</div>
+                        <div style={{ fontSize: '0.74rem', color: '#94A3B8' }}>Period: {exp.billingPeriod}</div>
+                      </td>
+                      <td>
+                        <span
+                          style={{
+                            fontSize: '0.72rem',
+                            fontWeight: 700,
+                            padding: '2px 8px',
+                            borderRadius: 12,
+                            backgroundColor: exp.type === 'VARIABLE' ? '#ECFDF5' : '#FFFBEB',
+                            color: exp.type === 'VARIABLE' ? '#065F46' : '#B45309',
+                          }}
+                        >
+                          {exp.type}
+                        </span>
+                      </td>
+                      <td>
+                        <Badge variant={exp.category === 'Food' ? 'success' : exp.category === 'House Rent' ? 'warning' : 'info'}>
+                          {exp.category}
+                        </Badge>
+                      </td>
+                      <td>
+                        <span style={{ fontWeight: 500 }}>{exp.payerName}</span>
+                      </td>
+                      <td style={{ textAlign: 'right', fontWeight: 800, color: 'var(--text-main)', fontSize: '0.92rem' }}>
+                        ৳ {exp.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        <Badge
+                          variant={
+                            exp.status === 'APPROVED'
+                              ? 'success'
+                              : exp.status === 'PENDING_APPROVAL'
+                              ? 'warning'
+                              : exp.status === 'REJECTED'
+                              ? 'danger'
+                              : 'neutral'
+                          }
+                        >
+                          {exp.status === 'PENDING_APPROVAL' ? 'Pending' : exp.status}
+                        </Badge>
+                      </td>
+                      <td style={{ textAlign: 'center' }}>
+                        {exp.status === 'PENDING_APPROVAL' ? (
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                            <button
+                              onClick={() => handleApprove(exp.id)}
+                              disabled={actionLoadingId === exp.id}
+                              title="Approve Expense"
+                              style={{
+                                backgroundColor: '#ECFDF5',
+                                border: '1px solid #10B981',
+                                color: '#065F46',
+                                padding: '4px 8px',
+                                borderRadius: 'var(--radius-sm)',
+                                cursor: 'pointer',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: 4,
+                              }}
+                            >
+                              <CheckCircle2 size={13} color="#10B981" /> Approve
+                            </button>
+                            <button
+                              onClick={() => handleReject(exp.id)}
+                              disabled={actionLoadingId === exp.id}
+                              title="Reject Expense"
+                              style={{
+                                backgroundColor: '#FEF2F2',
+                                border: '1px solid #EF4444',
+                                color: '#991B1B',
+                                padding: '4px 8px',
+                                borderRadius: 'var(--radius-sm)',
+                                cursor: 'pointer',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: 4,
+                              }}
+                            >
+                              <XCircle size={13} color="#EF4444" /> Reject
+                            </button>
+                          </div>
+                        ) : (
+                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Verified</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 

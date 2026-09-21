@@ -541,7 +541,133 @@ export const MembersPage: React.FC = () => {
             description="No members match your current filters or directory is empty. Try resetting search criteria or inviting members."
           />
         ) : (
-          <div style={{ overflowX: 'auto' }}>
+          <>
+            {/* Mobile View: Dedicated Member Cards (< md) */}
+            <div className="block md:hidden">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: '12px' }}>
+            {members.map((member) => (
+              <div
+                key={member.id}
+                onClick={() => navigate(`/members/${member.id}`)}
+                style={{
+                  background: 'var(--color-card, #ffffff)',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: '16px',
+                  padding: '14px',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 12,
+                }}
+              >
+                {/* Top Row: Avatar, Name, Email, Balance */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+                    <div
+                      style={{
+                        width: 42,
+                        height: 42,
+                        borderRadius: '12px',
+                        backgroundColor: 'rgba(16, 185, 129, 0.12)',
+                        color: 'var(--color-primary)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontWeight: 700,
+                        fontSize: '1rem',
+                        flexShrink: 0,
+                      }}
+                    >
+                      {member.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: '0.92rem', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                        {member.name}
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                        {member.email}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Net Balance Pill */}
+                  <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                    <div
+                      style={{
+                        fontSize: '0.88rem',
+                        fontWeight: 700,
+                        fontFamily: 'monospace',
+                        color:
+                          (member.netBalance || 0) > 0
+                            ? 'var(--color-success, #10b981)'
+                            : (member.netBalance || 0) < 0
+                            ? 'var(--color-danger, #ef4444)'
+                            : 'var(--text-muted)',
+                      }}
+                    >
+                      {(member.netBalance || 0) > 0
+                        ? `+৳${(member.netBalance || 0).toFixed(0)}`
+                        : (member.netBalance || 0) < 0
+                        ? `-৳${Math.abs(member.netBalance || 0).toFixed(0)}`
+                        : '৳0'}
+                    </div>
+                    <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                      {(member.netBalance || 0) < 0 ? 'OWES' : (member.netBalance || 0) > 0 ? 'REFUND' : 'SETTLED'}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom Row: Room, Role, Status Badges & Quick Action */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--color-border)', paddingTop: 10 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                    <Badge variant="primary">{member.role}</Badge>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-main)', backgroundColor: '#f1f5f9', padding: '2px 8px', borderRadius: '6px', fontWeight: 600 }}>
+                      {member.roomNo ? `Room ${member.roomNo}` : 'No Room'}
+                    </span>
+                    <Badge
+                      variant={
+                        member.status === 'ACTIVE'
+                          ? 'success'
+                          : member.status === 'ON_LEAVE'
+                          ? 'warning'
+                          : member.status === 'ARCHIVED'
+                          ? 'neutral'
+                          : 'danger'
+                      }
+                    >
+                      {member.status}
+                    </Badge>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
+                    <button
+                      onClick={() => navigate(`/members/${member.id}/statement`)}
+                      className="header-icon-btn"
+                      style={{ width: 32, height: 32, borderRadius: '8px' }}
+                      title="Financial Statement"
+                    >
+                      <FileText size={15} />
+                    </button>
+                    {member.status !== 'ARCHIVED' && (
+                      <button
+                        onClick={() => setMemberToArchive(member)}
+                        className="header-icon-btn"
+                        style={{ width: 32, height: 32, borderRadius: '8px', color: 'var(--color-danger)' }}
+                        title="Archive Member"
+                      >
+                        <UserX size={15} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop View: Full Data Table (hidden on mobile) */}
+        <div className="hidden md:block" style={{ overflowX: 'auto' }}>
             <table className="data-table">
               <thead>
                 <tr>
@@ -680,8 +806,9 @@ export const MembersPage: React.FC = () => {
               </tbody>
             </table>
           </div>
-        )}
-      </div>
+        </>
+      )}
+    </div>
 
       {/* MODAL 1: Invite Member Link */}
       <Modal

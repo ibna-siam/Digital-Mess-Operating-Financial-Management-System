@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  FileText,
+  Building2,
   Plus,
   Calendar,
   CheckCircle2,
@@ -178,40 +178,40 @@ export const BillsPage: React.FC = () => {
       </div>
 
       {/* KPI Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 20 }}>
-        <div className="kpi-card" style={{ padding: 18 }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Fixed Bills</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-main)', marginTop: 4 }}>
-            ৳ {totalBillsAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12, marginBottom: 20 }}>
+        <div className="kpi-card" style={{ padding: 14 }}>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Bills</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)', marginTop: 2 }}>
+            ৳ {totalBillsAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 4 }}>Current period</div>
+          <div style={{ fontSize: '0.68rem', color: '#64748B', marginTop: 2 }}>Current period</div>
         </div>
-        <div className="kpi-card" style={{ padding: 18 }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Paid</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--color-primary-dark)', marginTop: 4 }}>
-            ৳ {paidBillsAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+        <div className="kpi-card" style={{ padding: 14 }}>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Paid</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-primary-dark)', marginTop: 2 }}>
+            ৳ {paidBillsAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#10B981', marginTop: 4 }}>Cleared out</div>
+          <div style={{ fontSize: '0.68rem', color: '#10B981', marginTop: 2 }}>Cleared out</div>
         </div>
-        <div className="kpi-card" style={{ padding: 18 }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Outstanding Due</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#EF4444', marginTop: 4 }}>
-            ৳ {dueBillsAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+        <div className="kpi-card" style={{ padding: 14 }}>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Outstanding</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#EF4444', marginTop: 2 }}>
+            ৳ {dueBillsAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 4 }}>Needs settlement</div>
+          <div style={{ fontSize: '0.68rem', color: '#64748B', marginTop: 2 }}>Needs settlement</div>
         </div>
-        <div className="kpi-card" style={{ padding: 18 }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Pending Invoices</div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#F59E0B', marginTop: 4 }}>
+        <div className="kpi-card" style={{ padding: 14 }}>
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Pending Invoices</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#F59E0B', marginTop: 2 }}>
             {upcomingBillsCount} Bills
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: 4 }}>Due or Upcoming</div>
+          <div style={{ fontSize: '0.68rem', color: '#64748B', marginTop: 2 }}>Due / upcoming</div>
         </div>
       </div>
 
       {/* Main Tabs Container */}
       <div className="table-container">
-        <div className="table-header-bar">
+        <div className="table-header-bar" style={{ flexWrap: 'wrap', gap: 10 }}>
           <div className="table-tabs">
             <button
               className={`table-tab ${activeTab === 'bills' ? 'active' : ''}`}
@@ -223,20 +223,20 @@ export const BillsPage: React.FC = () => {
               className={`table-tab ${activeTab === 'recurring' ? 'active' : ''}`}
               onClick={() => setActiveTab('recurring')}
             >
-              Recurring Templates ({recurringTemplates.length})
+              Templates ({recurringTemplates.length})
             </button>
           </div>
 
           {activeTab === 'bills' && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
               {(['ALL', 'DUE', 'UPCOMING', 'PAID'] as const).map((st) => (
                 <button
                   key={st}
                   onClick={() => setStatusFilter(st)}
                   style={{
-                    padding: '5px 10px',
+                    padding: '4px 8px',
                     borderRadius: 'var(--radius-sm)',
-                    fontSize: '0.75rem',
+                    fontSize: '0.72rem',
                     fontWeight: 700,
                     border: '1px solid var(--color-border)',
                     backgroundColor: statusFilter === st ? 'var(--color-primary-dark)' : '#ffffff',
@@ -251,121 +251,213 @@ export const BillsPage: React.FC = () => {
           )}
         </div>
 
-        {isLoading ? (
-          <div style={{ padding: 40 }}>
-            <PageLoader message="Loading bills data..." />
-          </div>
-        ) : activeTab === 'bills' ? (
-          filteredBills.length === 0 ? (
+        {activeTab === 'bills' ? (
+          isLoading ? (
+            <div style={{ padding: 40 }}>
+              <PageLoader message="Loading bills..." />
+            </div>
+          ) : filteredBills.length === 0 ? (
             <div style={{ padding: '48px 24px', textAlign: 'center', color: 'var(--text-muted)' }}>
-              <FileText size={40} style={{ margin: '0 auto 12px', opacity: 0.3 }} />
+              <Building2 size={40} style={{ margin: '0 auto 12px', opacity: 0.3 }} />
               <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--text-main)' }}>No Bills Found</p>
-              <p style={{ fontSize: '0.82rem' }}>Add a fixed monthly bill to begin monitoring.</p>
+              <p style={{ fontSize: '0.82rem' }}>Add a fixed facility bill or generate next month recurring bills.</p>
             </div>
           ) : (
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Bill Name</th>
-                  <th>Category</th>
-                  <th>Period</th>
-                  <th>Due Date</th>
-                  <th style={{ textAlign: 'right' }}>Amount</th>
-                  <th style={{ textAlign: 'center' }}>Status</th>
-                  <th>Paid By / Payment Info</th>
-                  <th style={{ textAlign: 'center' }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredBills.map((b) => (
-                  <tr key={b.id}>
-                    <td>
-                      <div style={{ fontWeight: 700, color: 'var(--text-main)' }}>{b.name}</div>
-                      {b.isRecurring && (
-                        <span
-                          style={{
-                            fontSize: '0.7rem',
-                            color: 'var(--color-primary-dark)',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 3,
-                            fontWeight: 600,
-                          }}
-                        >
-                          <Repeat size={10} /> Monthly recurring
-                        </span>
-                      )}
-                    </td>
-                    <td>
-                      <Badge variant="info">{b.category}</Badge>
-                    </td>
-                    <td style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>{b.billingPeriod}</td>
-                    <td style={{ fontSize: '0.82rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <Calendar size={13} color="#94A3B8" />
-                        {b.dueDate}
-                      </div>
-                    </td>
-                    <td style={{ textAlign: 'right', fontWeight: 800, color: 'var(--text-main)', fontSize: '0.92rem' }}>
-                      ৳ {b.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                    </td>
-                    <td style={{ textAlign: 'center' }}>
-                      <Badge
-                        variant={
-                          b.status === 'PAID'
-                            ? 'success'
-                            : b.status === 'DUE'
-                            ? 'warning'
-                            : b.status === 'OVERDUE'
-                            ? 'danger'
-                            : 'info'
-                        }
-                      >
-                        {b.status}
-                      </Badge>
-                    </td>
-                    <td>
-                      {b.status === 'PAID' ? (
-                        <div style={{ fontSize: '0.8rem' }}>
-                          <div style={{ fontWeight: 600, color: 'var(--text-main)' }}>{b.paidByName || 'Member'}</div>
-                          <div style={{ fontSize: '0.72rem', color: '#64748B' }}>
-                            {b.paidAt} • {b.paymentMethod || 'CASH'}
+            <>
+              {/* Mobile Bills Feed (< md) */}
+              <div className="block md:hidden" style={{ padding: '12px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {filteredBills.map((b) => (
+                    <div
+                      key={b.id}
+                      style={{
+                        background: 'var(--color-card, #ffffff)',
+                        border: '1px solid var(--color-border)',
+                        borderRadius: '16px',
+                        padding: '14px',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 10,
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
+                        <div style={{ minWidth: 0 }}>
+                          <div style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-main)' }}>
+                            {b.name}
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 3 }}>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                              <Calendar size={11} /> Due: {b.dueDate}
+                            </span>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--text-subtle)' }}>•</span>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                              {b.billingPeriod}
+                            </span>
                           </div>
                         </div>
-                      ) : (
-                        <span style={{ fontSize: '0.76rem', color: '#94A3B8' }}>Unpaid</span>
-                      )}
-                    </td>
-                    <td style={{ textAlign: 'center' }}>
-                      {b.status !== 'PAID' ? (
-                        <Button
-                          icon={<CheckCircle2 size={13} />}
-                          onClick={() => {
-                            setPayingBill(b);
-                            if (members.length > 0) setPaidByMemberId(members[0].id);
-                          }}
-                        >
-                          Mark Paid
-                        </Button>
-                      ) : (
-                        <span
-                          style={{
-                            fontSize: '0.75rem',
-                            color: '#10B981',
-                            fontWeight: 700,
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 4,
-                          }}
-                        >
-                          <CheckCircle2 size={13} /> Paid
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                        <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                          <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-main)', fontFamily: 'monospace' }}>
+                            ৳{b.amount.toLocaleString()}
+                          </div>
+                          <Badge
+                            variant={
+                              b.status === 'PAID'
+                                ? 'success'
+                                : b.status === 'DUE'
+                                ? 'warning'
+                                : b.status === 'OVERDUE'
+                                ? 'danger'
+                                : 'info'
+                            }
+                          >
+                            {b.status}
+                          </Badge>
+                        </div>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--color-border)', paddingTop: 8 }}>
+                        <Badge variant="info">{b.category}</Badge>
+                        {b.status !== 'PAID' ? (
+                          <button
+                            onClick={() => {
+                              setPayingBill(b);
+                              if (members.length > 0) setPaidByMemberId(members[0].id);
+                            }}
+                            style={{
+                              backgroundColor: 'var(--color-primary)',
+                              color: '#ffffff',
+                              border: 'none',
+                              padding: '5px 12px',
+                              borderRadius: '8px',
+                              fontSize: '0.75rem',
+                              fontWeight: 700,
+                              cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 4,
+                            }}
+                          >
+                            <CheckCircle2 size={12} /> Mark Paid
+                          </button>
+                        ) : (
+                          <span style={{ fontSize: '0.75rem', color: '#10B981', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                            <CheckCircle2 size={12} /> Paid by {b.paidByName || 'Member'}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Desktop Table (hidden on mobile) */}
+              <div className="hidden md:block" style={{ overflowX: 'auto' }}>
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>Title</th>
+                      <th>Category</th>
+                      <th>Period</th>
+                      <th>Due Date</th>
+                      <th style={{ textAlign: 'right' }}>Amount</th>
+                      <th style={{ textAlign: 'center' }}>Status</th>
+                      <th>Paid Details</th>
+                      <th style={{ textAlign: 'center' }}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredBills.map((b) => (
+                      <tr key={b.id}>
+                        <td>
+                          <div style={{ fontWeight: 600, color: 'var(--text-main)' }}>{b.name}</div>
+                          {b.isRecurring && (
+                            <span
+                              style={{
+                                fontSize: '0.7rem',
+                                color: 'var(--color-primary-dark)',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: 3,
+                                fontWeight: 600,
+                              }}
+                            >
+                              <Repeat size={10} /> Monthly recurring
+                            </span>
+                          )}
+                        </td>
+                        <td>
+                          <Badge variant="info">{b.category}</Badge>
+                        </td>
+                        <td style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>{b.billingPeriod}</td>
+                        <td style={{ fontSize: '0.82rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <Calendar size={13} color="#94A3B8" />
+                            {b.dueDate}
+                          </div>
+                        </td>
+                        <td style={{ textAlign: 'right', fontWeight: 800, color: 'var(--text-main)', fontSize: '0.92rem' }}>
+                          ৳ {b.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        </td>
+                        <td style={{ textAlign: 'center' }}>
+                          <Badge
+                            variant={
+                              b.status === 'PAID'
+                                ? 'success'
+                                : b.status === 'DUE'
+                                ? 'warning'
+                                : b.status === 'OVERDUE'
+                                ? 'danger'
+                                : 'info'
+                            }
+                          >
+                            {b.status}
+                          </Badge>
+                        </td>
+                        <td>
+                          {b.status === 'PAID' ? (
+                            <div style={{ fontSize: '0.8rem' }}>
+                              <div style={{ fontWeight: 600, color: 'var(--text-main)' }}>{b.paidByName || 'Member'}</div>
+                              <div style={{ fontSize: '0.72rem', color: '#64748B' }}>
+                                {b.paidAt} • {b.paymentMethod || 'CASH'}
+                              </div>
+                            </div>
+                          ) : (
+                            <span style={{ fontSize: '0.76rem', color: '#94A3B8' }}>Unpaid</span>
+                          )}
+                        </td>
+                        <td style={{ textAlign: 'center' }}>
+                          {b.status !== 'PAID' ? (
+                            <Button
+                              icon={<CheckCircle2 size={13} />}
+                              onClick={() => {
+                                setPayingBill(b);
+                                if (members.length > 0) setPaidByMemberId(members[0].id);
+                              }}
+                            >
+                              Mark Paid
+                            </Button>
+                          ) : (
+                            <span
+                              style={{
+                                fontSize: '0.75rem',
+                                color: '#10B981',
+                                fontWeight: 700,
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: 4,
+                              }}
+                            >
+                              <CheckCircle2 size={13} /> Paid
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
           )
         ) : (
           /* Recurring Templates Tab */

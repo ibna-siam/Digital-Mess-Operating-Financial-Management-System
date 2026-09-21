@@ -567,7 +567,61 @@ export const SettlementPage: React.FC = () => {
             <span className="text-xs text-slate-500 font-mono">{paymentHistory.length} Transactions</span>
           </div>
 
-          <div className="overflow-x-auto">
+          {/* Mobile Payment History Feed (< md) */}
+          <div className="block md:hidden p-3">
+            {paymentHistory.length === 0 ? (
+              <div className="py-8 text-center text-slate-500 text-sm">
+                No settlement payments recorded yet for this period.
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2.5">
+                {paymentHistory.map((pay) => (
+                  <div
+                    key={pay.id}
+                    className="p-3.5 bg-white border border-slate-200/80 rounded-2xl shadow-xs flex flex-col gap-2.5"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <div className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                          <span>{pay.payerName || pay.payerMemberId}</span>
+                          <ArrowRight className="w-3 h-3 text-slate-400" />
+                          <span className="text-emerald-600">{pay.receiverName || pay.receiverMemberId}</span>
+                        </div>
+                        <div className="text-xs text-slate-500 font-mono mt-1">
+                          {pay.createdAt?.slice(0, 16).replace('T', ' ')} • {pay.paymentMethod}
+                        </div>
+                      </div>
+
+                      <div className="text-right shrink-0">
+                        <div className="text-base font-extrabold font-mono text-slate-900">
+                          ৳{pay.amount.toFixed(0)}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between border-t border-slate-100 pt-2">
+                      <Badge variant={pay.confirmedByReceiver ? 'success' : 'warning'}>
+                        {pay.confirmedByReceiver ? 'Confirmed' : 'Pending'}
+                      </Badge>
+
+                      {!pay.confirmedByReceiver && (
+                        <button
+                          onClick={() => handleConfirmPayment(pay.id)}
+                          className="text-xs font-bold py-1 px-3 bg-emerald-50 text-emerald-700 border border-emerald-300 rounded-lg flex items-center gap-1 cursor-pointer"
+                        >
+                          <Check className="w-3 h-3" />
+                          <span>Confirm Received</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Table (hidden on mobile) */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-600 border-b border-slate-200">
