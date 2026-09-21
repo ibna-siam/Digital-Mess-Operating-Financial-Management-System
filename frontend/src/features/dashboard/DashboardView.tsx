@@ -577,27 +577,35 @@ export const DashboardView: React.FC = () => {
               <Skeleton width="100%" height={180} />
             </div>
           ) : monthlyOverview.length > 0 ? (
-            <div style={{ height: 210, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-around', padding: '10px 10px 0 10px', borderBottom: '1px solid #f1f5f9' }}>
-              {monthlyOverview.map((col, i) => {
-                const maxVal = Math.max(1, col.food, col.rent, col.utilities, col.other);
-                const hFood = col.food > 0 ? Math.max(8, Math.round((col.food / maxVal) * 140)) : 4;
-                const hRent = col.rent > 0 ? Math.max(8, Math.round((col.rent / maxVal) * 140)) : 4;
-                const hUtil = col.utilities > 0 ? Math.max(8, Math.round((col.utilities / maxVal) * 140)) : 4;
-                const hOther = col.other > 0 ? Math.max(8, Math.round((col.other / maxVal) * 140)) : 4;
+            (() => {
+              const globalMax = Math.max(
+                1,
+                ...monthlyOverview.flatMap((c) => [c.food, c.rent, c.utilities, c.other])
+              );
+              return (
+                <div style={{ height: 210, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-around', padding: '10px 8px 0 8px', borderBottom: '1px solid #f1f5f9' }}>
+                  {monthlyOverview.map((col, i) => {
+                    const hFood = col.food > 0 ? Math.max(6, Math.round((col.food / globalMax) * 140)) : 3;
+                    const hRent = col.rent > 0 ? Math.max(6, Math.round((col.rent / globalMax) * 140)) : 3;
+                    const hUtil = col.utilities > 0 ? Math.max(6, Math.round((col.utilities / globalMax) * 140)) : 3;
+                    const hOther = col.other > 0 ? Math.max(6, Math.round((col.other / globalMax) * 140)) : 3;
+                    const isCurrent = i === monthlyOverview.length - 1;
 
-                return (
-                  <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-                    <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6 }}>
-                      <div title={`Food: ৳${col.food.toLocaleString()}`} style={{ width: 14, height: hFood, background: '#10B981', borderRadius: '3px 3px 0 0' }} />
-                      <div title={`Rent: ৳${col.rent.toLocaleString()}`} style={{ width: 14, height: hRent, background: '#F59E0B', borderRadius: '3px 3px 0 0' }} />
-                      <div title={`Utilities: ৳${col.utilities.toLocaleString()}`} style={{ width: 14, height: hUtil, background: '#06B6D4', borderRadius: '3px 3px 0 0' }} />
-                      <div title={`Other: ৳${col.other.toLocaleString()}`} style={{ width: 14, height: hOther, background: '#8B5CF6', borderRadius: '3px 3px 0 0' }} />
-                    </div>
-                    <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: 600 }}>{col.month}</span>
-                  </div>
-                );
-              })}
-            </div>
+                    return (
+                      <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+                        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4 }}>
+                          <div title={`${col.month} Food: ৳${col.food.toLocaleString()}`} style={{ width: 10, height: hFood, background: '#10B981', borderRadius: '3px 3px 0 0', transition: 'height 0.3s ease' }} />
+                          <div title={`${col.month} Rent: ৳${col.rent.toLocaleString()}`} style={{ width: 10, height: hRent, background: '#F59E0B', borderRadius: '3px 3px 0 0', transition: 'height 0.3s ease' }} />
+                          <div title={`${col.month} Utilities: ৳${col.utilities.toLocaleString()}`} style={{ width: 10, height: hUtil, background: '#06B6D4', borderRadius: '3px 3px 0 0', transition: 'height 0.3s ease' }} />
+                          <div title={`${col.month} Other: ৳${col.other.toLocaleString()}`} style={{ width: 10, height: hOther, background: '#8B5CF6', borderRadius: '3px 3px 0 0', transition: 'height 0.3s ease' }} />
+                        </div>
+                        <span style={{ fontSize: '0.76rem', color: isCurrent ? '#059669' : '#64748b', fontWeight: isCurrent ? 700 : 600 }}>{col.month}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()
           ) : (
             <div style={{ height: 210, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', fontSize: '0.85rem' }}>
               No monthly breakdown data available yet.

@@ -24,6 +24,13 @@ export function invalidateDashboardCache(messId?: string): void {
 export async function getDashboardStats(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const messId = req.params.messId;
+
+    const cached = dashboardCache.get(messId);
+    if (cached && (Date.now() - cached.timestamp < CACHE_TTL_MS)) {
+      sendSuccess(res, cached.data);
+      return;
+    }
+
     const todayStr = new Date().toISOString().split('T')[0];
     const period = todayStr.slice(0, 7);
 
@@ -38,6 +45,7 @@ export async function getDashboardStats(req: Request, res: Response, next: NextF
       pendingApprovals,
       upcomingBills,
       messBalances,
+      pastPeriods,
     ] = await Promise.all([
       prisma.mess.findUnique({ where: { id: messId } }),
       MemberService.getMembers(messId),
@@ -58,6 +66,12 @@ export async function getDashboardStats(req: Request, res: Response, next: NextF
       prisma.expense.count({ where: { messId, status: ExpenseStatus.PENDING_APPROVAL } }),
       prisma.bill.count({ where: { messId, status: { in: [BillStatus.UPCOMING, BillStatus.DUE] } } }),
       BalanceService.calculateMessBalances(messId, period),
+      prisma.financialPeriod.findMany({
+        where: { messId },
+        orderBy: { periodKey: 'desc' },
+        include: { snapshot: true },
+        take: 6,
+      }),
     ]);
 
     const activeMembers = members.filter((m: any) => m.status === 'ACTIVE').length;
@@ -107,9 +121,51 @@ export async function getDashboardStats(req: Request, res: Response, next: NextF
     }
 
     const currentMonthName = new Date().toLocaleString('en-US', { month: 'short' });
-    const monthlyOverview = [
-      { month: currentMonthName, food: foodAmount, rent: rentAmount, utilities: utilitiesAmount, other: otherAmount },
-    ];
+    const chronologicalPeriods = [...(pastPeriods || [])].reverse();
+    const hasCurrentPeriod = chronologicalPeriods.some((p) => p.periodKey === period);
+
+    const monthlyOverview = chronologicalPeriods.map((p) => {
+      const [y, m] = p.periodKey.split('-').map(Number);
+      const monthName = !isNaN(y) && !isNaN(m)
+        ? new Date(y, m - 1, 1).toLocaleString('en-US', { month: 'short' })
+        : p.periodKey;
+
+      if (p.periodKey === period || !p.snapshot) {
+        return {
+          month: monthName,
+          food: foodAmount,
+          rent: rentAmount,
+          utilities: utilitiesAmount,
+          other: otherAmount,
+        };
+      }
+
+      const pFood = Number(p.snapshot.totalFoodCost) || 0;
+      const pUtil = Number(p.snapshot.totalFixedExpenses) || 0;
+      const pRent = 0;
+      const pOther = Math.max(0, Math.round(Number(p.snapshot.totalExpenses) - (pFood + pUtil + pRent)));
+
+      return {
+        month: monthName,
+        food: pFood,
+        rent: pRent,
+        utilities: pUtil,
+        other: pOther,
+      };
+    });
+
+    if (!hasCurrentPeriod) {
+      monthlyOverview.push({
+        month: currentMonthName,
+        food: foodAmount,
+        rent: rentAmount,
+        utilities: utilitiesAmount,
+        other: otherAmount,
+      });
+      if (monthlyOverview.length > 6) {
+        monthlyOverview.splice(0, monthlyOverview.length - 6);
+      }
+    }
 
     const messLocation = [mess?.area, mess?.city].filter(Boolean).join(', ') || mess?.address || 'Bangladesh';
 
@@ -189,6 +245,7 @@ export async function getDashboardStats(req: Request, res: Response, next: NextF
       topSpenders: topSpendersList,
     };
 
+    dashboardCache.set(messId, { data: stats, timestamp: Date.now() });
     sendSuccess(res, stats);
   } catch (error) {
     next(error);
