@@ -488,62 +488,67 @@ export const BillsUtilitiesPage: React.FC = () => {
       )}
 
       {/* 2. Monthly Summary Metrics (Mobile Hero + Desktop 5-Grid) */}
-      {/* Mobile Card (< lg) */}
+      {/* Mobile Card (< lg) - Crisp White with Emerald Glow */}
       <div className="block lg:hidden">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-850 to-slate-950 text-white p-5 shadow-xl border border-slate-800">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
-              Total Household Commitments
-            </span>
-            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono">
-              {currentPeriod}
-            </span>
-          </div>
+        <div className="relative overflow-hidden rounded-3xl bg-white text-slate-900 p-5 shadow-xs border border-emerald-100/90">
+          <div className="absolute -right-8 -bottom-8 w-40 h-40 bg-emerald-500/8 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute -left-8 -top-8 w-40 h-40 bg-indigo-500/5 rounded-full blur-2xl pointer-events-none" />
 
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-3xl font-black text-white font-mono tracking-tight">
-              ৳{summary.totalMonthlyCost.toLocaleString()}
-            </span>
-            <span className="text-xs text-slate-400 font-medium">
-              ({summary.billsCount} records)
-            </span>
-          </div>
-
-          {/* 4-Stat Mobile Sub-Grid */}
-          <div className="mt-4 pt-3.5 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
-            <div className="p-2 rounded-xl bg-white/5 border border-white/5">
-              <div className="text-[10px] text-indigo-300 font-bold uppercase tracking-wider flex items-center gap-1">
-                <Receipt size={11} /> Fixed Bills
-              </div>
-              <div className="text-sm font-black text-white font-mono mt-0.5">
-                ৳{summary.totalBills.toLocaleString()}
-              </div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                Total Household Commitments
+              </span>
+              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono">
+                {currentPeriod}
+              </span>
             </div>
 
-            <div className="p-2 rounded-xl bg-white/5 border border-white/5">
-              <div className="text-[10px] text-amber-300 font-bold uppercase tracking-wider flex items-center gap-1">
-                <Zap size={11} /> Utilities
-              </div>
-              <div className="text-sm font-black text-white font-mono mt-0.5">
-                ৳{summary.totalUtilities.toLocaleString()}
-              </div>
+            <div className="mt-2 flex items-baseline gap-2">
+              <span className="text-3xl font-black text-slate-900 font-mono tracking-tight">
+                ৳{summary.totalMonthlyCost.toLocaleString()}
+              </span>
+              <span className="text-xs text-slate-400 font-medium">
+                ({summary.billsCount} records)
+              </span>
             </div>
 
-            <div className="p-2 rounded-xl bg-white/5 border border-white/5">
-              <div className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1">
-                <CheckCircle2 size={11} /> Cleared
+            {/* 4-Stat Mobile Sub-Grid */}
+            <div className="mt-4 pt-3.5 border-t border-slate-100 grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-left">
+              <div className="p-2.5 rounded-xl bg-slate-50/80 border border-slate-100">
+                <div className="text-[10px] text-indigo-600 font-bold uppercase tracking-wider flex items-center gap-1">
+                  <Receipt size={11} /> Fixed Bills
+                </div>
+                <div className="text-sm font-black text-slate-900 font-mono mt-0.5">
+                  ৳{summary.totalBills.toLocaleString()}
+                </div>
               </div>
-              <div className="text-sm font-black text-emerald-400 font-mono mt-0.5">
-                ৳{summary.totalPaid.toLocaleString()}
-              </div>
-            </div>
 
-            <div className="p-2 rounded-xl bg-white/5 border border-white/5">
-              <div className="text-[10px] text-rose-400 font-bold uppercase tracking-wider flex items-center gap-1">
-                <Clock size={11} /> Pending
+              <div className="p-2.5 rounded-xl bg-slate-50/80 border border-slate-100">
+                <div className="text-[10px] text-amber-600 font-bold uppercase tracking-wider flex items-center gap-1">
+                  <Zap size={11} /> Utilities
+                </div>
+                <div className="text-sm font-black text-slate-900 font-mono mt-0.5">
+                  ৳{summary.totalUtilities.toLocaleString()}
+                </div>
               </div>
-              <div className="text-sm font-black text-rose-400 font-mono mt-0.5">
-                ৳{summary.totalPending.toLocaleString()}
+
+              <div className="p-2.5 rounded-xl bg-emerald-50/50 border border-emerald-100/60">
+                <div className="text-[10px] text-emerald-700 font-bold uppercase tracking-wider flex items-center gap-1">
+                  <CheckCircle2 size={11} /> Cleared
+                </div>
+                <div className="text-sm font-black text-emerald-700 font-mono mt-0.5">
+                  ৳{summary.totalPaid.toLocaleString()}
+                </div>
+              </div>
+
+              <div className="p-2.5 rounded-xl bg-rose-50/50 border border-rose-100/60">
+                <div className="text-[10px] text-rose-700 font-bold uppercase tracking-wider flex items-center gap-1">
+                  <Clock size={11} /> Pending
+                </div>
+                <div className="text-sm font-black text-rose-700 font-mono mt-0.5">
+                  ৳{summary.totalPending.toLocaleString()}
+                </div>
               </div>
             </div>
           </div>

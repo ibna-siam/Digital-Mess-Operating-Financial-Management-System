@@ -311,59 +311,66 @@ export const LedgerPage: React.FC = () => {
         })}
       </div>
 
-      {/* Mobile Net Balance Passbook Hero Card (< sm) */}
+      {/* Mobile Net Balance Passbook Hero Card (< sm) - Crisp White with Status Glow */}
       <div className="block sm:hidden">
-        <div className={`relative overflow-hidden rounded-3xl p-5 shadow-xl border text-white ${
+        <div className={`relative overflow-hidden rounded-3xl p-5 shadow-xs border bg-white ${
           isBalanced
-            ? 'bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700'
+            ? 'border-slate-200'
             : isSurplus
-            ? 'bg-gradient-to-br from-slate-900 via-emerald-950/60 to-slate-900 border-emerald-800/80 shadow-emerald-950/30'
-            : 'bg-gradient-to-br from-slate-900 via-rose-950/60 to-slate-900 border-rose-800/80 shadow-rose-950/30'
+            ? 'border-emerald-200/90 bg-gradient-to-br from-white via-white to-emerald-50/40'
+            : 'border-rose-200/90 bg-gradient-to-br from-white via-white to-rose-50/40'
         }`}>
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
-              {isBalanced ? 'Settlement Status' : isSurplus ? 'Net Surplus (You Receive)' : 'Net Due (You Owe)'}
-            </span>
-            <span className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full border ${
-              isBalanced
-                ? 'bg-slate-700 text-slate-300 border-slate-600'
-                : isSurplus
-                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
-                : 'bg-rose-500/20 text-rose-300 border-rose-500/30'
-            }`}>
-              {isBalanced ? 'Balanced' : isSurplus ? 'Creditor' : 'Debtor'}
-            </span>
-          </div>
+          {/* Ambient subtle glow */}
+          <div className={`absolute -right-8 -bottom-8 w-36 h-36 rounded-full blur-2xl pointer-events-none ${
+            isBalanced ? 'bg-slate-200/20' : isSurplus ? 'bg-emerald-500/8' : 'bg-rose-500/8'
+          }`} />
 
-          <div className="mt-2.5 flex items-baseline gap-2">
-            <span className={`text-3xl font-black font-mono tracking-tight ${
-              isBalanced ? 'text-white' : isSurplus ? 'text-emerald-400' : 'text-rose-400'
-            }`}>
-              ৳ {Math.abs(currentNet).toLocaleString('en-US', { minimumFractionDigits: 2 })}
-            </span>
-            <span className="text-xs text-slate-400">
-              for {selectedMember?.name?.split(' ')[0] || 'Member'}
-            </span>
-          </div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                {isBalanced ? 'Settlement Status' : isSurplus ? 'Net Surplus (You Receive)' : 'Net Due (You Owe)'}
+              </span>
+              <span className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full border ${
+                isBalanced
+                  ? 'bg-slate-100 text-slate-600 border-slate-200'
+                  : isSurplus
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                  : 'bg-rose-50 text-rose-700 border-rose-200'
+              }`}>
+                {isBalanced ? 'Balanced' : isSurplus ? 'Creditor' : 'Debtor'}
+              </span>
+            </div>
 
-          {/* 3-Stat Mobile Sub-Grid */}
-          <div className="mt-4 pt-3.5 border-t border-white/10 grid grid-cols-3 divide-x divide-white/10 text-center">
-            <div className="pr-1.5">
-              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Food Share</div>
-              <div className="text-xs font-black text-amber-400 font-mono mt-0.5">
-                ৳ {memberBalance ? memberBalance.foodShare.toFixed(0) : '0'}
-              </div>
+            <div className="mt-2.5 flex items-baseline gap-2">
+              <span className={`text-3xl font-black font-mono tracking-tight ${
+                isBalanced ? 'text-slate-900' : isSurplus ? 'text-emerald-600' : 'text-rose-600'
+              }`}>
+                ৳ {Math.abs(currentNet).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              </span>
+              <span className="text-xs text-slate-400">
+                for {selectedMember?.name?.split(' ')[0] || 'Member'}
+              </span>
             </div>
-            <div className="px-1.5">
-              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Fixed Rent</div>
-              <div className="text-xs font-black text-indigo-400 font-mono mt-0.5">
-                ৳ {memberBalance ? (memberBalance.rentShare + memberBalance.utilityShare).toFixed(0) : '0'}
+
+            {/* 3-Stat Mobile Sub-Grid */}
+            <div className="mt-4 pt-3.5 border-t border-slate-100 grid grid-cols-3 divide-x divide-slate-100 text-center">
+              <div className="pr-1.5">
+                <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Food Share</div>
+                <div className="text-xs font-black text-amber-600 font-mono mt-0.5">
+                  ৳ {memberBalance ? memberBalance.foodShare.toFixed(0) : '0'}
+                </div>
               </div>
-            </div>
-            <div className="pl-1.5">
-              <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Deposits</div>
-              <div className="text-xs font-black text-emerald-400 font-mono mt-0.5">
-                ৳ {memberBalance ? memberBalance.totalContributions.toFixed(0) : '0'}
+              <div className="px-1.5">
+                <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Fixed Rent</div>
+                <div className="text-xs font-black text-indigo-600 font-mono mt-0.5">
+                  ৳ {memberBalance ? (memberBalance.rentShare + memberBalance.utilityShare).toFixed(0) : '0'}
+                </div>
+              </div>
+              <div className="pl-1.5">
+                <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Deposits</div>
+                <div className="text-xs font-black text-emerald-600 font-mono mt-0.5">
+                  ৳ {memberBalance ? memberBalance.totalContributions.toFixed(0) : '0'}
+                </div>
               </div>
             </div>
           </div>

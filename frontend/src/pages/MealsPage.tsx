@@ -296,23 +296,23 @@ export const MealsPage: React.FC = () => {
 
       {/* Mobile Tactile 1-Tap Quick Self-Entry Card (< md) */}
       <div className="block md:hidden mb-5">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-850 to-slate-950 text-white p-4.5 shadow-xl border border-slate-800">
-          <div className="absolute -right-6 -bottom-6 w-28 h-28 bg-emerald-500/15 rounded-full blur-2xl pointer-events-none" />
+        <div className="relative overflow-hidden rounded-3xl bg-white text-slate-900 p-4.5 shadow-xs border border-emerald-100/90">
+          <div className="absolute -right-6 -bottom-6 w-28 h-28 bg-emerald-500/8 rounded-full blur-2xl pointer-events-none" />
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-xs">
+                <div className="w-8 h-8 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 font-bold text-xs">
                   {user?.name ? user.name.slice(0, 2).toUpperCase() : 'ME'}
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
                     My Attendance ({user?.name ? user.name.split(' ')[0] : 'You'})
                   </div>
                   <div className="text-[10px] text-slate-400">1-tap to mark eating/skipping</div>
                 </div>
               </div>
-              <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/15 px-2 py-0.5 rounded-full border border-emerald-500/25">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Live
+              <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Live
               </span>
             </div>
 
@@ -324,15 +324,15 @@ export const MealsPage: React.FC = () => {
                 onClick={() => toggleSelfMeal('breakfast', myBreakfast)}
                 className={`flex flex-col items-center justify-center p-3 rounded-2xl border transition-all duration-150 touch-spring active:scale-95 ${
                   myBreakfast
-                    ? 'bg-gradient-to-b from-emerald-600 to-teal-700 border-emerald-400/50 text-white shadow-md shadow-emerald-600/30'
-                    : 'bg-slate-800/80 border-slate-700/80 text-slate-400 hover:border-slate-600'
+                    ? 'bg-gradient-to-b from-emerald-600 to-teal-700 border-emerald-500 text-white shadow-md shadow-emerald-600/20'
+                    : 'bg-slate-50 border-slate-200/80 text-slate-600 hover:bg-slate-100/70'
                 }`}
               >
                 <span className="text-xl mb-1">🍳</span>
                 <span className="text-xs font-bold">Breakfast</span>
                 <span
                   className={`mt-1 text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
-                    myBreakfast ? 'bg-emerald-400/20 text-emerald-200 border border-emerald-300/30' : 'bg-slate-700/60 text-slate-400'
+                    myBreakfast ? 'bg-white/20 text-white border border-white/30' : 'bg-slate-200/70 text-slate-500'
                   }`}
                 >
                   {myBreakfast ? 'EATING' : 'SKIP'}
@@ -345,15 +345,15 @@ export const MealsPage: React.FC = () => {
                 onClick={() => toggleSelfMeal('lunch', myLunch)}
                 className={`flex flex-col items-center justify-center p-3 rounded-2xl border transition-all duration-150 touch-spring active:scale-95 ${
                   myLunch
-                    ? 'bg-gradient-to-b from-emerald-600 to-teal-700 border-emerald-400/50 text-white shadow-md shadow-emerald-600/30'
-                    : 'bg-slate-800/80 border-slate-700/80 text-slate-400 hover:border-slate-600'
+                    ? 'bg-gradient-to-b from-emerald-600 to-teal-700 border-emerald-500 text-white shadow-md shadow-emerald-600/20'
+                    : 'bg-slate-50 border-slate-200/80 text-slate-600 hover:bg-slate-100/70'
                 }`}
               >
                 <span className="text-xl mb-1">🍛</span>
                 <span className="text-xs font-bold">Lunch</span>
                 <span
                   className={`mt-1 text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
-                    myLunch ? 'bg-emerald-400/20 text-emerald-200 border border-emerald-300/30' : 'bg-slate-700/60 text-slate-400'
+                    myLunch ? 'bg-white/20 text-white border border-white/30' : 'bg-slate-200/70 text-slate-500'
                   }`}
                 >
                   {myLunch ? 'EATING' : 'SKIP'}
@@ -366,15 +366,15 @@ export const MealsPage: React.FC = () => {
                 onClick={() => toggleSelfMeal('dinner', myDinner)}
                 className={`flex flex-col items-center justify-center p-3 rounded-2xl border transition-all duration-150 touch-spring active:scale-95 ${
                   myDinner
-                    ? 'bg-gradient-to-b from-emerald-600 to-teal-700 border-emerald-400/50 text-white shadow-md shadow-emerald-600/30'
-                    : 'bg-slate-800/80 border-slate-700/80 text-slate-400 hover:border-slate-600'
+                    ? 'bg-gradient-to-b from-emerald-600 to-teal-700 border-emerald-500 text-white shadow-md shadow-emerald-600/20'
+                    : 'bg-slate-50 border-slate-200/80 text-slate-600 hover:bg-slate-100/70'
                 }`}
               >
                 <span className="text-xl mb-1">🍲</span>
                 <span className="text-xs font-bold">Dinner</span>
                 <span
                   className={`mt-1 text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
-                    myDinner ? 'bg-emerald-400/20 text-emerald-200 border border-emerald-300/30' : 'bg-slate-700/60 text-slate-400'
+                    myDinner ? 'bg-white/20 text-white border border-white/30' : 'bg-slate-200/70 text-slate-500'
                   }`}
                 >
                   {myDinner ? 'EATING' : 'SKIP'}

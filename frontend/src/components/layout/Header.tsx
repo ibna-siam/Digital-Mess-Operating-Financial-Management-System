@@ -110,7 +110,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenNotificationPreferences })
                 setShowDropdown(!showDropdown);
                 setShowMessDropdown(false);
               }}
-              className="w-8 h-8 rounded-full bg-gradient-to-tr from-slate-900 to-slate-800 text-white font-extrabold text-xs flex items-center justify-center shadow-xs ring-2 ring-emerald-500/20 active:scale-95 transition-all"
+              className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-700 text-white font-extrabold text-xs flex items-center justify-center shadow-xs ring-2 ring-emerald-500/20 active:scale-95 transition-all"
               aria-label="User Profile"
             >
               {initials}

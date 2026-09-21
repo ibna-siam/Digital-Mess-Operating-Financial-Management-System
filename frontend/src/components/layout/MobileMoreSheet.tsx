@@ -115,18 +115,18 @@ export const MobileMoreSheet: React.FC<MobileMoreSheetProps> = ({
         </div>
 
         {/* Resident Mini Profile Card */}
-        <div className="px-5 py-3 mx-4 mt-1 bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-2xl flex items-center justify-between shadow-md">
+        <div className="px-5 py-3 mx-4 mt-1 bg-slate-50 border border-slate-200/90 text-slate-900 rounded-2xl flex items-center justify-between shadow-xs">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 text-white font-extrabold text-sm flex items-center justify-center shrink-0 shadow-xs">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-600 text-white font-extrabold text-sm flex items-center justify-center shrink-0 shadow-xs">
               {initials}
             </div>
             <div className="min-w-0">
-              <div className="text-sm font-bold truncate leading-tight">{user?.name || 'Resident'}</div>
+              <div className="text-sm font-bold truncate leading-tight text-slate-900">{user?.name || 'Resident'}</div>
               <div className="flex items-center gap-2 mt-0.5">
-                <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md bg-white/10 text-emerald-300 uppercase tracking-wider">
+                <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 uppercase tracking-wider">
                   {roleLabel}
                 </span>
-                <span className="text-[11px] text-slate-300 truncate font-medium">
+                <span className="text-[11px] text-slate-500 truncate font-medium">
                   {activeMess?.name || 'MessMate'}
                 </span>
               </div>
@@ -134,7 +134,7 @@ export const MobileMoreSheet: React.FC<MobileMoreSheetProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 flex items-center justify-center transition-colors shrink-0"
+            className="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors shrink-0"
             aria-label="Close menu"
           >
             <X size={16} />

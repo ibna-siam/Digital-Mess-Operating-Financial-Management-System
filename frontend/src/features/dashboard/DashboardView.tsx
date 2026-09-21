@@ -130,40 +130,40 @@ export const DashboardView: React.FC = () => {
           </div>
         </div>
 
-        {/* 2. Premium Hero Financial Card */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-850 to-slate-950 text-white p-5 shadow-xl border border-slate-800/90">
-          {/* Ambient Glows */}
-          <div className="absolute -right-6 -bottom-6 w-36 h-36 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -left-6 -top-6 w-36 h-36 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+        {/* 2. Premium Hero Financial Card - Crisp White with Emerald Glow */}
+        <div className="relative overflow-hidden rounded-3xl bg-white p-5 shadow-xs border border-emerald-100/90">
+          {/* Ambient Mint & Emerald Glow */}
+          <div className="absolute -right-8 -bottom-8 w-36 h-36 bg-emerald-500/8 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute -left-8 -top-8 w-36 h-36 bg-teal-500/5 rounded-full blur-2xl pointer-events-none" />
 
           <div className="relative z-10">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-300 tracking-wide uppercase">
+              <span className="text-xs font-bold text-slate-500 tracking-wider uppercase">
                 Total Month Expenses
               </span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 uppercase tracking-wider">
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase tracking-wider">
                 Active Period
               </span>
             </div>
 
             <div className="mt-2.5 flex items-baseline gap-1.5">
-              <span className="text-3xl font-black tracking-tight text-white">
+              <span className="text-3xl font-black tracking-tight text-slate-900">
                 {isLoading ? <Skeleton width={120} height={36} /> : `৳ ${stats?.kpis.totalExpenses.value || '0'}`}
               </span>
               <span className="text-xs text-slate-400 font-medium">Food + Overheads</span>
             </div>
 
             {/* Bottom 3-Column Key Metrics Sub-Bar */}
-            <div className="mt-4 pt-3.5 border-t border-white/10 grid grid-cols-3 divide-x divide-white/10 text-center">
+            <div className="mt-4 pt-3.5 border-t border-slate-100 grid grid-cols-3 divide-x divide-slate-100 text-center">
               <div className="pr-1.5">
                 <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Meal Rate</div>
-                <div className="text-sm font-extrabold text-emerald-400 mt-0.5">
+                <div className="text-sm font-extrabold text-emerald-600 mt-0.5">
                   {isLoading ? '...' : `৳ ${stats?.kpis.mealRate.value || '0.00'}`}
                 </div>
               </div>
               <div className="px-1.5">
                 <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Today Meals</div>
-                <div className="text-sm font-extrabold text-sky-400 mt-0.5">
+                <div className="text-sm font-extrabold text-sky-600 mt-0.5">
                   {isLoading ? '...' : stats?.todayMeals?.total ?? '0'}
                 </div>
                 <div className="text-[9px] text-slate-400">
@@ -172,7 +172,7 @@ export const DashboardView: React.FC = () => {
               </div>
               <div className="pl-1.5">
                 <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Residents</div>
-                <div className="text-sm font-extrabold text-purple-400 mt-0.5">
+                <div className="text-sm font-extrabold text-purple-600 mt-0.5">
                   {isLoading ? '...' : stats?.operationalSummary?.activeMembers ?? stats?.kpis.totalMembers.value ?? 0}
                 </div>
                 <div className="text-[9px] text-slate-400">living</div>

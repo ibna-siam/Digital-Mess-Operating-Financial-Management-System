@@ -265,57 +265,63 @@ export const SettlementPage: React.FC = () => {
       </div>
 
       {/* KPI Cards: Settlement Pool Health (Mobile Hero + Desktop 4-Grid) */}
-      {/* Mobile Settlement Health Hero (< sm) */}
+      {/* Mobile Settlement Health Hero (< sm) - Crisp White with Emerald Glow */}
       <div className="block sm:hidden">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-850 to-slate-950 text-white p-5 shadow-xl border border-slate-800">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
-              Settlement Pool
-            </span>
-            <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-mono">
-              {billingPeriod}
-            </span>
-          </div>
+        <div className="relative overflow-hidden rounded-3xl bg-white text-slate-900 p-5 shadow-xs border border-emerald-100/90">
+          {/* Ambient Glows */}
+          <div className="absolute -right-8 -bottom-8 w-36 h-36 bg-purple-500/5 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute -left-8 -top-8 w-36 h-36 bg-emerald-500/8 rounded-full blur-2xl pointer-events-none" />
 
-          <div className="mt-2.5 flex items-baseline gap-2">
-            <span className="text-3xl font-black text-white font-mono tracking-tight">
-              ৳ {totalPool.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-            </span>
-            <span className="text-xs text-slate-400 font-medium">
-              across {items.length} transfers
-            </span>
-          </div>
-
-          {/* Progress bar */}
-          <div className="mt-3">
-            <div className="flex items-center justify-between text-[11px] font-bold mb-1">
-              <span className="text-slate-400">Settlement Progress</span>
-              <span className="text-emerald-400">{settledPercent}% cleared</span>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                Settlement Pool
+              </span>
+              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200 font-mono">
+                {billingPeriod}
+              </span>
             </div>
-            <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden">
-              <div
-                className="bg-emerald-500 h-full rounded-full transition-all duration-500"
-                style={{ width: `${settledPercent}%` }}
-              />
-            </div>
-          </div>
 
-          {/* 2-Column Debtor vs Creditor Sub-Bar */}
-          <div className="mt-4 pt-3.5 border-t border-white/10 grid grid-cols-2 divide-x divide-white/10 text-center">
-            <div className="pr-2 text-left">
-              <div className="text-[10px] text-rose-400 uppercase font-bold tracking-wider flex items-center gap-1">
-                <ArrowUpRight className="w-3.5 h-3.5" /> Members Owing
+            <div className="mt-2.5 flex items-baseline gap-2">
+              <span className="text-3xl font-black text-slate-900 font-mono tracking-tight">
+                ৳ {totalPool.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              </span>
+              <span className="text-xs text-slate-400 font-medium">
+                across {items.length} transfers
+              </span>
+            </div>
+
+            {/* Progress bar */}
+            <div className="mt-3">
+              <div className="flex items-center justify-between text-[11px] font-bold mb-1">
+                <span className="text-slate-400">Settlement Progress</span>
+                <span className="text-emerald-600">{settledPercent}% cleared</span>
               </div>
-              <div className="text-sm font-black text-white mt-0.5">
-                {financialSummary?.membersOwingCount ?? 0} {financialSummary?.membersOwingCount === 1 ? 'Resident' : 'Residents'}
+              <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div
+                  className="bg-emerald-500 h-full rounded-full transition-all duration-500"
+                  style={{ width: `${settledPercent}%` }}
+                />
               </div>
             </div>
-            <div className="pl-2 text-left">
-              <div className="text-[10px] text-emerald-400 uppercase font-bold tracking-wider flex items-center gap-1">
-                <ArrowDownLeft className="w-3.5 h-3.5" /> Receiving
+
+            {/* 2-Column Debtor vs Creditor Sub-Bar */}
+            <div className="mt-4 pt-3.5 border-t border-slate-100 grid grid-cols-2 divide-x divide-slate-100 text-center">
+              <div className="pr-2 text-left">
+                <div className="text-[10px] text-rose-600 uppercase font-bold tracking-wider flex items-center gap-1">
+                  <ArrowUpRight className="w-3.5 h-3.5" /> Members Owing
+                </div>
+                <div className="text-sm font-black text-slate-900 mt-0.5">
+                  {financialSummary?.membersOwingCount ?? 0} {financialSummary?.membersOwingCount === 1 ? 'Resident' : 'Residents'}
+                </div>
               </div>
-              <div className="text-sm font-black text-white mt-0.5">
-                {financialSummary?.membersReceivingCount ?? 0} {financialSummary?.membersReceivingCount === 1 ? 'Resident' : 'Residents'}
+              <div className="pl-2 text-left">
+                <div className="text-[10px] text-emerald-600 uppercase font-bold tracking-wider flex items-center gap-1">
+                  <ArrowDownLeft className="w-3.5 h-3.5" /> Receiving
+                </div>
+                <div className="text-sm font-black text-slate-900 mt-0.5">
+                  {financialSummary?.membersReceivingCount ?? 0} {financialSummary?.membersReceivingCount === 1 ? 'Resident' : 'Residents'}
+                </div>
               </div>
             </div>
           </div>
