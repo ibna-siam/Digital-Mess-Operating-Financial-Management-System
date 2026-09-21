@@ -4,6 +4,7 @@ import { Sidebar } from './Sidebar.js';
 import { Header } from './Header.js';
 import { MobileBottomNav } from './MobileBottomNav.js';
 import { MobileMoreSheet } from './MobileMoreSheet.js';
+import { QuickActionSheet } from './QuickActionSheet.js';
 import { OfflineStatusBar } from '../pwa/OfflineStatusBar.js';
 import { InstallPromptBanner } from '../pwa/InstallPromptBanner.js';
 import { UpdatePromptModal } from '../pwa/UpdatePromptModal.js';
@@ -13,6 +14,7 @@ import { PageLoader } from '../ui/StateComponents.js';
 export const AppLayout: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [moreSheetOpen, setMoreSheetOpen] = useState(false);
+  const [quickActionOpen, setQuickActionOpen] = useState(false);
   const [notifPreferencesOpen, setNotifPreferencesOpen] = useState(false);
 
   return (
@@ -54,8 +56,17 @@ export const AppLayout: React.FC = () => {
         </main>
       </div>
 
-      {/* Mobile Bottom Navigation Bar */}
-      <MobileBottomNav onOpenMobileMenu={() => setMoreSheetOpen(true)} />
+      {/* Mobile Bottom Navigation Bar with Center Primary Action FAB */}
+      <MobileBottomNav
+        onOpenMobileMenu={() => setMoreSheetOpen(true)}
+        onOpenQuickAction={() => setQuickActionOpen(true)}
+      />
+
+      {/* Primary Quick Log Action Sheet */}
+      <QuickActionSheet
+        isOpen={quickActionOpen}
+        onClose={() => setQuickActionOpen(false)}
+      />
 
       {/* Dedicated Native-Feel Mobile More Menu Sheet */}
       <MobileMoreSheet

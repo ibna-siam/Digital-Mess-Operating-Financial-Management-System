@@ -38,59 +38,65 @@ export const Header: React.FC<HeaderProps> = ({ onOpenNotificationPreferences })
               setShowMessDropdown(!showMessDropdown);
               setShowDropdown(false);
             }}
-            className="flex items-center gap-2 py-1.5 px-2.5 bg-slate-50 border border-slate-200 rounded-xl active:bg-slate-100 transition-colors"
+            className="flex items-center gap-2 py-1.5 px-2.5 bg-slate-50/90 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-xs active:scale-[0.97] transition-all"
             aria-label="Switch Mess Workspace"
           >
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-              <Building2 size={15} />
+            <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+              <Building2 size={14} />
             </div>
             <div className="text-left">
-              <div className="text-xs font-bold text-slate-900 max-w-[120px] truncate leading-tight">
+              <div className="text-xs font-bold text-slate-900 max-w-[130px] truncate leading-tight">
                 {activeMess?.name || 'Select Mess'}
               </div>
-              <div className="text-[10px] font-bold text-emerald-600 uppercase tracking-wide leading-none mt-0.5">
-                {activeMess?.myRole === 'OWNER' ? 'MANAGER' : activeMess?.myRole || 'MEMBER'}
+              <div className="flex items-center gap-1 mt-0.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[10px] font-extrabold text-emerald-700 uppercase tracking-wider leading-none">
+                  {activeMess?.myRole === 'OWNER' ? 'MANAGER' : activeMess?.myRole || 'MEMBER'}
+                </span>
               </div>
             </div>
-            <ChevronDown size={14} className="text-slate-400" />
+            <ChevronDown size={14} className="text-slate-400 ml-0.5" />
           </button>
 
           {showMessDropdown && (
-            <div
-              className="absolute left-0 top-full mt-2 bg-white border border-slate-200 rounded-2xl shadow-xl w-64 py-2 z-50 animate-in fade-in zoom-in-95 duration-150"
-            >
-              <div className="px-3 py-1.5 border-b border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                <span>My Workspaces ({userMesses.length})</span>
-              </div>
-              <div className="max-h-56 overflow-y-auto py-1">
-                {userMesses.map((m) => {
-                  const isActive = activeMess?.id === m.id;
-                  const role = m.myRole === 'OWNER' ? 'MANAGER' : m.myRole || 'MEMBER';
-                  return (
-                    <button
-                      key={m.id}
-                      onClick={() => {
-                        switchMess(m.id);
-                        setShowMessDropdown(false);
-                      }}
-                      className={`w-full flex items-center justify-between px-3 py-2 text-left hover:bg-slate-50 active:bg-slate-100 transition-colors ${
-                        isActive ? 'bg-emerald-50/60 font-bold' : ''
-                      }`}
-                    >
-                      <div className="min-w-0 pr-2">
-                        <div className={`text-xs truncate ${isActive ? 'text-emerald-700' : 'text-slate-800'}`}>
-                          {m.name}
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setShowMessDropdown(false)} />
+              <div
+                className="absolute left-0 top-full mt-2 bg-white border border-slate-200/90 rounded-2xl shadow-2xl w-68 py-2 z-50 animate-in fade-in zoom-in-95 duration-150"
+              >
+                <div className="px-3.5 py-1.5 border-b border-slate-100 flex items-center justify-between text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">
+                  <span>My Workspaces ({userMesses.length})</span>
+                </div>
+                <div className="max-h-60 overflow-y-auto py-1">
+                  {userMesses.map((m) => {
+                    const isActive = activeMess?.id === m.id;
+                    const role = m.myRole === 'OWNER' ? 'MANAGER' : m.myRole || 'MEMBER';
+                    return (
+                      <button
+                        key={m.id}
+                        onClick={() => {
+                          switchMess(m.id);
+                          setShowMessDropdown(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-3.5 py-2.5 text-left active:bg-slate-100 transition-colors ${
+                          isActive ? 'bg-emerald-50/70 font-bold' : 'hover:bg-slate-50'
+                        }`}
+                      >
+                        <div className="min-w-0 pr-2">
+                          <div className={`text-xs truncate ${isActive ? 'text-emerald-800 font-bold' : 'text-slate-800'}`}>
+                            {m.name}
+                          </div>
+                          <div className="text-[10px] text-slate-500 uppercase font-medium mt-0.5">
+                            {role}
+                          </div>
                         </div>
-                        <div className="text-[10px] text-slate-600 uppercase">
-                          {role}
-                        </div>
-                      </div>
-                      {isActive && <Check size={14} className="text-emerald-600 shrink-0" />}
-                    </button>
-                  );
-                })}
+                        {isActive && <Check size={15} className="text-emerald-600 shrink-0" />}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            </>
           )}
         </div>
 
@@ -104,14 +110,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenNotificationPreferences })
                 setShowDropdown(!showDropdown);
                 setShowMessDropdown(false);
               }}
-              className="w-8 h-8 rounded-full bg-slate-900 text-white font-bold text-xs flex items-center justify-center shadow-xs active:scale-95 transition-transform"
+              className="w-8 h-8 rounded-full bg-gradient-to-tr from-slate-900 to-slate-800 text-white font-extrabold text-xs flex items-center justify-center shadow-xs ring-2 ring-emerald-500/20 active:scale-95 transition-all"
               aria-label="User Profile"
             >
               {initials}
             </button>
 
             {showDropdown && (
-              <div className="absolute right-0 top-full mt-2 bg-white border border-slate-200 rounded-2xl shadow-xl w-48 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setShowDropdown(false)} />
+                <div className="absolute right-0 top-full mt-2 bg-white border border-slate-200/90 rounded-2xl shadow-2xl w-52 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
                 <div className="px-3 py-2 border-b border-slate-100">
                   <div className="text-xs font-bold text-slate-900 truncate">{user?.name}</div>
                   <div className="text-[11px] text-slate-500 truncate">{user?.email}</div>
@@ -144,7 +152,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenNotificationPreferences })
                   <LogOut size={14} /> Sign Out
                 </button>
               </div>
-            )}
+            </>
+          )}
           </div>
         </div>
       </div>
