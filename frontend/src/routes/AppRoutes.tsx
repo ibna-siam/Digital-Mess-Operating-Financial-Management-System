@@ -12,8 +12,7 @@ const MembersPage = React.lazy(() => import('../pages/MembersPage.js').then((m) 
 const MealsPage = React.lazy(() => import('../pages/MealsPage.js').then((m) => ({ default: m.MealsPage })));
 const BazarPage = React.lazy(() => import('../pages/BazarPage.js').then((m) => ({ default: m.BazarPage })));
 const ExpensesPage = React.lazy(() => import('../pages/ExpensesPage.js').then((m) => ({ default: m.ExpensesPage })));
-const BillsPage = React.lazy(() => import('../pages/BillsPage.js').then((m) => ({ default: m.BillsPage })));
-const UtilitiesPage = React.lazy(() => import('../pages/UtilitiesPage.js').then((m) => ({ default: m.UtilitiesPage })));
+const BillsUtilitiesPage = React.lazy(() => import('../pages/BillsUtilitiesPage.js').then((m) => ({ default: m.BillsUtilitiesPage })));
 const LedgerPage = React.lazy(() => import('../pages/LedgerPage.js').then((m) => ({ default: m.LedgerPage })));
 const NotificationsPage = React.lazy(() => import('../pages/NotificationsPage.js').then((m) => ({ default: m.NotificationsPage })));
 const ProfileSettingsPage = React.lazy(() => import('../pages/ProfileSettingsPage.js').then((m) => ({ default: m.ProfileSettingsPage })));
@@ -105,10 +104,11 @@ export const AppRoutes: React.FC = () => {
         <Route path="bazar" element={<BazarPage />} />
         <Route path="bazaar" element={<BazarPage />} />
         <Route path="expenses" element={<ExpensesPage />} />
-        <Route path="bills" element={<BillsPage />} />
-        <Route path="fixed-bills" element={<BillsPage />} />
-        <Route path="utilities" element={<UtilitiesPage />} />
-        <Route path="utilities-rent" element={<UtilitiesPage />} />
+        <Route path="bills-utilities" element={<BillsUtilitiesPage />} />
+        <Route path="bills" element={<Navigate to="/bills-utilities" replace />} />
+        <Route path="fixed-bills" element={<Navigate to="/bills-utilities" replace />} />
+        <Route path="utilities" element={<Navigate to="/bills-utilities" replace />} />
+        <Route path="utilities-rent" element={<Navigate to="/bills-utilities" replace />} />
         <Route path="finance" element={<ExpensesPage />} />
         <Route path="ledger" element={<LedgerPage />} />
         <Route path="settlement" element={<SettlementPage />} />

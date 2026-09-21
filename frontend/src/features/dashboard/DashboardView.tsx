@@ -292,12 +292,12 @@ export const DashboardView: React.FC = () => {
             )}
             {stats.operationalSummary.upcomingBills > 0 && (
               <div
-                onClick={() => navigate('/bills')}
+                onClick={() => navigate('/bills-utilities')}
                 className="flex items-center justify-between p-2.5 rounded-xl bg-blue-50 border border-blue-200/80 text-blue-800 text-xs font-semibold active:scale-[0.99] transition-transform cursor-pointer"
               >
                 <div className="flex items-center gap-2">
                   <Receipt size={15} className="text-blue-600" />
-                  <span>{stats.operationalSummary.upcomingBills} Fixed Bill{stats.operationalSummary.upcomingBills > 1 ? 's' : ''} Due Soon</span>
+                  <span>{stats.operationalSummary.upcomingBills} Bill{stats.operationalSummary.upcomingBills > 1 ? 's' : ''} Due Soon</span>
                 </div>
                 <ChevronRight size={14} className="text-blue-400" />
               </div>
@@ -504,10 +504,10 @@ export const DashboardView: React.FC = () => {
               fontWeight: 600,
               cursor: 'pointer',
             }}
-            onClick={() => navigate('/bills')}
+            onClick={() => navigate('/bills-utilities')}
           >
             <Receipt size={14} color="#3B82F6" />
-            <span>{stats.operationalSummary.upcomingBills} Fixed Bills Due Soon</span>
+            <span>{stats.operationalSummary.upcomingBills} Bills Due Soon</span>
           </div>
         </div>
       ) : null}
@@ -765,9 +765,9 @@ export const DashboardView: React.FC = () => {
               <PlusCircle size={18} className="action-btn-icon" />
               <span>Add Expense</span>
             </button>
-            <button className="action-btn" onClick={() => navigate('/bills')}>
+            <button className="action-btn" onClick={() => navigate('/bills-utilities')}>
               <Receipt size={18} className="action-btn-icon" />
-              <span>Fixed Bills</span>
+              <span>Bills & Utilities</span>
             </button>
             <button className="action-btn" onClick={() => navigate('/ledger')}>
               <CreditCard size={18} className="action-btn-icon" />

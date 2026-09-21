@@ -5,8 +5,6 @@ import {
   Users,
   ShoppingBag,
   Receipt,
-  FileText,
-  Zap,
   CheckCircle2,
   Lock,
   BarChart3,
@@ -57,8 +55,7 @@ export const MobileMoreSheet: React.FC<MobileMoreSheetProps> = ({
     {
       title: 'Finances & Closing',
       items: [
-        { label: 'Fixed Bills', icon: <FileText size={18} className="text-indigo-500" />, to: '/bills', badge: null },
-        { label: 'Utilities & Sub-Meters', icon: <Zap size={18} className="text-yellow-500" />, to: '/utilities', badge: null },
+        { label: 'Bills & Utilities', icon: <Receipt size={18} className="text-indigo-500" />, to: '/bills-utilities', badge: null },
         { label: 'Smart Settlement', icon: <CheckCircle2 size={18} className="text-teal-500" />, to: '/settlements', badge: null },
         ...(isManager
           ? [{ label: 'Month-End Closing', icon: <Lock size={18} className="text-purple-500" />, to: '/month-end', badge: 'Admin' }]

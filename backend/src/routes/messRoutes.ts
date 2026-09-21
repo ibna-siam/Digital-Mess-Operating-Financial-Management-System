@@ -18,6 +18,7 @@ import { financialRouter } from './financialRoutes.js';
 import { periodRouter } from './periodRoutes.js';
 import { reportRouter } from './reportRoutes.js';
 import { utilityRouter } from './utilityRoutes.js';
+import { billsUtilitiesRouter } from './billsUtilitiesRoutes.js';
 import { roomRouter } from './roomRoutes.js';
 import { meterRouter } from './meterRoutes.js';
 import { recurringRouter } from './recurringRoutes.js';
@@ -114,6 +115,7 @@ messRouter.use('/:messId/bazar', tenantMiddleware(), periodLockMiddleware, bazar
 messRouter.use('/:messId/expenses', tenantMiddleware(), periodLockMiddleware, expenseRouter);
 messRouter.use('/:messId/bills', tenantMiddleware(), periodLockMiddleware, billRouter);
 messRouter.use('/:messId/utilities', tenantMiddleware(), periodLockMiddleware, utilityRouter);
+messRouter.use('/:messId/bills-utilities', tenantMiddleware(), periodLockMiddleware, billsUtilitiesRouter);
 messRouter.use('/:messId/rooms', tenantMiddleware(), roomRouter);
 messRouter.use('/:messId/meters', tenantMiddleware(), meterRouter);
 messRouter.use('/:messId/recurring-utilities', tenantMiddleware(), recurringRouter);
