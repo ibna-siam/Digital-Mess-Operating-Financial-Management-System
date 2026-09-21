@@ -7,6 +7,7 @@ import {
   Calendar,
   Eye,
   Trash2,
+  ChevronRight,
 } from 'lucide-react';
 import { Button } from '../components/ui/Button.js';
 import { Badge } from '../components/ui/Badge.js';
@@ -16,6 +17,51 @@ import { apiClient } from '../lib/apiClient.js';
 import { useAuth } from '../context/AuthContext.js';
 import { useDataSync } from '../hooks/useDataSync.js';
 import { BazarEntry, BazarItem, MessMember } from '../types/index.js';
+
+const getBazarVisual = (category: string) => {
+  switch (category.toLowerCase()) {
+    case 'fish & meat':
+      return {
+        emoji: '🍗',
+        bg: 'from-rose-50 to-red-100',
+        border: 'border-rose-200/80',
+        text: 'text-rose-700',
+        tag: 'bg-rose-50 text-rose-700 border-rose-200/60',
+      };
+    case 'vegetables':
+      return {
+        emoji: '🥬',
+        bg: 'from-emerald-50 to-green-100',
+        border: 'border-emerald-200/80',
+        text: 'text-emerald-700',
+        tag: 'bg-emerald-50 text-emerald-700 border-emerald-200/60',
+      };
+    case 'groceries':
+      return {
+        emoji: '🛒',
+        bg: 'from-amber-50 to-orange-100',
+        border: 'border-amber-200/80',
+        text: 'text-amber-700',
+        tag: 'bg-amber-50 text-amber-700 border-amber-200/60',
+      };
+    case 'spices':
+      return {
+        emoji: '🧂',
+        bg: 'from-purple-50 to-indigo-100',
+        border: 'border-purple-200/80',
+        text: 'text-purple-700',
+        tag: 'bg-purple-50 text-purple-700 border-purple-200/60',
+      };
+    default:
+      return {
+        emoji: '🛍️',
+        bg: 'from-slate-50 to-slate-100',
+        border: 'border-slate-200',
+        text: 'text-slate-700',
+        tag: 'bg-slate-100 text-slate-700 border-slate-200',
+      };
+  }
+};
 
 export const BazarPage: React.FC = () => {
   const { activeMess } = useAuth();
@@ -243,7 +289,50 @@ export const BazarPage: React.FC = () => {
 
       {/* Main Table Container */}
       <div className="table-container">
-        <div className="table-header-bar" style={{ flexWrap: 'wrap', gap: 12 }}>
+        {/* Mobile Filter & Search Strip (< md) */}
+        <div className="block md:hidden p-3 border-b border-slate-100 space-y-2.5">
+          {/* Category Chips Scroll Strip */}
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar -mx-3 px-3 py-0.5">
+            {[
+              { id: 'ALL', label: 'All', emoji: '✨' },
+              { id: 'Groceries', label: 'Groceries', emoji: '🛒' },
+              { id: 'Vegetables', label: 'Vegetables', emoji: '🥬' },
+              { id: 'Fish & Meat', label: 'Fish & Meat', emoji: '🍗' },
+              { id: 'Spices', label: 'Spices', emoji: '🧂' },
+            ].map((cat) => {
+              const isSelected = selectedCategory.toLowerCase() === cat.id.toLowerCase();
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold shrink-0 transition-all active:scale-95 touch-spring ${
+                    isSelected
+                      ? 'bg-slate-900 text-white shadow-xs font-extrabold'
+                      : 'bg-slate-100/90 text-slate-600 hover:bg-slate-200/80'
+                  }`}
+                >
+                  <span>{cat.emoji}</span>
+                  <span>{cat.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Search input */}
+          <div className="relative">
+            <Search size={14} className="text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search bazar by item, buyer..."
+              className="w-full pl-8 pr-3 py-2 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs font-medium text-slate-800 placeholder-slate-400 outline-none focus:border-emerald-500 focus:bg-white transition-all"
+            />
+          </div>
+        </div>
+
+        {/* Desktop Filter Bar (hidden md:flex) */}
+        <div className="hidden md:flex table-header-bar" style={{ flexWrap: 'wrap', gap: 12 }}>
           {/* Category Tabs */}
           <div className="table-tabs">
             {['ALL', 'Groceries', 'Vegetables', 'Fish & Meat', 'Spices'].map((cat) => (
@@ -292,77 +381,62 @@ export const BazarPage: React.FC = () => {
           </div>
         ) : (
           <>
-            {/* Mobile Bazar Feed (< md) */}
-            <div className="block md:hidden" style={{ padding: '12px' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {filteredEntries.map((bazar) => (
-                  <div
-                    key={bazar.id}
-                    onClick={() => setSelectedEntry(bazar)}
-                    style={{
-                      background: 'var(--color-card, #ffffff)',
-                      border: '1px solid var(--color-border)',
-                      borderRadius: '16px',
-                      padding: '14px',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: 10,
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
-                      <div style={{ minWidth: 0 }}>
-                        <div style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-main)' }}>
-                          {bazar.description}
+            {/* Mobile Bazar Digital Receipt Cards (< md) */}
+            <div className="block md:hidden p-2.5">
+              <div className="flex flex-col gap-3">
+                {filteredEntries.map((bazar) => {
+                  const vis = getBazarVisual(bazar.category);
+                  return (
+                    <div
+                      key={bazar.id}
+                      onClick={() => setSelectedEntry(bazar)}
+                      className="bg-white rounded-3xl border border-slate-200/80 p-4 shadow-xs flex flex-col gap-3 transition-all active:scale-[0.99] cursor-pointer"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-3 min-w-0">
+                          <div className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${vis.bg} ${vis.border} border flex items-center justify-center text-xl shrink-0 shadow-2xs`}>
+                            {vis.emoji}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="font-bold text-sm text-slate-900 leading-snug truncate">
+                              {bazar.description}
+                            </div>
+                            <div className="flex items-center gap-1.5 mt-1 text-[11px] text-slate-500 font-medium">
+                              <span className="font-semibold text-slate-700">{bazar.buyerName}</span>
+                              <span>•</span>
+                              <span>{bazar.date}</span>
+                            </div>
+                          </div>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 3 }}>
-                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                            <Calendar size={11} /> {bazar.date}
-                          </span>
-                          <span style={{ fontSize: '0.72rem', color: 'var(--text-subtle)' }}>•</span>
-                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>
-                            {bazar.buyerName}
+
+                        <div className="text-right shrink-0">
+                          <div className="text-base font-black text-slate-900 tracking-tight font-mono">
+                            ৳{bazar.amount.toLocaleString()}
+                          </div>
+                          <span className="inline-block mt-0.5 text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200/70">
+                            {bazar.paymentMethod}
                           </span>
                         </div>
                       </div>
-                      <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                        <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-main)', fontFamily: 'monospace' }}>
-                          ৳{bazar.amount.toLocaleString()}
+
+                      <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 text-xs">
+                        <div className="flex items-center gap-2">
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${vis.tag}`}>
+                            {bazar.category}
+                          </span>
+                          {bazar.items && bazar.items.length > 0 && (
+                            <span className="text-[11px] text-slate-400 font-medium">
+                              {bazar.items.length} {bazar.items.length === 1 ? 'item' : 'items'}
+                            </span>
+                          )}
                         </div>
-                        <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--color-primary-dark)' }}>
-                          {bazar.paymentMethod}
+                        <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
+                          View details <ChevronRight size={13} />
                         </span>
                       </div>
                     </div>
-
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--color-border)', paddingTop: 8 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <Badge
-                          variant={
-                            bazar.category === 'Fish & Meat'
-                              ? 'danger'
-                              : bazar.category === 'Vegetables'
-                              ? 'success'
-                              : bazar.category === 'Groceries'
-                              ? 'info'
-                              : 'neutral'
-                          }
-                        >
-                          {bazar.category}
-                        </Badge>
-                        {bazar.items && bazar.items.length > 0 && (
-                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                            {bazar.items.length} item{bazar.items.length > 1 ? 's' : ''}
-                          </span>
-                        )}
-                      </div>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--color-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
-                        View <Eye size={12} />
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 

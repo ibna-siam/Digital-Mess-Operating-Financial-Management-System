@@ -111,209 +111,246 @@ export const DashboardView: React.FC = () => {
     <div>
       {/* =========================================================================
           MOBILE PURPOSE-BUILT DASHBOARD (md:hidden)
-          Modern Financial & Mess Operating Mobile App UI
+          Modern Fintech & Mess Operating Mobile App UI
          ========================================================================= */}
-      <div className="block md:hidden space-y-3.5 pb-2">
-        {/* 1. Header & Context */}
-        <div className="flex items-center justify-between pt-0.5">
+      <div className="block md:hidden space-y-4 pb-4">
+        {/* 1. Greeting & Context Header */}
+        <div className="flex items-center justify-between pt-1">
           <div>
-            <h1 className="text-lg font-extrabold text-slate-900 tracking-tight">
+            <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">
               Hello, {userName} 👋
             </h1>
-            <p className="text-[11px] text-slate-500 font-medium">
-              {activeMess?.name || stats?.messName || 'My Mess'} · {new Date().toLocaleDateString('en-GB', { month: 'short', day: 'numeric', year: 'numeric' })}
+            <p className="text-xs text-slate-500 font-medium">
+              {activeMess?.name || stats?.messName || 'My Mess'} · {new Date().toLocaleDateString('en-GB', { month: 'short', day: 'numeric' })}
             </p>
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/70 text-[11px] font-bold">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            Live
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/80 text-xs font-bold shadow-2xs">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            Live Mess
           </div>
         </div>
 
-        {/* 2. Compact 2-Column Financial Summary Grid */}
-        <div className="grid grid-cols-2 gap-2.5">
-          {/* Members */}
-          <div
-            onClick={() => navigate('/members')}
-            className="p-3 bg-white rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between active:scale-[0.98] transition-transform cursor-pointer"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-slate-500">Members</span>
-              <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                <Users size={13} />
-              </div>
-            </div>
-            <div className="mt-2">
-              <div className="text-xl font-extrabold text-slate-900 tracking-tight">
-                {isLoading ? <Skeleton width={40} height={22} /> : stats?.kpis.totalMembers.value || '0'}
-              </div>
-              <p className="text-[10px] text-emerald-600 font-medium truncate mt-0.5">
-                {stats?.operationalSummary ? `${stats.operationalSummary.activeMembers} Living Active` : 'Active living'}
-              </p>
-            </div>
-          </div>
+        {/* 2. Premium Hero Financial Card */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-850 to-slate-950 text-white p-5 shadow-xl border border-slate-800/90">
+          {/* Ambient Glows */}
+          <div className="absolute -right-6 -bottom-6 w-36 h-36 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -left-6 -top-6 w-36 h-36 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
 
-          {/* Expenses */}
-          <div
-            onClick={() => navigate('/expenses')}
-            className="p-3 bg-white rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between active:scale-[0.98] transition-transform cursor-pointer"
-          >
+          <div className="relative z-10">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-slate-500">Total Spent</span>
-              <div className="w-6 h-6 rounded-lg bg-rose-50 text-rose-500 flex items-center justify-center">
-                <CreditCard size={13} />
-              </div>
+              <span className="text-xs font-semibold text-slate-300 tracking-wide uppercase">
+                Total Month Expenses
+              </span>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 uppercase tracking-wider">
+                Active Period
+              </span>
             </div>
-            <div className="mt-2">
-              <div className="text-xl font-extrabold text-slate-900 tracking-tight">
-                {isLoading ? <Skeleton width={60} height={22} /> : `৳${stats?.kpis.totalExpenses.value || '0'}`}
-              </div>
-              <p className="text-[10px] text-rose-500 font-medium truncate mt-0.5">
-                This Period Total
-              </p>
-            </div>
-          </div>
 
-          {/* Today Meals */}
-          <div
-            onClick={() => navigate('/meals')}
-            className="p-3 bg-white rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between active:scale-[0.98] transition-transform cursor-pointer"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-slate-500">Today Meals</span>
-              <div className="w-6 h-6 rounded-lg bg-sky-50 text-sky-500 flex items-center justify-center">
-                <Utensils size={13} />
-              </div>
+            <div className="mt-2.5 flex items-baseline gap-1.5">
+              <span className="text-3xl font-black tracking-tight text-white">
+                {isLoading ? <Skeleton width={120} height={36} /> : `৳ ${stats?.kpis.totalExpenses.value || '0'}`}
+              </span>
+              <span className="text-xs text-slate-400 font-medium">Food + Overheads</span>
             </div>
-            <div className="mt-2">
-              <div className="text-xl font-extrabold text-slate-900 tracking-tight">
-                {isLoading ? <Skeleton width={40} height={22} /> : stats?.todayMeals?.total ?? '0'}
-              </div>
-              <p className="text-[10px] text-slate-500 font-medium truncate mt-0.5">
-                {stats?.todayMeals ? `B:${stats.todayMeals.breakfast} L:${stats.todayMeals.lunch} D:${stats.todayMeals.dinner}` : 'Daily active count'}
-              </p>
-            </div>
-          </div>
 
-          {/* Meal Rate */}
-          <div
-            onClick={() => navigate('/bazar')}
-            className="p-3 bg-white rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between active:scale-[0.98] transition-transform cursor-pointer"
-          >
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-slate-500">Est. Meal Rate</span>
-              <div className="w-6 h-6 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
-                <ArrowLeftRight size={13} />
+            {/* Bottom 3-Column Key Metrics Sub-Bar */}
+            <div className="mt-4 pt-3.5 border-t border-white/10 grid grid-cols-3 divide-x divide-white/10 text-center">
+              <div className="pr-1.5">
+                <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Meal Rate</div>
+                <div className="text-sm font-extrabold text-emerald-400 mt-0.5">
+                  {isLoading ? '...' : `৳ ${stats?.kpis.mealRate.value || '0.00'}`}
+                </div>
               </div>
-            </div>
-            <div className="mt-2">
-              <div className="text-xl font-extrabold text-slate-900 tracking-tight">
-                {isLoading ? <Skeleton width={50} height={22} /> : `৳${stats?.kpis.mealRate.value || '0'}`}
+              <div className="px-1.5">
+                <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Today Meals</div>
+                <div className="text-sm font-extrabold text-sky-400 mt-0.5">
+                  {isLoading ? '...' : stats?.todayMeals?.total ?? '0'}
+                </div>
+                <div className="text-[9px] text-slate-400">
+                  {stats?.todayMeals ? `${stats.todayMeals.breakfast}B · ${stats.todayMeals.lunch}L · ${stats.todayMeals.dinner}D` : ''}
+                </div>
               </div>
-              <p className="text-[10px] text-purple-600 font-medium truncate mt-0.5">
-                Per Meal Cost
-              </p>
+              <div className="pl-1.5">
+                <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Residents</div>
+                <div className="text-sm font-extrabold text-purple-400 mt-0.5">
+                  {isLoading ? '...' : stats?.operationalSummary?.activeMembers ?? stats?.kpis.totalMembers.value ?? 0}
+                </div>
+                <div className="text-[9px] text-slate-400">living</div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* 3. Compact Quick Action Grid */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-3 shadow-xs">
-          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 px-0.5">
-            Quick Actions
+        {/* 3. Mobile Multi-Month Expense Overview Chart */}
+        <div className="bg-white rounded-3xl border border-slate-200/80 p-4 shadow-xs">
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <h2 className="text-xs font-bold text-slate-900 tracking-tight">Monthly Expense Overview</h2>
+              <p className="text-[10px] text-slate-400 font-medium">6-Month Trend (Apr – Sep)</p>
+            </div>
+            <div className="flex items-center gap-2 text-[10px] font-semibold text-slate-600">
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500" />Food</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-cyan-500" />Utilities</span>
+            </div>
           </div>
-          <div className="grid grid-cols-5 gap-1.5 text-center">
+
+          {isLoading ? (
+            <div className="h-40 flex items-center justify-center">
+              <Skeleton width="100%" height={120} />
+            </div>
+          ) : monthlyOverview.length > 0 ? (
+            (() => {
+              const globalMax = Math.max(
+                1,
+                ...monthlyOverview.flatMap((c) => [c.food, c.rent, c.utilities, c.other])
+              );
+              return (
+                <div className="h-44 flex items-end justify-between pt-4 pb-1 px-1 border-b border-slate-100 overflow-x-auto">
+                  {monthlyOverview.map((col, i) => {
+                    const hFood = col.food > 0 ? Math.max(8, Math.round((col.food / globalMax) * 110)) : 3;
+                    const hRent = col.rent > 0 ? Math.max(8, Math.round((col.rent / globalMax) * 110)) : 3;
+                    const hUtil = col.utilities > 0 ? Math.max(8, Math.round((col.utilities / globalMax) * 110)) : 3;
+                    const hOther = col.other > 0 ? Math.max(8, Math.round((col.other / globalMax) * 110)) : 3;
+                    const isCurrent = i === monthlyOverview.length - 1;
+
+                    return (
+                      <div key={i} className="flex flex-col items-center gap-1.5 min-w-[44px]">
+                        <div className="flex items-end gap-1">
+                          <div
+                            title={`${col.month} Food: ৳${col.food.toLocaleString()}`}
+                            style={{ height: hFood }}
+                            className="w-2.5 bg-emerald-500 rounded-t-sm transition-all"
+                          />
+                          {col.rent > 0 && (
+                            <div
+                              title={`${col.month} Rent: ৳${col.rent.toLocaleString()}`}
+                              style={{ height: hRent }}
+                              className="w-2.5 bg-amber-500 rounded-t-sm transition-all"
+                            />
+                          )}
+                          <div
+                            title={`${col.month} Utilities: ৳${col.utilities.toLocaleString()}`}
+                            style={{ height: hUtil }}
+                            className="w-2.5 bg-cyan-500 rounded-t-sm transition-all"
+                          />
+                          {col.other > 0 && (
+                            <div
+                              title={`${col.month} Other: ৳${col.other.toLocaleString()}`}
+                              style={{ height: hOther }}
+                              className="w-2.5 bg-purple-500 rounded-t-sm transition-all"
+                            />
+                          )}
+                        </div>
+                        <span className={`text-[10px] ${isCurrent ? 'text-emerald-700 font-extrabold' : 'text-slate-400 font-semibold'}`}>
+                          {col.month}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()
+          ) : (
+            <div className="h-32 flex items-center justify-center text-xs text-slate-400">
+              No historical data available.
+            </div>
+          )}
+        </div>
+
+        {/* 4. Quick Action Grid */}
+        <div className="bg-white rounded-3xl border border-slate-200/80 p-3.5 shadow-xs">
+          <div className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-2 px-1">
+            Quick Hub
+          </div>
+          <div className="grid grid-cols-4 gap-2 text-center">
             <button
               onClick={() => navigate('/bazar')}
-              className="flex flex-col items-center gap-1.5 p-1 rounded-xl active:bg-slate-100 transition-transform active:scale-95"
+              className="flex flex-col items-center gap-1.5 p-2 rounded-2xl bg-emerald-50/50 hover:bg-emerald-50 active:scale-95 transition-all"
             >
-              <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shadow-xs">
-                <ShoppingCart size={18} />
+              <div className="w-11 h-11 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-500/25">
+                <ShoppingCart size={19} />
               </div>
-              <span className="text-[10px] font-bold text-slate-700 leading-tight">Bazar</span>
-            </button>
-
-            <button
-              onClick={() => navigate('/expenses')}
-              className="flex flex-col items-center gap-1.5 p-1 rounded-xl active:bg-slate-100 transition-transform active:scale-95"
-            >
-              <div className="w-10 h-10 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center border border-rose-100 shadow-xs">
-                <PlusCircle size={18} />
-              </div>
-              <span className="text-[10px] font-bold text-slate-700 leading-tight">Expense</span>
+              <span className="text-[11px] font-bold text-slate-800">Bazar</span>
             </button>
 
             <button
               onClick={() => navigate('/meals')}
-              className="flex flex-col items-center gap-1.5 p-1 rounded-xl active:bg-slate-100 transition-transform active:scale-95"
+              className="flex flex-col items-center gap-1.5 p-2 rounded-2xl bg-sky-50/50 hover:bg-sky-50 active:scale-95 transition-all"
             >
-              <div className="w-10 h-10 rounded-2xl bg-sky-50 text-sky-500 flex items-center justify-center border border-sky-100 shadow-xs">
-                <Utensils size={18} />
+              <div className="w-11 h-11 rounded-2xl bg-sky-500 text-white flex items-center justify-center shadow-md shadow-sky-500/25">
+                <Utensils size={19} />
               </div>
-              <span className="text-[10px] font-bold text-slate-700 leading-tight">Meals</span>
+              <span className="text-[11px] font-bold text-slate-800">Meals</span>
+            </button>
+
+            <button
+              onClick={() => navigate('/expenses')}
+              className="flex flex-col items-center gap-1.5 p-2 rounded-2xl bg-rose-50/50 hover:bg-rose-50 active:scale-95 transition-all"
+            >
+              <div className="w-11 h-11 rounded-2xl bg-rose-500 text-white flex items-center justify-center shadow-md shadow-rose-500/25">
+                <PlusCircle size={19} />
+              </div>
+              <span className="text-[11px] font-bold text-slate-800">Expenses</span>
             </button>
 
             <button
               onClick={() => navigate('/settlement')}
-              className="flex flex-col items-center gap-1.5 p-1 rounded-xl active:bg-slate-100 transition-transform active:scale-95"
+              className="flex flex-col items-center gap-1.5 p-2 rounded-2xl bg-purple-50/50 hover:bg-purple-50 active:scale-95 transition-all"
             >
-              <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-100 shadow-xs">
-                <CheckCircle2 size={18} />
+              <div className="w-11 h-11 rounded-2xl bg-purple-600 text-white flex items-center justify-center shadow-md shadow-purple-500/25">
+                <CheckCircle2 size={19} />
               </div>
-              <span className="text-[10px] font-bold text-slate-700 leading-tight">Settle</span>
-            </button>
-
-            <button
-              onClick={() => navigate('/ledger')}
-              className="flex flex-col items-center gap-1.5 p-1 rounded-xl active:bg-slate-100 transition-transform active:scale-95"
-            >
-              <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100 shadow-xs">
-                <Receipt size={18} />
-              </div>
-              <span className="text-[10px] font-bold text-slate-700 leading-tight">Ledger</span>
+              <span className="text-[11px] font-bold text-slate-800">Settle</span>
             </button>
           </div>
         </div>
 
-        {/* 4. Operational Highlights */}
+        {/* 5. Operational Highlights & Action Banners */}
         {stats?.operationalSummary && (stats.operationalSummary.pendingApprovals > 0 || stats.operationalSummary.upcomingBills > 0) && (
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             {stats.operationalSummary.pendingApprovals > 0 && (
               <div
                 onClick={() => navigate('/expenses')}
-                className="flex items-center justify-between p-2.5 rounded-xl bg-amber-50 border border-amber-200/80 text-amber-800 text-xs font-semibold active:scale-[0.99] transition-transform cursor-pointer"
+                className="flex items-center justify-between p-3 rounded-2xl bg-amber-50 border border-amber-200/80 text-amber-900 text-xs font-bold active:scale-[0.98] transition-transform cursor-pointer shadow-2xs"
               >
-                <div className="flex items-center gap-2">
-                  <Clock size={15} className="text-amber-600" />
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded-xl bg-amber-200/70 text-amber-800 flex items-center justify-center">
+                    <Clock size={15} />
+                  </div>
                   <span>{stats.operationalSummary.pendingApprovals} Pending Expense Approval{stats.operationalSummary.pendingApprovals > 1 ? 's' : ''}</span>
                 </div>
-                <ChevronRight size={14} className="text-amber-400" />
+                <ChevronRight size={15} className="text-amber-500" />
               </div>
             )}
             {stats.operationalSummary.upcomingBills > 0 && (
               <div
                 onClick={() => navigate('/bills-utilities')}
-                className="flex items-center justify-between p-2.5 rounded-xl bg-blue-50 border border-blue-200/80 text-blue-800 text-xs font-semibold active:scale-[0.99] transition-transform cursor-pointer"
+                className="flex items-center justify-between p-3 rounded-2xl bg-blue-50 border border-blue-200/80 text-blue-900 text-xs font-bold active:scale-[0.98] transition-transform cursor-pointer shadow-2xs"
               >
-                <div className="flex items-center gap-2">
-                  <Receipt size={15} className="text-blue-600" />
+                <div className="flex items-center gap-2.5">
+                  <div className="w-7 h-7 rounded-xl bg-blue-200/70 text-blue-800 flex items-center justify-center">
+                    <Receipt size={15} />
+                  </div>
                   <span>{stats.operationalSummary.upcomingBills} Bill{stats.operationalSummary.upcomingBills > 1 ? 's' : ''} Due Soon</span>
                 </div>
-                <ChevronRight size={14} className="text-blue-400" />
+                <ChevronRight size={15} className="text-blue-500" />
               </div>
             )}
           </div>
         )}
 
-        {/* 5. Expense Distribution Breakdown */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-3.5 shadow-xs">
-          <div className="flex items-center justify-between mb-2.5">
-            <span className="text-xs font-bold text-slate-900">Expense Distribution</span>
-            <span className="text-xs font-extrabold text-slate-900">৳{stats?.kpis.totalExpenses.value || '0'}</span>
+        {/* 6. Expense Distribution Breakdown */}
+        <div className="bg-white rounded-3xl border border-slate-200/80 p-4 shadow-xs">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <span className="text-xs font-bold text-slate-900">Expense Breakdown</span>
+              <p className="text-[10px] text-slate-400 font-medium">By Category This Month</p>
+            </div>
+            <span className="text-xs font-extrabold text-slate-900">৳ {stats?.kpis.totalExpenses.value || '0'}</span>
           </div>
+
           {isLoading ? (
             <div className="space-y-2">
-              <Skeleton width="100%" height={12} />
               <Skeleton width="100%" height={12} />
               <Skeleton width="100%" height={12} />
             </div>
@@ -326,7 +363,7 @@ export const DashboardView: React.FC = () => {
                       <span className="w-2 h-2 rounded-full" style={{ backgroundColor: cat.color }} />
                       {cat.category}
                     </span>
-                    <span className="text-slate-900">৳{cat.amount.toLocaleString()} ({cat.percentage}%)</span>
+                    <span className="text-slate-900 font-bold">৳ {cat.amount.toLocaleString()} ({cat.percentage}%)</span>
                   </div>
                   <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
                     <div
@@ -338,19 +375,19 @@ export const DashboardView: React.FC = () => {
               ))}
             </div>
           ) : (
-            <p className="text-xs text-slate-400 text-center py-2">No expenses recorded for this period.</p>
+            <p className="text-xs text-slate-400 text-center py-2">No expenses recorded yet.</p>
           )}
         </div>
 
-        {/* 6. Recent Activity Feed */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-3.5 shadow-xs">
+        {/* 7. Recent Activity Feed */}
+        <div className="bg-white rounded-3xl border border-slate-200/80 p-4 shadow-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-slate-900">Recent Activity</span>
             <button
               onClick={() => navigate('/ledger')}
               className="text-[11px] font-bold text-emerald-600 hover:text-emerald-700"
             >
-              View All
+              View Ledger
             </button>
           </div>
           {isLoading ? (
@@ -361,25 +398,25 @@ export const DashboardView: React.FC = () => {
           ) : recentActivities.length > 0 ? (
             <div className="divide-y divide-slate-100">
               {recentActivities.slice(0, 4).map((act) => (
-                <div key={act.id} className="flex items-center gap-2.5 py-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
+                <div key={act.id} className="flex items-center gap-3 py-2.5">
+                  <div className="w-9 h-9 rounded-2xl bg-slate-50 border border-slate-200/70 flex items-center justify-center shrink-0 shadow-2xs">
                     {act.category === 'Food' || act.type === 'bazar' ? (
-                      <Receipt size={14} className="text-emerald-500" />
+                      <ShoppingCart size={15} className="text-emerald-600" />
                     ) : act.category === 'Meals' || act.type === 'meal' ? (
-                      <Utensils size={14} className="text-sky-500" />
+                      <Utensils size={15} className="text-sky-600" />
                     ) : (
-                      <CreditCard size={14} className="text-purple-500" />
+                      <Receipt size={15} className="text-purple-600" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs font-semibold text-slate-800 truncate">{act.title}</div>
-                    <div className="text-[10px] text-slate-400">{act.time}</div>
+                    <div className="text-xs font-bold text-slate-800 truncate">{act.title}</div>
+                    <div className="text-[10px] text-slate-400 font-medium">{act.time}</div>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-xs text-slate-400 text-center py-2">No recent activity.</p>
+            <p className="text-xs text-slate-400 text-center py-3">No recent activities.</p>
           )}
         </div>
 

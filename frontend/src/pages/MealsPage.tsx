@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, Check, ArrowLeft, ArrowRight, UserCheck } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Plus, Check, ArrowLeft, ArrowRight, UserCheck, Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '../components/ui/Button.js';
 import { Modal } from '../components/ui/Modal.js';
 import { apiClient } from '../lib/apiClient.js';
@@ -29,6 +29,29 @@ export const MealsPage: React.FC = () => {
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [bulkEntries, setBulkEntries] = useState<Array<{ memberId: string; name: string; breakfast: number; lunch: number; dinner: number }>>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Rolling 7-day date window for mobile date reel
+  const dateStrip = useMemo(() => {
+    const dates: Array<{ dateStr: string; dayName: string; dayNum: number; isToday: boolean; isSelected: boolean }> = [];
+    const curr = new Date(currentDate);
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    // Show 3 days before to 3 days after
+    for (let offset = -3; offset <= 3; offset++) {
+      const d = new Date(curr);
+      d.setDate(d.getDate() + offset);
+      const iso = d.toISOString().split('T')[0];
+      const dayName = d.toLocaleDateString('en-US', { weekday: 'short' });
+      dates.push({
+        dateStr: iso,
+        dayName: iso === todayStr ? 'TODAY' : dayName.toUpperCase(),
+        dayNum: d.getDate(),
+        isToday: iso === todayStr,
+        isSelected: iso === currentDate,
+      });
+    }
+    return dates;
+  }, [currentDate]);
 
   const fetchMealData = async (date: string) => {
     setIsLoading(true);
@@ -148,8 +171,73 @@ export const MealsPage: React.FC = () => {
 
   return (
     <div className="animate-fade-in" style={{ paddingBottom: 40 }}>
-      {/* Header & Date controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      {/* Mobile Date Reel & Header (< md) */}
+      <div className="block md:hidden mb-5">
+        <div className="flex items-center justify-between mb-2.5">
+          <div>
+            <h1 className="text-xl font-black text-slate-900 tracking-tight">Daily Meals</h1>
+            <p className="text-xs text-slate-500 font-medium">1-tap attendance & logs</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="relative flex items-center justify-center w-9 h-9 rounded-2xl bg-white border border-slate-200 shadow-xs cursor-pointer active:scale-95 transition-all text-slate-600">
+              <CalendarIcon size={16} />
+              <input
+                type="date"
+                value={currentDate}
+                onChange={(e) => setCurrentDate(e.target.value)}
+                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+              />
+            </label>
+            <button
+              onClick={openBulkModal}
+              className="flex items-center gap-1 px-3 py-2 rounded-2xl bg-emerald-600 text-white text-xs font-bold shadow-xs active:scale-95 transition-all"
+            >
+              <Plus size={14} /> Bulk
+            </button>
+          </div>
+        </div>
+
+        {/* 7-Day Horizontal Swipeable Date Strip */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1.5 pt-1 no-scrollbar -mx-4 px-4">
+          <button
+            onClick={() => handleShiftDate(-1)}
+            className="w-8 h-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-500 shrink-0 shadow-2xs active:scale-95"
+            title="Previous Day"
+          >
+            <ChevronLeft size={16} />
+          </button>
+
+          {dateStrip.map((item) => (
+            <button
+              key={item.dateStr}
+              onClick={() => setCurrentDate(item.dateStr)}
+              className={`flex flex-col items-center justify-center min-w-[54px] h-14 rounded-2xl px-2 transition-all duration-150 shrink-0 touch-spring ${
+                item.isSelected
+                  ? 'bg-gradient-to-b from-emerald-500 to-teal-600 text-white shadow-md shadow-emerald-500/25 scale-[1.03] font-black'
+                  : item.isToday
+                  ? 'bg-emerald-50 text-emerald-800 border-2 border-emerald-400 font-bold'
+                  : 'bg-white text-slate-700 border border-slate-200/90 font-semibold hover:border-emerald-300'
+              }`}
+            >
+              <span className={`text-[9px] tracking-wider uppercase ${item.isSelected ? 'text-emerald-100' : 'text-slate-400 font-bold'}`}>
+                {item.dayName}
+              </span>
+              <span className="text-base leading-tight mt-0.5">{item.dayNum}</span>
+            </button>
+          ))}
+
+          <button
+            onClick={() => handleShiftDate(1)}
+            className="w-8 h-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-500 shrink-0 shadow-2xs active:scale-95"
+            title="Next Day"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      </div>
+
+      {/* Desktop Header & Date controls (hidden md:flex) */}
+      <div className="hidden md:flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Daily Meals</h1>
           <p className="text-text-muted text-sm mt-0.5">
@@ -206,14 +294,105 @@ export const MealsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 1-Tap Quick Self-Entry Banner */}
+      {/* Mobile Tactile 1-Tap Quick Self-Entry Card (< md) */}
+      <div className="block md:hidden mb-5">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-850 to-slate-950 text-white p-4.5 shadow-xl border border-slate-800">
+          <div className="absolute -right-6 -bottom-6 w-28 h-28 bg-emerald-500/15 rounded-full blur-2xl pointer-events-none" />
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-xs">
+                  {user?.name ? user.name.slice(0, 2).toUpperCase() : 'ME'}
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                    My Attendance ({user?.name ? user.name.split(' ')[0] : 'You'})
+                  </div>
+                  <div className="text-[10px] text-slate-400">1-tap to mark eating/skipping</div>
+                </div>
+              </div>
+              <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/15 px-2 py-0.5 rounded-full border border-emerald-500/25">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Live
+              </span>
+            </div>
+
+            {/* 3 Tactile Big Touch Switchers */}
+            <div className="grid grid-cols-3 gap-2.5">
+              {/* Breakfast */}
+              <button
+                type="button"
+                onClick={() => toggleSelfMeal('breakfast', myBreakfast)}
+                className={`flex flex-col items-center justify-center p-3 rounded-2xl border transition-all duration-150 touch-spring active:scale-95 ${
+                  myBreakfast
+                    ? 'bg-gradient-to-b from-emerald-600 to-teal-700 border-emerald-400/50 text-white shadow-md shadow-emerald-600/30'
+                    : 'bg-slate-800/80 border-slate-700/80 text-slate-400 hover:border-slate-600'
+                }`}
+              >
+                <span className="text-xl mb-1">🍳</span>
+                <span className="text-xs font-bold">Breakfast</span>
+                <span
+                  className={`mt-1 text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
+                    myBreakfast ? 'bg-emerald-400/20 text-emerald-200 border border-emerald-300/30' : 'bg-slate-700/60 text-slate-400'
+                  }`}
+                >
+                  {myBreakfast ? 'EATING' : 'SKIP'}
+                </span>
+              </button>
+
+              {/* Lunch */}
+              <button
+                type="button"
+                onClick={() => toggleSelfMeal('lunch', myLunch)}
+                className={`flex flex-col items-center justify-center p-3 rounded-2xl border transition-all duration-150 touch-spring active:scale-95 ${
+                  myLunch
+                    ? 'bg-gradient-to-b from-emerald-600 to-teal-700 border-emerald-400/50 text-white shadow-md shadow-emerald-600/30'
+                    : 'bg-slate-800/80 border-slate-700/80 text-slate-400 hover:border-slate-600'
+                }`}
+              >
+                <span className="text-xl mb-1">🍛</span>
+                <span className="text-xs font-bold">Lunch</span>
+                <span
+                  className={`mt-1 text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
+                    myLunch ? 'bg-emerald-400/20 text-emerald-200 border border-emerald-300/30' : 'bg-slate-700/60 text-slate-400'
+                  }`}
+                >
+                  {myLunch ? 'EATING' : 'SKIP'}
+                </span>
+              </button>
+
+              {/* Dinner */}
+              <button
+                type="button"
+                onClick={() => toggleSelfMeal('dinner', myDinner)}
+                className={`flex flex-col items-center justify-center p-3 rounded-2xl border transition-all duration-150 touch-spring active:scale-95 ${
+                  myDinner
+                    ? 'bg-gradient-to-b from-emerald-600 to-teal-700 border-emerald-400/50 text-white shadow-md shadow-emerald-600/30'
+                    : 'bg-slate-800/80 border-slate-700/80 text-slate-400 hover:border-slate-600'
+                }`}
+              >
+                <span className="text-xl mb-1">🍲</span>
+                <span className="text-xs font-bold">Dinner</span>
+                <span
+                  className={`mt-1 text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
+                    myDinner ? 'bg-emerald-400/20 text-emerald-200 border border-emerald-300/30' : 'bg-slate-700/60 text-slate-400'
+                  }`}
+                >
+                  {myDinner ? 'EATING' : 'SKIP'}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop 1-Tap Quick Self-Entry Banner (hidden md:flex) */}
       <div
+        className="hidden md:flex"
         style={{
           background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
           borderRadius: 'var(--radius-lg)',
           padding: '18px 24px',
           color: '#fff',
-          display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
@@ -414,86 +593,103 @@ export const MealsPage: React.FC = () => {
         ) : (
           <>
             {/* Mobile Meal Cards (< md) */}
-            <div className="block md:hidden" style={{ padding: '12px' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {meals.map((row) => (
-                  <div
-                    key={row.id}
-                    style={{
-                      background: 'var(--color-card, #ffffff)',
-                      border: '1px solid var(--color-border)',
-                      borderRadius: '16px',
-                      padding: '14px',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: 10,
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <div>
-                        <div style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-main)' }}>
-                          {row.memberName}
-                        </div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                          {row.roomNo ? `Room ${row.roomNo}` : 'Unassigned'}
-                        </div>
-                      </div>
-                      <div
-                        style={{
-                          backgroundColor: 'rgba(16, 185, 129, 0.12)',
-                          color: 'var(--color-primary)',
-                          padding: '4px 10px',
-                          borderRadius: '12px',
-                          fontWeight: 800,
-                          fontSize: '0.9rem',
-                          fontFamily: 'monospace',
-                        }}
-                      >
-                        {row.total} Meals
-                      </div>
-                    </div>
-
+            <div className="block md:hidden p-2.5">
+              <div className="flex flex-col gap-3">
+                {meals.map((row) => {
+                  const guestTotal = row.guestBreakfast + row.guestLunch + row.guestDinner;
+                  return (
                     <div
-                      style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(4, 1fr)',
-                        gap: 6,
-                        background: '#f8fafc',
-                        padding: '8px 10px',
-                        borderRadius: '10px',
-                        textAlign: 'center',
-                      }}
+                      key={row.id}
+                      className="bg-white rounded-3xl border border-slate-200/80 p-4 shadow-xs flex flex-col gap-3 transition-all active:scale-[0.99]"
                     >
-                      <div>
-                        <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600 }}>BREAKFAST</div>
-                        <div style={{ fontWeight: 700, fontSize: '0.88rem', color: row.breakfast > 0 ? 'var(--color-primary)' : 'var(--text-muted)' }}>
-                          {row.breakfast}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-50 text-emerald-800 border border-emerald-200/60 flex items-center justify-center font-black text-xs shadow-2xs">
+                            {row.memberName.slice(0, 2).toUpperCase()}
+                          </div>
+                          <div>
+                            <div className="font-bold text-sm text-slate-900 leading-tight">
+                              {row.memberName}
+                            </div>
+                            <div className="text-[11px] font-medium text-slate-500 mt-0.5">
+                              {row.roomNo ? `Room ${row.roomNo}` : 'Resident'}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1.5">
+                          {guestTotal > 0 && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200/80">
+                              +{guestTotal} guest
+                            </span>
+                          )}
+                          <span
+                            className={`px-2.5 py-1 rounded-full text-xs font-black tracking-tight ${
+                              row.total > 0
+                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                : 'bg-slate-100 text-slate-500'
+                            }`}
+                          >
+                            {row.total} {row.total === 1 ? 'Meal' : 'Meals'}
+                          </span>
                         </div>
                       </div>
-                      <div>
-                        <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600 }}>LUNCH</div>
-                        <div style={{ fontWeight: 700, fontSize: '0.88rem', color: row.lunch > 0 ? 'var(--color-primary)' : 'var(--text-muted)' }}>
-                          {row.lunch}
+
+                      {/* 4-Item Status Reel */}
+                      <div className="grid grid-cols-4 gap-1.5 pt-2 border-t border-slate-100 text-center">
+                        <div
+                          className={`py-1.5 px-1 rounded-xl border flex flex-col items-center ${
+                            row.breakfast > 0
+                              ? 'bg-emerald-50/90 border-emerald-200 text-emerald-800'
+                              : 'bg-slate-50/70 border-slate-100 text-slate-400'
+                          }`}
+                        >
+                          <span className="text-[10px]">🍳</span>
+                          <span className="text-[9px] font-bold uppercase tracking-wider mt-0.5">B-Fast</span>
+                          <span className="text-xs font-black mt-0.5">{row.breakfast}</span>
                         </div>
-                      </div>
-                      <div>
-                        <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600 }}>DINNER</div>
-                        <div style={{ fontWeight: 700, fontSize: '0.88rem', color: row.dinner > 0 ? 'var(--color-primary)' : 'var(--text-muted)' }}>
-                          {row.dinner}
+
+                        <div
+                          className={`py-1.5 px-1 rounded-xl border flex flex-col items-center ${
+                            row.lunch > 0
+                              ? 'bg-emerald-50/90 border-emerald-200 text-emerald-800'
+                              : 'bg-slate-50/70 border-slate-100 text-slate-400'
+                          }`}
+                        >
+                          <span className="text-[10px]">🍛</span>
+                          <span className="text-[9px] font-bold uppercase tracking-wider mt-0.5">Lunch</span>
+                          <span className="text-xs font-black mt-0.5">{row.lunch}</span>
                         </div>
-                      </div>
-                      <div>
-                        <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600 }}>GUESTS</div>
-                        <div style={{ fontWeight: 700, fontSize: '0.88rem', color: 'var(--text-muted)' }}>
-                          {row.guestBreakfast + row.guestLunch + row.guestDinner}
+
+                        <div
+                          className={`py-1.5 px-1 rounded-xl border flex flex-col items-center ${
+                            row.dinner > 0
+                              ? 'bg-emerald-50/90 border-emerald-200 text-emerald-800'
+                              : 'bg-slate-50/70 border-slate-100 text-slate-400'
+                          }`}
+                        >
+                          <span className="text-[10px]">🍲</span>
+                          <span className="text-[9px] font-bold uppercase tracking-wider mt-0.5">Dinner</span>
+                          <span className="text-xs font-black mt-0.5">{row.dinner}</span>
+                        </div>
+
+                        <div
+                          className={`py-1.5 px-1 rounded-xl border flex flex-col items-center ${
+                            guestTotal > 0
+                              ? 'bg-purple-50/80 border-purple-200 text-purple-700'
+                              : 'bg-slate-50/70 border-slate-100 text-slate-400'
+                          }`}
+                        >
+                          <span className="text-[10px]">👥</span>
+                          <span className="text-[9px] font-bold uppercase tracking-wider mt-0.5">Guests</span>
+                          <span className="text-xs font-black mt-0.5">{guestTotal}</span>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
                 {meals.length === 0 && (
-                  <div style={{ textAlign: 'center', padding: '36px 12px', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                  <div className="text-center py-10 text-slate-400 text-sm">
                     No meal records found for this date.
                   </div>
                 )}
