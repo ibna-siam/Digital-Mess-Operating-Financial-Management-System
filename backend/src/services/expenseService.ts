@@ -22,7 +22,7 @@ interface CacheItem<T> {
   timestamp: number;
 }
 const expenseCache = new Map<string, CacheItem<any>>();
-const EXPENSE_CACHE_TTL_MS = 15_000;
+const EXPENSE_CACHE_TTL_MS = 0; // Disabled to guarantee fresh expense data
 
 export function invalidateExpenseCache(messId: string) {
   for (const key of expenseCache.keys()) {

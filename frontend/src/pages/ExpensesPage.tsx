@@ -20,29 +20,9 @@ export const ExpensesPage: React.FC = () => {
   const { activeMess } = useAuth();
   const messId = activeMess?.id || '';
 
-  const [expenses, setExpenses] = useState<Expense[]>(() => {
-    try {
-      const cached = sessionStorage.getItem(`messmate_expenses_${messId}`);
-      return cached ? JSON.parse(cached) : [];
-    } catch {
-      return [];
-    }
-  });
-  const [members, setMembers] = useState<MessMember[]>(() => {
-    try {
-      const cached = sessionStorage.getItem(`messmate_members_${messId}`);
-      return cached ? JSON.parse(cached) : [];
-    } catch {
-      return [];
-    }
-  });
-  const [isLoading, setIsLoading] = useState(() => {
-    try {
-      return !sessionStorage.getItem(`messmate_expenses_${messId}`);
-    } catch {
-      return true;
-    }
-  });
+  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [members, setMembers] = useState<MessMember[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [filterTab, setFilterTab] = useState<'all' | 'variable' | 'fixed' | 'pending'>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -66,6 +46,7 @@ export const ExpensesPage: React.FC = () => {
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
   const fetchExpenseData = async () => {
+    setIsLoading(true);
     try {
       const [expRes, membersRes] = await Promise.all([
         apiClient<Expense[]>(`/messes/${messId}/expenses`),
@@ -74,12 +55,6 @@ export const ExpensesPage: React.FC = () => {
       setExpenses(expRes);
       const activeM = membersRes.filter((m) => m.status === 'ACTIVE');
       setMembers(activeM);
-      try {
-        sessionStorage.setItem(`messmate_expenses_${messId}`, JSON.stringify(expRes));
-        sessionStorage.setItem(`messmate_members_${messId}`, JSON.stringify(activeM));
-      } catch {
-        //
-      }
       if (membersRes.length > 0 && !payerMemberId) {
         setPayerMemberId(membersRes[0].id);
       }

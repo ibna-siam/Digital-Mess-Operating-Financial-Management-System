@@ -37,7 +37,7 @@ interface CacheItem<T> {
 }
 
 const mealCache = new Map<string, CacheItem<any>>();
-const MEAL_CACHE_TTL_MS = 15_000; // 15 seconds
+const MEAL_CACHE_TTL_MS = 0; // Disabled to guarantee fresh meal data
 
 export function invalidateMealCache(messId: string, dateStr?: string) {
   const prefix = dateStr ? `${messId}_daily_${dateStr}` : `${messId}_`;

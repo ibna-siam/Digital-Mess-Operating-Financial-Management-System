@@ -24,13 +24,6 @@ export function invalidateDashboardCache(messId?: string): void {
 export async function getDashboardStats(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const messId = req.params.messId;
-    const now = Date.now();
-    const cached = dashboardCache.get(messId);
-    if (cached && now - cached.timestamp < CACHE_TTL_MS) {
-      sendSuccess(res, cached.data);
-      return;
-    }
-
     const todayStr = new Date().toISOString().split('T')[0];
     const period = todayStr.slice(0, 7);
 
@@ -196,7 +189,6 @@ export async function getDashboardStats(req: Request, res: Response, next: NextF
       topSpenders: topSpendersList,
     };
 
-    dashboardCache.set(messId, { data: stats, timestamp: Date.now() });
     sendSuccess(res, stats);
   } catch (error) {
     next(error);

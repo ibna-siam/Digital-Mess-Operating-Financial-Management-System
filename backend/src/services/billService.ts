@@ -26,7 +26,7 @@ interface CacheItem<T> {
   timestamp: number;
 }
 const billCache = new Map<string, CacheItem<any>>();
-const BILL_CACHE_TTL_MS = 15_000;
+const BILL_CACHE_TTL_MS = 0; // Disabled to guarantee fresh bill data
 
 export function invalidateBillCache(messId: string) {
   for (const key of billCache.keys()) {

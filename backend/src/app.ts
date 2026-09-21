@@ -66,6 +66,15 @@ export function createApp(): Express {
   // General API rate limiting
   app.use('/api', apiRateLimiter);
 
+  // Disable caching on all API routes to prevent browsers/proxies from serving stale data
+  app.use('/api', (_req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    res.setHeader('Surrogate-Control', 'no-store');
+    next();
+  });
+
   // Mount API v1 router
   app.use('/api/v1', apiRouter);
 

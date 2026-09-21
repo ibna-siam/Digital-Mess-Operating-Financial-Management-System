@@ -20,37 +20,10 @@ export const BillsPage: React.FC = () => {
   const messId = activeMess?.id || '';
 
   const [activeTab, setActiveTab] = useState<'bills' | 'recurring'>('bills');
-  const [bills, setBills] = useState<Bill[]>(() => {
-    try {
-      const cached = sessionStorage.getItem(`messmate_bills_${messId}`);
-      return cached ? JSON.parse(cached) : [];
-    } catch {
-      return [];
-    }
-  });
-  const [recurringTemplates, setRecurringTemplates] = useState<RecurringBill[]>(() => {
-    try {
-      const cached = sessionStorage.getItem(`messmate_bill_templates_${messId}`);
-      return cached ? JSON.parse(cached) : [];
-    } catch {
-      return [];
-    }
-  });
-  const [members, setMembers] = useState<MessMember[]>(() => {
-    try {
-      const cached = sessionStorage.getItem(`messmate_members_${messId}`);
-      return cached ? JSON.parse(cached) : [];
-    } catch {
-      return [];
-    }
-  });
-  const [isLoading, setIsLoading] = useState(() => {
-    try {
-      return !sessionStorage.getItem(`messmate_bills_${messId}`);
-    } catch {
-      return true;
-    }
-  });
+  const [bills, setBills] = useState<Bill[]>([]);
+  const [recurringTemplates, setRecurringTemplates] = useState<RecurringBill[]>([]);
+  const [members, setMembers] = useState<MessMember[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<'ALL' | BillStatus>('ALL');
 
   // Add Bill Modal
@@ -77,6 +50,7 @@ export const BillsPage: React.FC = () => {
   const [paySubmitting, setPaySubmitting] = useState(false);
 
   const fetchBillsData = async () => {
+    setIsLoading(true);
     try {
       const [billsRes, templatesRes, membersRes] = await Promise.all([
         apiClient<Bill[]>(`/messes/${messId}/bills`),
@@ -87,13 +61,6 @@ export const BillsPage: React.FC = () => {
       setRecurringTemplates(templatesRes);
       const activeM = membersRes.filter((m) => m.status === 'ACTIVE');
       setMembers(activeM);
-      try {
-        sessionStorage.setItem(`messmate_bills_${messId}`, JSON.stringify(billsRes));
-        sessionStorage.setItem(`messmate_bill_templates_${messId}`, JSON.stringify(templatesRes));
-        sessionStorage.setItem(`messmate_members_${messId}`, JSON.stringify(activeM));
-      } catch {
-        //
-      }
       if (membersRes.length > 0 && !paidByMemberId) {
         setPaidByMemberId(membersRes[0].id);
       }

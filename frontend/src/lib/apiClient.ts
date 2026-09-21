@@ -46,6 +46,31 @@ export function clearApiCache(prefix?: string): void {
   }
 }
 
+// Immediately purge legacy sessionStorage page cache keys from client browsers
+try {
+  if (typeof window !== 'undefined' && window.sessionStorage) {
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < sessionStorage.length; i++) {
+      const key = sessionStorage.key(i);
+      if (
+        key &&
+        (key.startsWith('messmate_dash_cache_') ||
+          key.startsWith('messmate_members_') ||
+          key.startsWith('messmate_meals_') ||
+          key.startsWith('messmate_expenses_') ||
+          key.startsWith('messmate_bills_') ||
+          key.startsWith('messmate_bazar_') ||
+          key.startsWith('messmate_rooms_'))
+      ) {
+        keysToRemove.push(key);
+      }
+    }
+    keysToRemove.forEach((k) => sessionStorage.removeItem(k));
+  }
+} catch {
+  // Ignore environments without sessionStorage
+}
+
 export async function apiClient<T>(
   endpoint: string,
   options: ApiClientOptions = {}
@@ -79,6 +104,8 @@ export async function apiClient<T>(
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    Pragma: 'no-cache',
     ...(options.headers as Record<string, string>),
   };
 
@@ -90,6 +117,7 @@ export async function apiClient<T>(
     try {
       const response = await fetch(`${API_BASE}${endpoint}`, {
         ...options,
+        cache: 'no-store',
         headers,
       });
 

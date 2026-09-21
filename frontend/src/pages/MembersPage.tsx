@@ -31,35 +31,15 @@ export const MembersPage: React.FC = () => {
   const messId = activeMess?.id || '';
   const isManager = activeMess?.myRole === 'MANAGER' || activeMess?.myRole === 'OWNER';
 
-  const [members, setMembers] = useState<MemberListItem[]>(() => {
-    try {
-      const cached = sessionStorage.getItem(`messmate_members_page_${messId}`);
-      return cached ? JSON.parse(cached) : [];
-    } catch {
-      return [];
-    }
-  });
-  const [rooms, setRooms] = useState<Room[]>(() => {
-    try {
-      const cached = sessionStorage.getItem(`messmate_rooms_${messId}`);
-      return cached ? JSON.parse(cached) : [];
-    } catch {
-      return [];
-    }
-  });
+  const [members, setMembers] = useState<MemberListItem[]>([]);
+  const [rooms, setRooms] = useState<Room[]>([]);
   const [pagination, setPagination] = useState<MemberPagination>({
     page: 1,
     limit: 20,
     total: 0,
     totalPages: 1,
   });
-  const [isLoading, setIsLoading] = useState<boolean>(() => {
-    try {
-      return !sessionStorage.getItem(`messmate_members_page_${messId}`);
-    } catch {
-      return true;
-    }
-  });
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   // Filters
@@ -132,12 +112,6 @@ export const MembersPage: React.FC = () => {
         setMembers(membersResponse.members);
         if (membersResponse.pagination) {
           setPagination(membersResponse.pagination);
-        }
-        try {
-          sessionStorage.setItem(`messmate_members_page_${messId}`, JSON.stringify(membersResponse.members));
-          sessionStorage.setItem(`messmate_rooms_${messId}`, JSON.stringify(roomsData));
-        } catch {
-          //
         }
       } else if (Array.isArray(membersResponse)) {
         setMembers(

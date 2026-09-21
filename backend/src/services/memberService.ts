@@ -21,7 +21,7 @@ interface CacheItem<T> {
   timestamp: number;
 }
 const memberCache = new Map<string, CacheItem<any>>();
-const MEMBER_CACHE_TTL_MS = 15_000;
+const MEMBER_CACHE_TTL_MS = 0; // Disabled to guarantee real-time authoritative member data
 
 export function invalidateMemberCache(messId: string) {
   for (const key of memberCache.keys()) {

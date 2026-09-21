@@ -21,29 +21,9 @@ export const BazarPage: React.FC = () => {
   const { activeMess } = useAuth();
   const messId = activeMess?.id || '';
 
-  const [bazarList, setBazarList] = useState<BazarEntry[]>(() => {
-    try {
-      const cached = sessionStorage.getItem(`messmate_bazar_${messId}`);
-      return cached ? JSON.parse(cached) : [];
-    } catch {
-      return [];
-    }
-  });
-  const [members, setMembers] = useState<MessMember[]>(() => {
-    try {
-      const cached = sessionStorage.getItem(`messmate_members_${messId}`);
-      return cached ? JSON.parse(cached) : [];
-    } catch {
-      return [];
-    }
-  });
-  const [isLoading, setIsLoading] = useState(() => {
-    try {
-      return !sessionStorage.getItem(`messmate_bazar_${messId}`);
-    } catch {
-      return true;
-    }
-  });
+  const [bazarList, setBazarList] = useState<BazarEntry[]>([]);
+  const [members, setMembers] = useState<MessMember[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('ALL');
 
@@ -69,6 +49,7 @@ export const BazarPage: React.FC = () => {
   const [selectedEntry, setSelectedEntry] = useState<BazarEntry | null>(null);
 
   const fetchBazarData = async () => {
+    setIsLoading(true);
     try {
       const [bazarRes, membersRes] = await Promise.all([
         apiClient<BazarEntry[]>(`/messes/${messId}/bazar`),
@@ -77,12 +58,6 @@ export const BazarPage: React.FC = () => {
       setBazarList(bazarRes);
       const activeM = membersRes.filter((m) => m.status === 'ACTIVE');
       setMembers(activeM);
-      try {
-        sessionStorage.setItem(`messmate_bazar_${messId}`, JSON.stringify(bazarRes));
-        sessionStorage.setItem(`messmate_members_${messId}`, JSON.stringify(activeM));
-      } catch {
-        //
-      }
       if (membersRes.length > 0 && !buyerMemberId) {
         setBuyerMemberId(membersRes[0].id);
       }

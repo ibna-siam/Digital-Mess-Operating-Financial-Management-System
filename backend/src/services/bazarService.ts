@@ -29,7 +29,7 @@ interface CacheItem<T> {
   timestamp: number;
 }
 const bazarCache = new Map<string, CacheItem<any>>();
-const BAZAR_CACHE_TTL_MS = 15_000;
+const BAZAR_CACHE_TTL_MS = 0; // Disabled to guarantee fresh bazar data
 
 export function invalidateBazarCache(messId: string) {
   for (const key of bazarCache.keys()) {

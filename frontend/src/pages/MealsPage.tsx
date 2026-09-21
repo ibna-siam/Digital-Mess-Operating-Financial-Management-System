@@ -14,36 +14,11 @@ export const MealsPage: React.FC = () => {
   const [currentDate, setCurrentDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [activeTab, setActiveTab] = useState<'daily' | 'calendar'>('daily');
 
-  // Instant SWR state initialization from sessionStorage
-  const [meals, setMeals] = useState<MealRecord[]>(() => {
-    try {
-      const today = new Date().toISOString().split('T')[0];
-      const cached = sessionStorage.getItem(`messmate_meals_${messId}_${today}`);
-      return cached ? JSON.parse(cached) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  const [summary, setSummary] = useState<MealSummary | null>(() => {
-    try {
-      const today = new Date().toISOString().split('T')[0];
-      const cached = sessionStorage.getItem(`messmate_meals_summary_${messId}_${today}`);
-      return cached ? JSON.parse(cached) : null;
-    } catch {
-      return null;
-    }
-  });
-
+  // Clean state initialization
+  const [meals, setMeals] = useState<MealRecord[]>([]);
+  const [summary, setSummary] = useState<MealSummary | null>(null);
   const [calendarDays, setCalendarDays] = useState<Array<{ date: string; day: number; totalMeals: number }>>([]);
-  const [isLoading, setIsLoading] = useState(() => {
-    try {
-      const today = new Date().toISOString().split('T')[0];
-      return !sessionStorage.getItem(`messmate_meals_${messId}_${today}`);
-    } catch {
-      return true;
-    }
-  });
+  const [isLoading, setIsLoading] = useState(true);
 
   // Self entry state for current user
   const [myBreakfast, setMyBreakfast] = useState(false);
@@ -56,33 +31,7 @@ export const MealsPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchMealData = async (date: string) => {
-    const curMealsKey = `messmate_meals_${messId}_${date}`;
-    const curSummaryKey = `messmate_meals_summary_${messId}_${date}`;
-
-    // Read cache first for 0ms transition
-    try {
-      const cachedM = sessionStorage.getItem(curMealsKey);
-      const cachedS = sessionStorage.getItem(curSummaryKey);
-      if (cachedM && cachedS) {
-        const parsedM = JSON.parse(cachedM);
-        const parsedS = JSON.parse(cachedS);
-        setMeals(parsedM);
-        setSummary(parsedS);
-        setIsLoading(false);
-
-        const myEntry = parsedM.find((m: MealRecord) => m.memberName.toLowerCase().includes(user?.name?.toLowerCase() || 'siam'));
-        if (myEntry) {
-          setMyBreakfast(myEntry.breakfast > 0);
-          setMyLunch(myEntry.lunch > 0);
-          setMyDinner(myEntry.dinner > 0);
-        }
-      } else if (meals.length === 0) {
-        setIsLoading(true);
-      }
-    } catch {
-      //
-    }
-
+    setIsLoading(true);
     try {
       const [dailyData, summaryData] = await Promise.all([
         apiClient<MealRecord[]>(`/messes/${messId}/meals?date=${date}`),
@@ -91,13 +40,6 @@ export const MealsPage: React.FC = () => {
 
       setMeals(dailyData);
       setSummary(summaryData);
-
-      try {
-        sessionStorage.setItem(curMealsKey, JSON.stringify(dailyData));
-        sessionStorage.setItem(curSummaryKey, JSON.stringify(summaryData));
-      } catch {
-        // Ignore storage quota
-      }
 
       // Find current user's entry
       const myEntry = dailyData.find((m) => m.memberName.toLowerCase().includes(user?.name?.toLowerCase() || 'siam'));
