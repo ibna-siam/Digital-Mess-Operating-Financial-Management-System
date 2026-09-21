@@ -5,6 +5,7 @@ export const authRateLimiter = rateLimit({
   max: 30, // Limit each IP to 30 authentication requests per 15 minutes
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
   message: {
     success: false,
     error: {
@@ -19,6 +20,7 @@ export const apiRateLimiter = rateLimit({
   max: 300, // 300 requests per minute
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
   message: {
     success: false,
     error: {
@@ -33,6 +35,7 @@ export const financialMutationRateLimiter = rateLimit({
   max: 60, // 60 financial mutation operations per minute per IP
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { xForwardedForHeader: false },
   message: {
     success: false,
     error: {
@@ -41,3 +44,4 @@ export const financialMutationRateLimiter = rateLimit({
     },
   },
 });
+

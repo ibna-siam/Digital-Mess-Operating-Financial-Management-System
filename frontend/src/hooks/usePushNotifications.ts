@@ -4,6 +4,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext.js';
+import { API_BASE } from '../lib/apiClient.js';
 
 function urlBase64ToUint8Array(base64String: string) {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -66,7 +67,7 @@ export function usePushNotifications() {
       }
 
       // 2. Fetch VAPID public key
-      const keyRes = await fetch('/api/v1/notifications/push/vapid-public-key', {
+      const keyRes = await fetch(`${API_BASE}/notifications/push/vapid-public-key`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const keyJson = await keyRes.json();
@@ -89,7 +90,7 @@ export function usePushNotifications() {
 
       // 4. Save subscription to backend
       const rawSub = subscription.toJSON();
-      const saveRes = await fetch('/api/v1/notifications/push/subscribe', {
+      const saveRes = await fetch(`${API_BASE}/notifications/push/subscribe`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -132,7 +133,7 @@ export function usePushNotifications() {
         await subscription.unsubscribe();
 
         // Revoke on backend
-        await fetch('/api/v1/notifications/push/unsubscribe', {
+        await fetch(`${API_BASE}/notifications/push/unsubscribe`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -156,7 +157,7 @@ export function usePushNotifications() {
   const sendTestNotification = useCallback(async () => {
     if (!token) return;
     try {
-      await fetch('/api/v1/notifications/push/test', {
+      await fetch(`${API_BASE}/notifications/push/test`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

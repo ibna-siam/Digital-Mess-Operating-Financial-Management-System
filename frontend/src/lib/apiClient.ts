@@ -1,6 +1,6 @@
 import { syncEvents } from './syncEvents.js';
 
-const API_BASE = (import.meta as any).env?.VITE_API_BASE_URL || '/api/v1';
+export const API_BASE = (import.meta as any).env?.VITE_API_BASE_URL || '/api/v1';
 
 export class ApiError extends Error {
   code: string;
@@ -115,11 +115,30 @@ export async function apiClient<T>(
 
   const fetchPromise = (async () => {
     try {
-      const response = await fetch(`${API_BASE}${endpoint}`, {
-        ...options,
-        cache: 'no-store',
-        headers,
-      });
+      let response: Response;
+      try {
+        response = await fetch(`${API_BASE}${endpoint}`, {
+          ...options,
+          cache: 'no-store',
+          headers,
+        });
+      } catch (networkErr: unknown) {
+        // If initial attempt fails (e.g., Render backend cold start / network flicker), wait 1.2s and retry once
+        await new Promise((r) => setTimeout(r, 1200));
+        try {
+          response = await fetch(`${API_BASE}${endpoint}`, {
+            ...options,
+            cache: 'no-store',
+            headers,
+          });
+        } catch {
+          throw new ApiError(
+            0,
+            'NETWORK_UNREACHABLE',
+            'Cannot reach the MessMate server. If the backend was idle, it may take 30-50 seconds to wake up from free-tier sleep. Please wait a moment and try again.'
+          );
+        }
+      }
 
       const data = await response.json().catch(() => ({}));
 

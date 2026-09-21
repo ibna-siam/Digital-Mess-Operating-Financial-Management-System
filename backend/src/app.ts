@@ -9,6 +9,9 @@ import { env } from './config/env.js';
 export function createApp(): Express {
   const app = express();
 
+  // Trust first proxy hop (Render / Cloudflare reverse proxy)
+  app.set('trust proxy', 1);
+
   // Security headers
   app.use(
     helmet({

@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { Bell, BellOff, X, Shield, Send, Loader2 } from 'lucide-react';
 import { usePushNotifications } from '../../hooks/usePushNotifications.js';
 import { useAuth } from '../../context/AuthContext.js';
+import { API_BASE } from '../../lib/apiClient.js';
 
 interface NotificationPreferencesModalProps {
   isOpen: boolean;
@@ -41,7 +42,7 @@ export const NotificationPreferencesModal: React.FC<NotificationPreferencesModal
   useEffect(() => {
     if (!isOpen || !token) return;
 
-    fetch('/api/v1/notifications/preferences', {
+    fetch(`${API_BASE}/notifications/preferences`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
@@ -68,7 +69,7 @@ export const NotificationPreferencesModal: React.FC<NotificationPreferencesModal
     setSaving(true);
 
     try {
-      await fetch('/api/v1/notifications/preferences', {
+      await fetch(`${API_BASE}/notifications/preferences`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

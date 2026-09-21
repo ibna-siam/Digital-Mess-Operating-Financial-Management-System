@@ -4,6 +4,7 @@
    =================================================================== */
 
 import { OfflineStorage } from './indexedDb.js';
+import { API_BASE } from './apiClient.js';
 import type { QueryClient } from '@tanstack/react-query';
 
 export interface SyncReport {
@@ -81,7 +82,7 @@ class SyncEngineClass {
         })),
       };
 
-      const res = await fetch('/api/v1/sync/actions', {
+      const res = await fetch(`${API_BASE}/sync/actions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
