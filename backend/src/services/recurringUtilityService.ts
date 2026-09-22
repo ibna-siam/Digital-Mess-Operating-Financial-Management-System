@@ -39,62 +39,7 @@ const memoryTemplates: Map<string, RecurringTemplateDTO[]> = new Map();
 
 function initMemoryTemplates(messId: string): RecurringTemplateDTO[] {
   if (!memoryTemplates.has(messId)) {
-    memoryTemplates.set(messId, [
-      {
-        id: 'rec-1',
-        messId,
-        name: 'High-Speed Fiber Wi-Fi',
-        category: 'WIFI',
-        utilityType: 'FIXED',
-        defaultAmount: 1200,
-        frequency: 'MONTHLY',
-        dueDay: 10,
-        splitMethod: 'EQUAL',
-        autoGenerate: true,
-        requiresReview: false,
-        isActive: true,
-        lastGeneratedPeriod: null,
-        notes: 'Monthly optical fiber package',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        id: 'rec-2',
-        messId,
-        name: 'Housekeeper / Maid Salary',
-        category: 'MAID',
-        utilityType: 'FIXED',
-        defaultAmount: 4500,
-        frequency: 'MONTHLY',
-        dueDay: 5,
-        splitMethod: 'EQUAL',
-        autoGenerate: false,
-        requiresReview: true,
-        isActive: true,
-        lastGeneratedPeriod: null,
-        notes: 'Monthly cooking and cleaning service',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        id: 'rec-3',
-        messId,
-        name: 'House Rent',
-        category: 'RENT',
-        utilityType: 'ROOM_BASED',
-        defaultAmount: 20000,
-        frequency: 'MONTHLY',
-        dueDay: 7,
-        splitMethod: 'ROOM_BASED',
-        autoGenerate: false,
-        requiresReview: true,
-        isActive: true,
-        lastGeneratedPeriod: null,
-        notes: 'Monthly flat rent to landlord',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    ]);
+    memoryTemplates.set(messId, []);
   }
   return memoryTemplates.get(messId)!;
 }

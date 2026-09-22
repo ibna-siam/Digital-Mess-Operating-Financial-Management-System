@@ -43,50 +43,7 @@ const memoryRooms: Map<string, RoomDTO[]> = new Map();
 
 function initMemoryRooms(messId: string): RoomDTO[] {
   if (!memoryRooms.has(messId)) {
-    memoryRooms.set(messId, [
-      {
-        id: 'rm-101',
-        messId,
-        roomNumber: 'A-101',
-        floor: '1st',
-        capacity: 2,
-        monthlyRent: 8000,
-        isActive: true,
-        occupantCount: 1,
-        notes: 'Master Bedroom with Attached Balcony',
-        occupants: [{ memberId: 'mem-1', name: 'Siam Ahmed', role: 'OWNER' }],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        id: 'rm-102',
-        messId,
-        roomNumber: 'A-102',
-        floor: '1st',
-        capacity: 2,
-        monthlyRent: 6000,
-        isActive: true,
-        occupantCount: 1,
-        notes: 'Standard Double Room',
-        occupants: [{ memberId: 'mem-2', name: 'Rahim Khan', role: 'MANAGER' }],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        id: 'rm-103',
-        messId,
-        roomNumber: 'A-103',
-        floor: '1st',
-        capacity: 2,
-        monthlyRent: 6000,
-        isActive: true,
-        occupantCount: 1,
-        notes: 'East-facing Room',
-        occupants: [{ memberId: 'mem-3', name: 'Tanvir Hossain', role: 'MEMBER' }],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    ]);
+    memoryRooms.set(messId, []);
   }
   return memoryRooms.get(messId)!;
 }

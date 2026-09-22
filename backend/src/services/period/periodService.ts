@@ -27,22 +27,7 @@ export interface FinancialPeriodDTO {
 }
 
 // In-memory periods store for fallback and unit tests
-const memoryPeriods: FinancialPeriodDTO[] = [
-  {
-    id: 'fp-2026-09',
-    messId: 'mess-greenview-01',
-    year: 2026,
-    month: 9,
-    periodKey: '2026-09',
-    startDate: '2026-09-01T00:00:00.000Z',
-    endDate: '2026-09-30T23:59:59.999Z',
-    status: 'ACTIVE' as PeriodStatus,
-    openedAt: '2026-09-01T00:00:00.000Z',
-    openedById: 'user-owner-01',
-    createdAt: '2026-09-01T00:00:00.000Z',
-    updatedAt: '2026-09-01T00:00:00.000Z',
-  },
-];
+const memoryPeriods: FinancialPeriodDTO[] = [];
 
 export const VALID_TRANSITIONS: Record<PeriodStatus, PeriodStatus[]> = {
   OPEN: ['ACTIVE'],

@@ -395,8 +395,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenNotificationPreferences })
               }}
             >
               <div style={{ padding: '8px 14px', borderBottom: '1px solid var(--color-border)' }}>
-                <div style={{ fontSize: '0.8rem', fontWeight: 600 }}>{user?.name || 'Siam Ahmed'}</div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{user?.email || 'admin@messmate.com'}</div>
+                <div style={{ fontSize: '0.8rem', fontWeight: 600 }}>{user?.name || 'Resident'}</div>
+                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{user?.email || ''}</div>
               </div>
               <button
                 onClick={() => {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Building2, Lock, Mail, ArrowRight, AlertCircle, RefreshCw, Sparkles } from 'lucide-react';
+import { Building2, Lock, Mail, ArrowRight, AlertCircle, RefreshCw } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.js';
 import { apiClient, ApiError } from '../lib/apiClient.js';
 import { Button } from '../components/ui/Button.js';
@@ -44,12 +44,6 @@ export const LoginPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const fillDemoCredentials = () => {
-    setEmail('admin@messmate.com');
-    setPassword('Password@123');
-    setError(null);
   };
 
   return (
@@ -285,32 +279,6 @@ export const LoginPage: React.FC = () => {
           >
             Sign In to MessMate
           </Button>
-
-          <button
-            type="button"
-            onClick={fillDemoCredentials}
-            style={{
-              width: '100%',
-              height: 42,
-              borderRadius: 12,
-              border: '1px dashed #cbd5e1',
-              background: '#f8fafc',
-              color: '#475569',
-              fontSize: '0.82rem',
-              fontWeight: 600,
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 8,
-              cursor: 'pointer',
-              transition: 'background 0.2s',
-            }}
-            onMouseOver={(e) => (e.currentTarget.style.background = '#f1f5f9')}
-            onMouseOut={(e) => (e.currentTarget.style.background = '#f8fafc')}
-          >
-            <Sparkles size={15} style={{ color: '#10B981' }} />
-            Fill Demo Credentials (admin@messmate.com)
-          </button>
         </form>
 
         <div style={{ marginTop: 26, textAlign: 'center', fontSize: '0.84rem', color: '#64748b' }}>

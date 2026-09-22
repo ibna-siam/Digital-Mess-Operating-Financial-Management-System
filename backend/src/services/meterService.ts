@@ -40,27 +40,7 @@ const memoryMeterReadings: Map<string, MeterReadingDTO[]> = new Map();
 
 function initMemoryReadings(messId: string): MeterReadingDTO[] {
   if (!memoryMeterReadings.has(messId)) {
-    memoryMeterReadings.set(messId, [
-      {
-        id: 'mr-1',
-        messId,
-        meterType: 'ELECTRICITY',
-        meterName: 'Main Building DESCO Meter',
-        meterIdentifier: 'ELEC-MAIN-01',
-        roomNumber: null,
-        billingPeriod: '2026-08',
-        readingDate: '2026-08-31',
-        currentValue: 1250,
-        previousValue: 1100,
-        consumedUnits: 150,
-        isRollover: false,
-        recordedById: 'mem-1',
-        recordedByName: 'Siam Ahmed',
-        notes: 'August final reading',
-        createdAt: new Date('2026-08-31').toISOString(),
-        updatedAt: new Date('2026-08-31').toISOString(),
-      },
-    ]);
+    memoryMeterReadings.set(messId, []);
   }
   return memoryMeterReadings.get(messId)!;
 }
