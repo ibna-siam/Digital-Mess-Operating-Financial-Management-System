@@ -33,20 +33,9 @@ describe('MessMate Phase 4 — Monthly Closing, Financial Reports & Statements S
     token = loginRes.body.data.token;
     adminUserId = loginRes.body.data.user.id;
 
-    let mess = await prisma.mess.findFirst({
-      include: { members: true },
-    });
-
+    const mess = await prisma.mess.findFirst();
     if (!mess) {
-      mess = await prisma.mess.create({
-        data: {
-          name: 'Month End Test Mess',
-          code: 'MM-MONTHEND',
-          currency: 'BDT',
-          currencySymbol: '৳',
-        },
-        include: { members: true },
-      });
+      throw new Error('No mess found for test');
     }
 
     resolvedMessId = mess.id;

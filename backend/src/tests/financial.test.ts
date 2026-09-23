@@ -29,21 +29,10 @@ describe('MessMate Phase 3 — Financial Engine & Smart Settlement Test Suite', 
     token = loginRes.body.data.token;
     adminUserId = loginRes.body.data.user.id;
 
-    // Find any existing mess or create one
-    let mess = await prisma.mess.findFirst({
-      include: { members: true },
-    });
-
+    // Find any existing mess
+    const mess = await prisma.mess.findFirst();
     if (!mess) {
-      mess = await prisma.mess.create({
-        data: {
-          name: 'Financial Test Mess',
-          code: 'MM-FIN01',
-          currency: 'BDT',
-          currencySymbol: '৳',
-        },
-        include: { members: true },
-      });
+      throw new Error('No mess found for test');
     }
 
     resolvedMessId = mess.id;

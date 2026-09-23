@@ -239,7 +239,7 @@ export async function seedFiveMonthsDemo() {
         date: new Date(Date.UTC(year, month - 1, 2 + (i % 3))),
         paymentMethod: i % 2 === 0 ? 'BKASH' : 'BANK',
         reference: `TRX-${periodKey.replace('-', '')}-${mem.name.substring(0, 3).toUpperCase()}${i}`,
-        status: 'CONFIRMED',
+        status: PaymentStatus.CONFIRMED,
         notes: `Monthly advance deposit for ${periodKey}`,
       });
       totalDeposits++;
