@@ -9,7 +9,7 @@ import { OfflineStatusBar } from '../pwa/OfflineStatusBar.js';
 import { InstallPromptBanner } from '../pwa/InstallPromptBanner.js';
 import { UpdatePromptModal } from '../pwa/UpdatePromptModal.js';
 import { NotificationPreferencesModal } from '../pwa/NotificationPreferencesModal.js';
-import { PageLoader } from '../ui/StateComponents.js';
+import { AppViewSkeleton } from '../ui/StateComponents.js';
 
 export const AppLayout: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -50,7 +50,7 @@ export const AppLayout: React.FC = () => {
         />
 
         <main className="page-content">
-          <React.Suspense fallback={<PageLoader message="Loading view..." />}>
+          <React.Suspense fallback={<AppViewSkeleton />}>
             <Outlet />
           </React.Suspense>
         </main>

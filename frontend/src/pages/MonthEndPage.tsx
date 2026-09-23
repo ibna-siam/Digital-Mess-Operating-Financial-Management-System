@@ -17,7 +17,7 @@ import {
 import { Button } from '../components/ui/Button.js';
 import { Badge } from '../components/ui/Badge.js';
 import { Modal } from '../components/ui/Modal.js';
-import { PageLoader } from '../components/ui/StateComponents.js';
+import { AppViewSkeleton } from '../components/ui/StateComponents.js';
 import { useDataSync } from '../hooks/useDataSync.js';
 import { apiClient } from '../lib/apiClient.js';
 import { useAuth } from '../context/AuthContext.js';
@@ -188,8 +188,8 @@ export const MonthEndPage: React.FC = () => {
     }
   };
 
-  if (isLoading) {
-    return <PageLoader message="Loading Month-End Review Center..." />;
+  if (isLoading && !period) {
+    return <AppViewSkeleton title="Month-End Closing & Audit" />;
   }
 
   const isClosed = period?.status === 'CLOSED';
@@ -198,7 +198,7 @@ export const MonthEndPage: React.FC = () => {
   const hasBlockingIssues = (validation?.blockingIssues?.length || 0) > 0;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 24, paddingBottom: 60 }}>
+    <div className="page-enter" style={{ display: 'flex', flexDirection: 'column', gap: 24, paddingBottom: 60 }}>
       {/* Header & Controls */}
       <div
         style={{

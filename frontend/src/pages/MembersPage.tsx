@@ -18,7 +18,7 @@ import {
 import { Button } from '../components/ui/Button.js';
 import { Badge } from '../components/ui/Badge.js';
 import { Modal } from '../components/ui/Modal.js';
-import { PageLoader, EmptyState } from '../components/ui/StateComponents.js';
+import { EmptyState, AppViewSkeleton } from '../components/ui/StateComponents.js';
 import { apiClient } from '../lib/apiClient.js';
 import { useAuth } from '../context/AuthContext.js';
 import { useDataSync } from '../hooks/useDataSync.js';
@@ -244,52 +244,45 @@ export const MembersPage: React.FC = () => {
   const onLeaveCount = members.filter((m) => m.status === 'ON_LEAVE' || m.status === 'LEAVING_REQUESTED').length;
   const owingCount = members.filter((m) => (m.netBalance || 0) < 0).length;
 
+  if (isLoading && members.length === 0) {
+    return <AppViewSkeleton title="Member & Living Directory" />;
+  }
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 24, paddingBottom: 40 }}>
+    <div className="page-enter max-w-7xl mx-auto space-y-5 p-2 sm:p-4">
       {/* Toast Feedback */}
       {feedback && (
         <div
-          style={{
-            position: 'fixed',
-            top: 20,
-            right: 20,
-            zIndex: 9999,
-            padding: '12px 18px',
-            borderRadius: 'var(--radius-md)',
-            backgroundColor: feedback.type === 'success' ? '#ecfdf5' : '#fef2f2',
-            border: `1px solid ${feedback.type === 'success' ? '#a7f3d0' : '#fecaca'}`,
-            color: feedback.type === 'success' ? '#065f46' : '#991b1b',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            fontSize: '0.85rem',
-            boxShadow: 'var(--shadow-lg)',
-          }}
+          className={`flex items-center gap-2 p-3.5 rounded-2xl text-xs font-semibold shadow-md ${
+            feedback.type === 'success'
+              ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+              : 'bg-rose-50 text-rose-800 border border-rose-200'
+          }`}
         >
-          {feedback.type === 'success' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+          {feedback.type === 'success' ? <CheckCircle2 size={16} className="text-emerald-600" /> : <AlertCircle size={16} className="text-rose-600" />}
           <span>{feedback.message}</span>
         </div>
       )}
 
       {/* A. Page Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-100">
         <div>
-          <h1 style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--text-main)', letterSpacing: '-0.02em', display: 'flex', alignItems: 'center', gap: 10 }}>
-            <Users size={26} style={{ color: 'var(--color-primary)' }} />
+          <h1 className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight flex items-center gap-2">
+            <Users size={24} className="text-emerald-600" />
             Member & Living Directory
           </h1>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: 4 }}>
+          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
             Manage lifecycle, invitations, room capacities, meal eligibility, and member profiles.
           </p>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-          <Button variant="secondary" onClick={() => setIsAddRoomModalOpen(true)}>
-            <DoorOpen size={16} /> Add Room
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button variant="secondary" onClick={() => setIsAddRoomModalOpen(true)} className="text-xs py-1.5 px-3 rounded-xl touch-spring">
+            <DoorOpen size={14} /> Add Room
           </Button>
 
-          <Button variant="secondary" onClick={() => setIsAddDirectModalOpen(true)}>
-            <UserPlus size={16} /> Direct Add
+          <Button variant="secondary" onClick={() => setIsAddDirectModalOpen(true)} className="text-xs py-1.5 px-3 rounded-xl touch-spring">
+            <UserPlus size={14} /> Direct Add
           </Button>
 
           <Button
@@ -300,97 +293,64 @@ export const MembersPage: React.FC = () => {
               setInviteName('');
               setIsInviteModalOpen(true);
             }}
+            className="text-xs py-1.5 px-3 rounded-xl touch-spring shadow-xs"
           >
-            <Mail size={16} /> Invite Member Link
+            <Mail size={14} /> Invite Link
           </Button>
         </div>
       </div>
 
       {/* B. Summary Section: KPI Cards Grid */}
-      <div className="kpi-grid">
-        <div className="kpi-card">
-          <div className="kpi-header">
-            <span className="kpi-title">Total In Directory</span>
-            <div className="kpi-icon-box" style={{ backgroundColor: '#f1f5f9' }}>
-              <Users size={18} color="var(--text-muted)" />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-100 shadow-xs space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Directory</span>
+            <div className="w-7 h-7 rounded-xl bg-slate-100 flex items-center justify-center text-slate-500">
+              <Users size={14} />
             </div>
           </div>
-          <div className="kpi-value">{totalCount}</div>
-          <div className="kpi-subtext" style={{ color: 'var(--text-muted)' }}>
-            Across all lifecycle stages
-          </div>
+          <div className="text-lg sm:text-xl font-black text-slate-900 font-mono">{totalCount}</div>
+          <div className="text-[11px] text-slate-500">All registered residents</div>
         </div>
 
-        <div className="kpi-card">
-          <div className="kpi-header">
-            <span className="kpi-title">Active Members</span>
-            <div className="kpi-icon-box" style={{ backgroundColor: '#ecfdf5' }}>
-              <CheckCircle2 size={18} color="#10b981" />
+        <div className="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-100 shadow-xs space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-600">Active</span>
+            <div className="w-7 h-7 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+              <CheckCircle2 size={14} />
             </div>
           </div>
-          <div className="kpi-value" style={{ color: '#10b981' }}>
-            {activeCount}
-          </div>
-          <div className="kpi-subtext" style={{ color: '#10b981' }}>
-            Participating in meals/rent
-          </div>
+          <div className="text-lg sm:text-xl font-black text-emerald-700 font-mono">{activeCount}</div>
+          <div className="text-[11px] text-emerald-600/80">Participating in meals/rent</div>
         </div>
 
-        <div className="kpi-card">
-          <div className="kpi-header">
-            <span className="kpi-title">On Leave / Exiting</span>
-            <div className="kpi-icon-box" style={{ backgroundColor: '#fffbeb' }}>
-              <Clock size={18} color="#f59e0b" />
+        <div className="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-100 shadow-xs space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-600">On Leave</span>
+            <div className="w-7 h-7 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+              <Clock size={14} />
             </div>
           </div>
-          <div className="kpi-value" style={{ color: '#f59e0b' }}>
-            {onLeaveCount}
-          </div>
-          <div className="kpi-subtext" style={{ color: '#f59e0b' }}>
-            Exempt from active meals
-          </div>
+          <div className="text-lg sm:text-xl font-black text-amber-700 font-mono">{onLeaveCount}</div>
+          <div className="text-[11px] text-amber-600/80">Exempt from active meals</div>
         </div>
 
-        <div className="kpi-card">
-          <div className="kpi-header">
-            <span className="kpi-title">Owing Balance</span>
-            <div className="kpi-icon-box" style={{ backgroundColor: '#fef2f2' }}>
-              <Wallet size={18} color="#ef4444" />
+        <div className="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-100 shadow-xs space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-rose-600">Owing Balance</span>
+            <div className="w-7 h-7 rounded-xl bg-rose-50 flex items-center justify-center text-rose-600">
+              <Wallet size={14} />
             </div>
           </div>
-          <div className="kpi-value" style={{ color: '#ef4444' }}>
-            {owingCount}
-          </div>
-          <div className="kpi-subtext" style={{ color: '#ef4444' }}>
-            Debtors needing settlement
-          </div>
+          <div className="text-lg sm:text-xl font-black text-rose-700 font-mono">{owingCount}</div>
+          <div className="text-[11px] text-rose-600/80">Residents with deficit</div>
         </div>
       </div>
 
-      {/* C. Search & Filters Bar */}
-      <div
-        style={{
-          background: 'var(--color-card)',
-          border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '18px 20px',
-          boxShadow: 'var(--shadow-card)',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 14,
-        }}
-      >
+      {/* C. Search & Filter Bar */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-xs p-3.5 sm:p-4 space-y-3">
         {/* Status Pills */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            overflowX: 'auto',
-            paddingBottom: 8,
-            borderBottom: '1px solid var(--color-border)',
-          }}
-        >
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 border-b border-slate-100">
           {(
             [
               { id: 'ALL', label: 'All Members' },
@@ -406,18 +366,11 @@ export const MembersPage: React.FC = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveStatusTab(tab.id)}
-                style={{
-                  padding: '6px 14px',
-                  borderRadius: 'var(--radius-full)',
-                  fontSize: '0.8rem',
-                  fontWeight: isActive ? 700 : 500,
-                  border: 'none',
-                  backgroundColor: isActive ? 'var(--color-primary)' : '#f1f5f9',
-                  color: isActive ? '#ffffff' : 'var(--text-muted)',
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  transition: 'all 0.15s ease',
-                }}
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all touch-spring ${
+                  isActive
+                    ? 'bg-slate-900 text-white shadow-xs'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
               >
                 {tab.label}
               </button>
@@ -425,35 +378,20 @@ export const MembersPage: React.FC = () => {
           })}
         </div>
 
-        {/* Search & Dropdown Filters Row */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
+        {/* Search & Select Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
           {/* Search Box */}
-          <form onSubmit={handleSearchSubmit} style={{ position: 'relative' }}>
+          <form onSubmit={handleSearchSubmit} className="relative">
             <Search
-              size={16}
-              style={{
-                position: 'absolute',
-                left: 12,
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: 'var(--text-subtle)',
-              }}
+              size={14}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
             />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search name, room, email..."
-              style={{
-                width: '100%',
-                padding: '8px 12px 8px 36px',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--color-border)',
-                backgroundColor: '#ffffff',
-                fontSize: '0.82rem',
-                color: 'var(--text-main)',
-                outline: 'none',
-              }}
+              className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-emerald-500 focus:outline-none transition-colors"
             />
           </form>
 
@@ -461,15 +399,7 @@ export const MembersPage: React.FC = () => {
           <select
             value={selectedRole}
             onChange={(e) => setSelectedRole(e.target.value)}
-            style={{
-              padding: '8px 12px',
-              borderRadius: 'var(--radius-md)',
-              border: '1px solid var(--color-border)',
-              backgroundColor: '#ffffff',
-              fontSize: '0.82rem',
-              color: 'var(--text-main)',
-              outline: 'none',
-            }}
+            className="w-full py-1.5 px-3 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-emerald-500 focus:outline-none transition-colors"
           >
             <option value="ALL">All Roles</option>
             <option value="MANAGER">MANAGER</option>
@@ -480,15 +410,7 @@ export const MembersPage: React.FC = () => {
           <select
             value={selectedRoomId}
             onChange={(e) => setSelectedRoomId(e.target.value)}
-            style={{
-              padding: '8px 12px',
-              borderRadius: 'var(--radius-md)',
-              border: '1px solid var(--color-border)',
-              backgroundColor: '#ffffff',
-              fontSize: '0.82rem',
-              color: 'var(--text-main)',
-              outline: 'none',
-            }}
+            className="w-full py-1.5 px-3 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-emerald-500 focus:outline-none transition-colors"
           >
             <option value="ALL">All Rooms</option>
             {rooms.map((r) => (
@@ -502,15 +424,7 @@ export const MembersPage: React.FC = () => {
           <select
             value={balanceFilter}
             onChange={(e) => setBalanceFilter(e.target.value as any)}
-            style={{
-              padding: '8px 12px',
-              borderRadius: 'var(--radius-md)',
-              border: '1px solid var(--color-border)',
-              backgroundColor: '#ffffff',
-              fontSize: '0.82rem',
-              color: 'var(--text-main)',
-              outline: 'none',
-            }}
+            className="w-full py-1.5 px-3 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-emerald-500 focus:outline-none transition-colors"
           >
             <option value="ALL">All Balances</option>
             <option value="DEFICIT">Owes Money (Deficit)</option>
@@ -520,19 +434,15 @@ export const MembersPage: React.FC = () => {
         </div>
       </div>
 
-      {/* D. Member List with Proper LOADING, ERROR, EMPTY, DATA States */}
-      <div className="table-container">
-        {isLoading ? (
-          <PageLoader message="Loading member directory..." />
-        ) : error ? (
-          <div style={{ padding: '48px 20px', textAlign: 'center', backgroundColor: '#fef2f2' }}>
-            <AlertCircle size={40} style={{ color: '#ef4444', margin: '0 auto 10px' }} />
-            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#991b1b' }}>Failed to Load Members</h3>
-            <p style={{ fontSize: '0.82rem', color: '#b91c1c', marginTop: 4, maxWidth: 460, margin: '4px auto 16px' }}>
-              {error}
-            </p>
-            <Button variant="secondary" onClick={() => fetchMembers()}>
-              <RefreshCw size={14} /> Retry Loading
+      {/* D. Member List Container */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden">
+        {error ? (
+          <div className="p-10 text-center bg-rose-50/50">
+            <AlertCircle size={36} className="text-rose-500 mx-auto mb-2" />
+            <h3 className="text-sm font-bold text-rose-800">Failed to Load Members</h3>
+            <p className="text-xs text-rose-600 mt-1 max-w-md mx-auto mb-4">{error}</p>
+            <Button variant="secondary" onClick={() => fetchMembers()} className="text-xs py-1 px-3">
+              <RefreshCw size={13} /> Retry Loading
             </Button>
           </div>
         ) : members.length === 0 ? (
@@ -543,128 +453,96 @@ export const MembersPage: React.FC = () => {
         ) : (
           <>
             {/* Mobile View: Dedicated Member Cards (< md) */}
-            <div className="block md:hidden">
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: '12px' }}>
-            {members.map((member) => (
-              <div
-                key={member.id}
-                onClick={() => navigate(`/members/${member.id}`)}
-                style={{
-                  background: 'var(--color-card, #ffffff)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: '16px',
-                  padding: '14px',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 12,
-                }}
-              >
-                {/* Top Row: Avatar, Name, Email, Balance */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
-                    <div
-                      style={{
-                        width: 42,
-                        height: 42,
-                        borderRadius: '12px',
-                        backgroundColor: 'rgba(16, 185, 129, 0.12)',
-                        color: 'var(--color-primary)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontWeight: 700,
-                        fontSize: '1rem',
-                        flexShrink: 0,
-                      }}
-                    >
-                      {member.name.charAt(0).toUpperCase()}
-                    </div>
-                    <div style={{ minWidth: 0 }}>
-                      <div style={{ fontWeight: 700, color: 'var(--text-main)', fontSize: '0.92rem', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
-                        {member.name}
+            <div className="block md:hidden p-3 space-y-2.5">
+              {members.map((member) => (
+                <div
+                  key={member.id}
+                  onClick={() => navigate(`/members/${member.id}`)}
+                  className="bg-white rounded-2xl p-3.5 border border-slate-100 shadow-xs space-y-3 cursor-pointer touch-card"
+                >
+                  {/* Top Row: Avatar, Name, Email, Balance */}
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 font-bold flex items-center justify-center text-sm shrink-0 border border-emerald-100">
+                        {member.name.charAt(0).toUpperCase()}
                       </div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
-                        {member.email}
+                      <div className="min-w-0">
+                        <div className="font-bold text-slate-800 text-sm truncate">
+                          {member.name}
+                        </div>
+                        <div className="text-xs text-slate-400 truncate">
+                          {member.email}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Net Balance Pill */}
-                  <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                    <div
-                      style={{
-                        fontSize: '0.88rem',
-                        fontWeight: 700,
-                        fontFamily: 'monospace',
-                        color:
+                    {/* Net Balance Pill */}
+                    <div className="text-right shrink-0">
+                      <div
+                        className={`text-sm font-black font-mono ${
                           (member.netBalance || 0) > 0
-                            ? 'var(--color-success, #10b981)'
+                            ? 'text-emerald-600'
                             : (member.netBalance || 0) < 0
-                            ? 'var(--color-danger, #ef4444)'
-                            : 'var(--text-muted)',
-                      }}
-                    >
-                      {(member.netBalance || 0) > 0
-                        ? `+৳${(member.netBalance || 0).toFixed(0)}`
-                        : (member.netBalance || 0) < 0
-                        ? `-৳${Math.abs(member.netBalance || 0).toFixed(0)}`
-                        : '৳0'}
-                    </div>
-                    <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600 }}>
-                      {(member.netBalance || 0) < 0 ? 'OWES' : (member.netBalance || 0) > 0 ? 'REFUND' : 'SETTLED'}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Bottom Row: Room, Role, Status Badges & Quick Action */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--color-border)', paddingTop: 10 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                    <Badge variant="primary">{member.role}</Badge>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-main)', backgroundColor: '#f1f5f9', padding: '2px 8px', borderRadius: '6px', fontWeight: 600 }}>
-                      {member.roomNo ? `Room ${member.roomNo}` : 'No Room'}
-                    </span>
-                    <Badge
-                      variant={
-                        member.status === 'ACTIVE'
-                          ? 'success'
-                          : member.status === 'ON_LEAVE'
-                          ? 'warning'
-                          : member.status === 'ARCHIVED'
-                          ? 'neutral'
-                          : 'danger'
-                      }
-                    >
-                      {member.status}
-                    </Badge>
-                  </div>
-
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={(e) => e.stopPropagation()}>
-                    <button
-                      onClick={() => navigate(`/members/${member.id}/statement`)}
-                      className="header-icon-btn"
-                      style={{ width: 32, height: 32, borderRadius: '8px' }}
-                      title="Financial Statement"
-                    >
-                      <FileText size={15} />
-                    </button>
-                    {member.status !== 'ARCHIVED' && (
-                      <button
-                        onClick={() => setMemberToArchive(member)}
-                        className="header-icon-btn"
-                        style={{ width: 32, height: 32, borderRadius: '8px', color: 'var(--color-danger)' }}
-                        title="Archive Member"
+                            ? 'text-rose-600'
+                            : 'text-slate-500'
+                        }`}
                       >
-                        <UserX size={15} />
+                        {(member.netBalance || 0) > 0
+                          ? `+৳${(member.netBalance || 0).toFixed(0)}`
+                          : (member.netBalance || 0) < 0
+                          ? `-৳${Math.abs(member.netBalance || 0).toFixed(0)}`
+                          : '৳0'}
+                      </div>
+                      <div className="text-[10px] text-slate-400 font-bold">
+                        {(member.netBalance || 0) < 0 ? 'OWES' : (member.netBalance || 0) > 0 ? 'REFUND' : 'SETTLED'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bottom Row: Room, Role, Status Badges & Quick Action */}
+                  <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 text-xs">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <Badge variant="primary">{member.role}</Badge>
+                      <span className="text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
+                        {member.roomNo ? `Room ${member.roomNo}` : 'No Room'}
+                      </span>
+                      <Badge
+                        variant={
+                          member.status === 'ACTIVE'
+                            ? 'success'
+                            : member.status === 'ON_LEAVE'
+                            ? 'warning'
+                            : member.status === 'ARCHIVED'
+                            ? 'neutral'
+                            : 'danger'
+                        }
+                      >
+                        {member.status}
+                      </Badge>
+                    </div>
+
+                    <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        onClick={() => navigate(`/members/${member.id}/statement`)}
+                        className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors touch-spring"
+                        title="Financial Statement"
+                      >
+                        <FileText size={14} />
                       </button>
-                    )}
+                      {member.status !== 'ARCHIVED' && (
+                        <button
+                          onClick={() => setMemberToArchive(member)}
+                          className="w-8 h-8 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 flex items-center justify-center transition-colors touch-spring"
+                          title="Archive Member"
+                        >
+                          <UserX size={14} />
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
+              ))}
+            </div>
 
         {/* Desktop View: Full Data Table (hidden on mobile) */}
         <div className="hidden md:block" style={{ overflowX: 'auto' }}>

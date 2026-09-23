@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 import { Button } from '../components/ui/Button.js';
 import { Badge } from '../components/ui/Badge.js';
-import { PageLoader } from '../components/ui/StateComponents.js';
+import { AppViewSkeleton } from '../components/ui/StateComponents.js';
 import { apiClient } from '../lib/apiClient.js';
 import { useAuth } from '../context/AuthContext.js';
 import { useSocketEvent } from '../context/SocketContext.js';
@@ -69,6 +69,7 @@ export const ReportsPage: React.FC = () => {
   const messId = activeMess?.id || '';
 
   const [activeTab, setActiveTab] = useState<ReportTabType>('executive');
+  const [activeCategory, setActiveCategory] = useState<'analytics' | 'statements' | 'operations'>('analytics');
   const [selectedPeriodKey, setSelectedPeriodKey] = useState<string>(
     new Date().toISOString().slice(0, 7)
   );
@@ -416,30 +417,87 @@ export const ReportsPage: React.FC = () => {
 
       {/* Tab Navigation Segmented Bar */}
       <div className="no-print space-y-2">
-        {/* Intelligence Group */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 dark:text-neutral-500 px-1 shrink-0">
-            Analytics
-          </span>
-          <div className="flex items-center gap-1.5 bg-neutral-100 dark:bg-neutral-800/60 p-1 rounded-xl">
-            {[
-              { id: 'executive', label: 'Executive Dashboard', icon: Activity },
-              { id: 'cash-flow', label: 'Cash Flow Statement', icon: Scale },
-              { id: 'cost-structure', label: 'Cost Structure', icon: Layers },
-              { id: 'utilities', label: 'Utility Analytics', icon: Zap },
-              { id: 'daily-trends', label: 'Daily Rhythms', icon: Clock },
-              { id: 'member-comparison', label: 'Member Comparison', icon: Users },
-            ].map((tab) => {
+        {/* Mobile View: Category Switcher + Single Horizontal Scroll Strip (< md) */}
+        <div className="block md:hidden space-y-2">
+          {/* Category Tabs */}
+          <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-2xl">
+            <button
+              onClick={() => {
+                setActiveCategory('analytics');
+                setActiveTab('executive');
+              }}
+              className={`flex-1 py-1.5 text-xs font-bold rounded-xl transition-all touch-spring ${
+                activeCategory === 'analytics'
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              Analytics
+            </button>
+            <button
+              onClick={() => {
+                setActiveCategory('statements');
+                setActiveTab('monthly');
+              }}
+              className={`flex-1 py-1.5 text-xs font-bold rounded-xl transition-all touch-spring ${
+                activeCategory === 'statements'
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              Statements
+            </button>
+            <button
+              onClick={() => {
+                setActiveCategory('operations');
+                setActiveTab('fixed-bills');
+              }}
+              className={`flex-1 py-1.5 text-xs font-bold rounded-xl transition-all touch-spring ${
+                activeCategory === 'operations'
+                  ? 'bg-white text-slate-900 shadow-xs'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              Ledger & Ops
+            </button>
+          </div>
+
+          {/* Active Category Pills Strip */}
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
+            {(activeCategory === 'analytics'
+              ? [
+                  { id: 'executive', label: 'Executive Dashboard', icon: Activity },
+                  { id: 'cash-flow', label: 'Cash Flow Statement', icon: Scale },
+                  { id: 'cost-structure', label: 'Cost Structure', icon: Layers },
+                  { id: 'utilities', label: 'Utility Analytics', icon: Zap },
+                  { id: 'daily-trends', label: 'Daily Rhythms', icon: Clock },
+                  { id: 'member-comparison', label: 'Member Comparison', icon: Users },
+                ]
+              : activeCategory === 'statements'
+              ? [
+                  { id: 'monthly', label: 'Monthly Summary', icon: FileText },
+                  { id: 'member', label: 'Member Statements', icon: Users },
+                  { id: 'meals', label: 'Food Cost & Meals', icon: PieChart },
+                  { id: 'settlement', label: 'Settlements', icon: DollarSign },
+                  { id: 'expenses', label: 'Itemized Expenses', icon: Receipt },
+                ]
+              : [
+                  { id: 'fixed-bills', label: 'Fixed Bills', icon: CheckCircle2 },
+                  { id: 'bazar-summary', label: 'Bazar Log Summary', icon: ShoppingBag },
+                  { id: 'ledger', label: 'Shared Ledger', icon: BookOpen },
+                  { id: 'month-end', label: 'Month-End Closing', icon: Archive },
+                ]
+            ).map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as ReportTabType)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all touch-spring shrink-0 ${
                     isActive
-                      ? 'bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white shadow-xs'
-                      : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'bg-white text-slate-600 border border-slate-200'
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
@@ -450,74 +508,120 @@ export const ReportsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Operational Statements Group */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 dark:text-neutral-500 px-1 shrink-0">
-            Statements
-          </span>
-          <div className="flex items-center gap-1.5 bg-neutral-100 dark:bg-neutral-800/60 p-1 rounded-xl">
-            {[
-              { id: 'monthly', label: 'Monthly Summary', icon: FileText },
-              { id: 'member', label: 'Member Statements', icon: Users },
-              { id: 'meals', label: 'Food Cost & Meals', icon: PieChart },
-              { id: 'settlement', label: 'Settlements', icon: DollarSign },
-              { id: 'expenses', label: 'Itemized Expenses', icon: Receipt },
-            ].map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as ReportTabType)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
-                    isActive
-                      ? 'bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white shadow-xs'
-                      : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200'
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  {tab.label}
-                </button>
-              );
-            })}
+        {/* Desktop View: 3 Clean Categorized Rows (>= md) */}
+        <div className="hidden md:block space-y-2">
+          {/* Intelligence Group */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 dark:text-neutral-500 px-1 shrink-0">
+              Analytics
+            </span>
+            <div className="flex items-center gap-1.5 bg-neutral-100 dark:bg-neutral-800/60 p-1 rounded-xl">
+              {[
+                { id: 'executive', label: 'Executive Dashboard', icon: Activity },
+                { id: 'cash-flow', label: 'Cash Flow Statement', icon: Scale },
+                { id: 'cost-structure', label: 'Cost Structure', icon: Layers },
+                { id: 'utilities', label: 'Utility Analytics', icon: Zap },
+                { id: 'daily-trends', label: 'Daily Rhythms', icon: Clock },
+                { id: 'member-comparison', label: 'Member Comparison', icon: Users },
+              ].map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      setActiveTab(tab.id as ReportTabType);
+                      setActiveCategory('analytics');
+                    }}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+                      isActive
+                        ? 'bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white shadow-xs'
+                        : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200'
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
 
-        {/* Operations & Ledger Group */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 dark:text-neutral-500 px-1 shrink-0">
-            Operations & Ledger
-          </span>
-          <div className="flex items-center gap-1.5 bg-neutral-100 dark:bg-neutral-800/60 p-1 rounded-xl">
-            {[
-              { id: 'fixed-bills', label: 'Fixed Bills', icon: CheckCircle2 },
-              { id: 'bazar-summary', label: 'Bazar Log Summary', icon: ShoppingBag },
-              { id: 'ledger', label: 'Shared Ledger', icon: BookOpen },
-              { id: 'month-end', label: 'Month-End Closing', icon: Archive },
-            ].map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as ReportTabType)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
-                    isActive
-                      ? 'bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white shadow-xs'
-                      : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200'
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  {tab.label}
-                </button>
-              );
-            })}
+          {/* Operational Statements Group */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 dark:text-neutral-500 px-1 shrink-0">
+              Statements
+            </span>
+            <div className="flex items-center gap-1.5 bg-neutral-100 dark:bg-neutral-800/60 p-1 rounded-xl">
+              {[
+                { id: 'monthly', label: 'Monthly Summary', icon: FileText },
+                { id: 'member', label: 'Member Statements', icon: Users },
+                { id: 'meals', label: 'Food Cost & Meals', icon: PieChart },
+                { id: 'settlement', label: 'Settlements', icon: DollarSign },
+                { id: 'expenses', label: 'Itemized Expenses', icon: Receipt },
+              ].map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      setActiveTab(tab.id as ReportTabType);
+                      setActiveCategory('statements');
+                    }}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+                      isActive
+                        ? 'bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white shadow-xs'
+                        : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200'
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Operations & Ledger Group */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-neutral-400 dark:text-neutral-500 px-1 shrink-0">
+              Operations & Ledger
+            </span>
+            <div className="flex items-center gap-1.5 bg-neutral-100 dark:bg-neutral-800/60 p-1 rounded-xl">
+              {[
+                { id: 'fixed-bills', label: 'Fixed Bills', icon: CheckCircle2 },
+                { id: 'bazar-summary', label: 'Bazar Log Summary', icon: ShoppingBag },
+                { id: 'ledger', label: 'Shared Ledger', icon: BookOpen },
+                { id: 'month-end', label: 'Month-End Closing', icon: Archive },
+              ].map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      setActiveTab(tab.id as ReportTabType);
+                      setActiveCategory('operations');
+                    }}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+                      isActive
+                        ? 'bg-white dark:bg-neutral-700 text-neutral-900 dark:text-white shadow-xs'
+                        : 'text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200'
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
 
-      {isLoading ? (
-        <PageLoader message="Synthesizing financial intelligence..." />
+      {isLoading && !executiveData && !monthlyReport ? (
+        <AppViewSkeleton title="Financial Reports & Analytics" />
       ) : errorMsg ? (
         <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/40 text-rose-700 dark:text-rose-300 text-sm">
           {errorMsg}

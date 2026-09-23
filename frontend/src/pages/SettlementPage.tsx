@@ -17,7 +17,7 @@ import {
 import { Button } from '../components/ui/Button.js';
 import { Badge } from '../components/ui/Badge.js';
 import { Modal } from '../components/ui/Modal.js';
-import { PageLoader } from '../components/ui/StateComponents.js';
+import { AppViewSkeleton } from '../components/ui/StateComponents.js';
 import { apiClient } from '../lib/apiClient.js';
 import { useAuth } from '../context/AuthContext.js';
 import { useDataSync } from '../hooks/useDataSync.js';
@@ -207,8 +207,8 @@ export const SettlementPage: React.FC = () => {
     }
   };
 
-  if (isLoading) {
-    return <PageLoader message="Calculating optimal settlement transfers..." />;
+  if (isLoading && !settlementPlan) {
+    return <AppViewSkeleton title="Smart Settlement Engine" />;
   }
 
   const items = settlementPlan?.items || [];
@@ -217,7 +217,7 @@ export const SettlementPage: React.FC = () => {
   const settledPercent = totalPool > 0 ? Math.min(100, Math.round((totalSettled / totalPool) * 100)) : 100;
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-6 page-enter">
       {/* Top Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-surface-border pb-6">
         <div>

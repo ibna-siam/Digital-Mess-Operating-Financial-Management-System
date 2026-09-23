@@ -10,7 +10,7 @@ import {
 import { Button } from '../components/ui/Button.js';
 import { Badge } from '../components/ui/Badge.js';
 import { Modal } from '../components/ui/Modal.js';
-import { PageLoader } from '../components/ui/StateComponents.js';
+import { AppViewSkeleton } from '../components/ui/StateComponents.js';
 import { apiClient } from '../lib/apiClient.js';
 import { useAuth } from '../context/AuthContext.js';
 import { useDataSync } from '../hooks/useDataSync.js';
@@ -172,243 +172,206 @@ export const ExpensesPage: React.FC = () => {
     return true;
   });
 
+  if (isLoading && expenses.length === 0) {
+    return <AppViewSkeleton title="Expenses Management" />;
+  }
+
   return (
-    <div>
+    <div className="page-enter max-w-7xl mx-auto space-y-5 p-2 sm:p-4">
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-100">
         <div>
-          <h2 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-main)', letterSpacing: '-0.02em' }}>
+          <h2 className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">
             Expenses Management
           </h2>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-            Track variable operational costs, fixed facility overheads, and approval authorizations.
+          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+            Track variable operational costs, facility maintenance, and approval authorizations.
           </p>
         </div>
-        <Button icon={<Plus size={16} />} onClick={() => setIsAddModalOpen(true)}>
+        <Button
+          variant="primary"
+          icon={<Plus size={16} />}
+          onClick={() => setIsAddModalOpen(true)}
+          className="self-start sm:self-auto touch-spring shadow-xs"
+        >
           Add Expense
         </Button>
       </div>
 
-      {/* KPI Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12, marginBottom: 20 }}>
-        <div className="kpi-card" style={{ padding: 14 }}>
-          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Expenses</div>
-          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-main)', marginTop: 2 }}>
-            ৳ {totalAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+      {/* KPI Cards Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-100 shadow-xs">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Expenses</div>
+          <div className="text-lg sm:text-xl font-black text-slate-900 mt-1 font-mono">
+            ৳{totalAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
           </div>
-          <div style={{ fontSize: '0.68rem', color: '#64748B', marginTop: 2 }}>All categories</div>
+          <div className="text-[11px] text-slate-500 mt-0.5">All recorded items</div>
         </div>
-        <div className="kpi-card" style={{ padding: 14 }}>
-          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Variable Cost</div>
-          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-primary-dark)', marginTop: 2 }}>
-            ৳ {variableAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+
+        <div className="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-100 shadow-xs">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-emerald-600">Variable Cost</div>
+          <div className="text-lg sm:text-xl font-black text-emerald-700 mt-1 font-mono">
+            ৳{variableAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
           </div>
-          <div style={{ fontSize: '0.68rem', color: '#10B981', marginTop: 2 }}>Bazar & food</div>
+          <div className="text-[11px] text-slate-500 mt-0.5">Cook salary & supplies</div>
         </div>
-        <div className="kpi-card" style={{ padding: 14 }}>
-          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Fixed Overheads</div>
-          <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#F59E0B', marginTop: 2 }}>
-            ৳ {fixedAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+
+        <div className="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-100 shadow-xs">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-amber-600">Fixed Overheads</div>
+          <div className="text-lg sm:text-xl font-black text-amber-700 mt-1 font-mono">
+            ৳{fixedAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
           </div>
-          <div style={{ fontSize: '0.68rem', color: '#64748B', marginTop: 2 }}>Rent, utilities</div>
+          <div className="text-[11px] text-slate-500 mt-0.5">Maintenance & repairs</div>
         </div>
-        <div className="kpi-card" style={{ padding: 14 }}>
-          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>Pending</div>
-          <div
-            style={{
-              fontSize: '1.25rem',
-              fontWeight: 800,
-              color: pendingCount > 0 ? '#EF4444' : 'var(--text-main)',
-              marginTop: 2,
-            }}
-          >
+
+        <div className="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-100 shadow-xs">
+          <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Pending Review</div>
+          <div className={`text-lg sm:text-xl font-black mt-1 font-mono ${pendingCount > 0 ? 'text-rose-600' : 'text-slate-900'}`}>
             {pendingCount}
           </div>
-          <div style={{ fontSize: '0.68rem', color: '#64748B', marginTop: 2 }}>Needs approval</div>
+          <div className="text-[11px] text-slate-500 mt-0.5">{pendingCount > 0 ? 'Action required' : 'All approved'}</div>
         </div>
       </div>
 
-      {/* Main Table */}
-      <div className="table-container">
-        <div className="table-header-bar" style={{ flexWrap: 'wrap', gap: 12 }}>
-          {/* Tabs */}
-          <div className="table-tabs">
+      {/* Main Container */}
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-xs overflow-hidden">
+        {/* Filter Strip & Search Row */}
+        <div className="p-3 sm:p-4 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3">
+          {/* Scrollable Filter Pills */}
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 md:pb-0">
             <button
-              className={`table-tab ${filterTab === 'all' ? 'active' : ''}`}
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all touch-spring ${
+                filterTab === 'all'
+                  ? 'bg-slate-900 text-white shadow-xs'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
               onClick={() => setFilterTab('all')}
             >
               All ({expenses.length})
             </button>
             <button
-              className={`table-tab ${filterTab === 'variable' ? 'active' : ''}`}
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all touch-spring ${
+                filterTab === 'variable'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
               onClick={() => setFilterTab('variable')}
             >
               Variable
             </button>
             <button
-              className={`table-tab ${filterTab === 'fixed' ? 'active' : ''}`}
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all touch-spring ${
+                filterTab === 'fixed'
+                  ? 'bg-amber-600 text-white shadow-xs'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
               onClick={() => setFilterTab('fixed')}
             >
               Fixed
             </button>
             <button
-              className={`table-tab ${filterTab === 'pending' ? 'active' : ''}`}
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all touch-spring ${
+                filterTab === 'pending'
+                  ? 'bg-rose-600 text-white shadow-xs'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
               onClick={() => setFilterTab('pending')}
             >
               Pending Approval {pendingCount > 0 && `(${pendingCount})`}
             </button>
           </div>
 
-          {/* Search */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, minWidth: 200, justifyContent: 'flex-end' }}>
-            <div style={{ position: 'relative', width: '100%', maxWidth: 280 }}>
-              <Search size={14} color="#94A3B8" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)' }} />
-              <input
-                type="text"
-                placeholder="Search expenses..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '7px 12px 7px 32px',
-                  borderRadius: 'var(--radius-md)',
-                  border: '1px solid var(--color-border)',
-                  fontSize: '0.82rem',
-                  outline: 'none',
-                  backgroundColor: '#ffffff',
-                }}
-              />
-            </div>
+          {/* Search Box */}
+          <div className="relative w-full md:w-64">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search expenses..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:border-emerald-500 focus:outline-none transition-colors"
+            />
           </div>
         </div>
 
-        {isLoading ? (
-          <div style={{ padding: 40 }}>
-            <PageLoader message="Loading expenses..." />
-          </div>
-        ) : filteredExpenses.length === 0 ? (
-          <div style={{ padding: '48px 24px', textAlign: 'center', color: 'var(--text-muted)' }}>
-            <CreditCard size={40} style={{ margin: '0 auto 12px', opacity: 0.3 }} />
-            <p style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--text-main)' }}>No Expenses Recorded</p>
-            <p style={{ fontSize: '0.82rem' }}>Add a new expense to track mess cash flow.</p>
+        {filteredExpenses.length === 0 ? (
+          <div className="p-10 text-center text-slate-400">
+            <CreditCard size={36} className="mx-auto mb-2 text-slate-300" />
+            <p className="font-bold text-slate-700 text-sm">No Expenses Recorded</p>
+            <p className="text-xs text-slate-400 mt-0.5">Add a new expense to track mess cash flow.</p>
           </div>
         ) : (
           <>
             {/* Mobile Expenses Feed (< md) */}
-            <div className="block md:hidden" style={{ padding: '12px' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {filteredExpenses.map((exp) => (
-                  <div
-                    key={exp.id}
-                    style={{
-                      background: 'var(--color-card, #ffffff)',
-                      border: '1px solid var(--color-border)',
-                      borderRadius: '16px',
-                      padding: '14px',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: 10,
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
-                      <div style={{ minWidth: 0 }}>
-                        <div style={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-main)' }}>
-                          {exp.description}
-                        </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 3 }}>
-                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                            <Calendar size={11} /> {exp.date}
-                          </span>
-                          <span style={{ fontSize: '0.72rem', color: 'var(--text-subtle)' }}>•</span>
-                          <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>
-                            {exp.payerName}
-                          </span>
-                        </div>
+            <div className="block md:hidden p-3 space-y-2.5">
+              {filteredExpenses.map((exp) => (
+                <div
+                  key={exp.id}
+                  className="bg-white rounded-2xl p-3.5 border border-slate-100 shadow-xs space-y-2.5 touch-card"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="font-bold text-sm text-slate-800 leading-snug line-clamp-2">
+                        {exp.description}
                       </div>
-                      <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                        <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-main)', fontFamily: 'monospace' }}>
-                          ৳{exp.amount.toLocaleString()}
-                        </div>
-                        <span
-                          style={{
-                            fontSize: '0.65rem',
-                            fontWeight: 700,
-                            padding: '1px 6px',
-                            borderRadius: 6,
-                            backgroundColor: exp.type === 'VARIABLE' ? '#ECFDF5' : '#FFFBEB',
-                            color: exp.type === 'VARIABLE' ? '#065F46' : '#B45309',
-                          }}
-                        >
-                          {exp.type}
+                      <div className="flex items-center gap-2 mt-1 text-xs text-slate-500 flex-wrap">
+                        <span className="flex items-center gap-1">
+                          <Calendar size={11} className="text-slate-400" /> {exp.date}
                         </span>
+                        <span className="text-slate-300">•</span>
+                        <span className="font-medium text-slate-700">{exp.payerName}</span>
                       </div>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--color-border)', paddingTop: 8 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <Badge variant={exp.category === 'Food' ? 'success' : exp.category === 'House Rent' ? 'warning' : 'info'}>
-                          {exp.category}
-                        </Badge>
-                        <Badge
-                          variant={
-                            exp.status === 'APPROVED'
-                              ? 'success'
-                              : exp.status === 'PENDING_APPROVAL'
-                              ? 'warning'
-                              : 'danger'
-                          }
-                        >
-                          {exp.status === 'PENDING_APPROVAL' ? 'Pending' : exp.status}
-                        </Badge>
+                    <div className="text-right shrink-0">
+                      <div className="text-base font-black text-slate-900 font-mono">
+                        ৳{exp.amount.toLocaleString()}
                       </div>
-
-                      {exp.status === 'PENDING_APPROVAL' && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                          <button
-                            onClick={() => handleApprove(exp.id)}
-                            disabled={actionLoadingId === exp.id}
-                            style={{
-                              backgroundColor: '#ECFDF5',
-                              border: '1px solid #10B981',
-                              color: '#065F46',
-                              padding: '3px 8px',
-                              borderRadius: '6px',
-                              cursor: 'pointer',
-                              fontSize: '0.72rem',
-                              fontWeight: 700,
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: 3,
-                            }}
-                          >
-                            <CheckCircle2 size={12} color="#10B981" /> Approve
-                          </button>
-                          <button
-                            onClick={() => handleReject(exp.id)}
-                            disabled={actionLoadingId === exp.id}
-                            style={{
-                              backgroundColor: '#FEF2F2',
-                              border: '1px solid #EF4444',
-                              color: '#991B1B',
-                              padding: '3px 8px',
-                              borderRadius: '6px',
-                              cursor: 'pointer',
-                              fontSize: '0.72rem',
-                              fontWeight: 700,
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: 3,
-                            }}
-                          >
-                            <XCircle size={12} color="#EF4444" /> Reject
-                          </button>
-                        </div>
-                      )}
+                      <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-md mt-0.5 ${
+                        exp.type === 'VARIABLE' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
+                      }`}>
+                        {exp.type}
+                      </span>
                     </div>
                   </div>
-                ))}
-              </div>
+
+                  <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 text-xs">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <Badge variant="info">{exp.category}</Badge>
+                      <Badge
+                        variant={
+                          exp.status === 'APPROVED'
+                            ? 'success'
+                            : exp.status === 'PENDING_APPROVAL'
+                            ? 'warning'
+                            : 'danger'
+                        }
+                      >
+                        {exp.status === 'PENDING_APPROVAL' ? 'Pending' : exp.status}
+                      </Badge>
+                    </div>
+
+                    {exp.status === 'PENDING_APPROVAL' && (
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => handleApprove(exp.id)}
+                          disabled={actionLoadingId === exp.id}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 font-bold text-xs hover:bg-emerald-100 transition-colors touch-spring"
+                        >
+                          <CheckCircle2 size={12} className="text-emerald-600" /> Approve
+                        </button>
+                        <button
+                          onClick={() => handleReject(exp.id)}
+                          disabled={actionLoadingId === exp.id}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 font-bold text-xs hover:bg-rose-100 transition-colors touch-spring"
+                        >
+                          <XCircle size={12} className="text-rose-600" /> Reject
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
 
             {/* Desktop Table (hidden on mobile) */}

@@ -9,7 +9,7 @@ import {
 import { Button } from '../components/ui/Button.js';
 import { Badge } from '../components/ui/Badge.js';
 import { Modal } from '../components/ui/Modal.js';
-import { PageLoader } from '../components/ui/StateComponents.js';
+import { Skeleton, AppViewSkeleton } from '../components/ui/StateComponents.js';
 import { apiClient } from '../lib/apiClient.js';
 import { useAuth } from '../context/AuthContext.js';
 import { useDataSync } from '../hooks/useDataSync.js';
@@ -158,8 +158,12 @@ export const BillsPage: React.FC = () => {
     return b.status === statusFilter;
   });
 
+  if (isLoading && bills.length === 0) {
+    return <AppViewSkeleton title="Fixed Bills & Recurring Costs" />;
+  }
+
   return (
-    <div>
+    <div className="page-enter">
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
         <div>
@@ -253,8 +257,10 @@ export const BillsPage: React.FC = () => {
 
         {activeTab === 'bills' ? (
           isLoading ? (
-            <div style={{ padding: 40 }}>
-              <PageLoader message="Loading bills..." />
+            <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <Skeleton width="100%" height={40} />
+              <Skeleton width="100%" height={40} />
+              <Skeleton width="100%" height={40} />
             </div>
           ) : filteredBills.length === 0 ? (
             <div style={{ padding: '48px 24px', textAlign: 'center', color: 'var(--text-muted)' }}>
