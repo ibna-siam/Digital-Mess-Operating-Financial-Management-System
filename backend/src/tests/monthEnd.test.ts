@@ -16,9 +16,10 @@ import { ExpenseService } from '../services/expenseService.js';
 
 describe('MessMate Phase 4 — Monthly Closing, Financial Reports & Statements Suite', () => {
   let app: Express;
-  const messId = 'mess-greenview-01';
-  let resolvedMessId: string = 'c3a66302-28a7-48a9-bb71-f500b36e6ea0';
+  let messId: string;
+  let resolvedMessId: string;
   let testMemberId: string;
+  let adminUserId: string;
   let token: string;
 
   beforeAll(async () => {
@@ -30,22 +31,43 @@ describe('MessMate Phase 4 — Monthly Closing, Financial Reports & Statements S
       password: 'Password@123',
     });
     token = loginRes.body.data.token;
+    adminUserId = loginRes.body.data.user.id;
 
-    const mess = await prisma.mess.findFirst({
-      where: {
-        OR: [
-          { id: messId },
-          { code: { equals: messId, mode: 'insensitive' } },
-          { code: 'GREENVIEW-01' },
-        ],
-      },
+    let mess = await prisma.mess.findFirst({
+      include: { members: true },
     });
-    if (mess) resolvedMessId = mess.id;
 
-    const member = await prisma.messMember.findFirst({
-      where: { messId: resolvedMessId, status: 'ACTIVE' },
+    if (!mess) {
+      mess = await prisma.mess.create({
+        data: {
+          name: 'Month End Test Mess',
+          code: 'MM-MONTHEND',
+          currency: 'BDT',
+          currencySymbol: '৳',
+        },
+        include: { members: true },
+      });
+    }
+
+    resolvedMessId = mess.id;
+    messId = resolvedMessId;
+
+    let member = await prisma.messMember.findUnique({
+      where: { messId_userId: { messId: resolvedMessId, userId: adminUserId } },
     });
-    testMemberId = member ? member.id : '';
+
+    if (!member) {
+      member = await prisma.messMember.create({
+        data: {
+          messId: resolvedMessId,
+          userId: adminUserId,
+          role: 'MANAGER',
+          status: 'ACTIVE',
+        },
+      });
+    }
+
+    testMemberId = member.id;
   });
 
   afterAll(async () => {
@@ -199,7 +221,7 @@ describe('MessMate Phase 4 — Monthly Closing, Financial Reports & Statements S
     it('should guard closed month mutations and return 403 Forbidden', async () => {
       // Attempt operational mutation (POST /meals) for closed period 2028-06
       const res = await request(app)
-        .post(`/api/v1/messes/${messId}/meals`)
+        .post(`/api/v1/messes/${resolvedMessId}/meals`)
         .set('Authorization', `Bearer ${token}`)
         .send({
           date: '2028-06-15',
@@ -276,7 +298,7 @@ describe('MessMate Phase 4 — Monthly Closing, Financial Reports & Statements S
     });
 
     it('should generate settlement reconciliation report', async () => {
-      const settlementReport = await SettlementReportService.getSettlementReport(resolvedMessId, '2026-09');
+      const settlementReport = await SettlementReportService.getSettlementReport(resolvedMessId, '2026-08');
       expect(settlementReport.summary.totalOwedAmount).toBeGreaterThanOrEqual(0);
       expect(settlementReport.memberSummaries.length).toBeGreaterThan(0);
     });
@@ -300,7 +322,7 @@ describe('MessMate Phase 4 — Monthly Closing, Financial Reports & Statements S
   describe('5. REST API Endpoints Verification', () => {
     it('GET /api/v1/messes/:messId/financial-periods/current should return active period', async () => {
       const res = await request(app)
-        .get(`/api/v1/messes/${messId}/financial-periods/current`)
+        .get(`/api/v1/messes/${resolvedMessId}/financial-periods/current`)
         .set('Authorization', `Bearer ${token}`);
 
       expect(res.status).toBe(200);
@@ -310,7 +332,7 @@ describe('MessMate Phase 4 — Monthly Closing, Financial Reports & Statements S
 
     it('GET /api/v1/messes/:messId/reports/monthly should return monthly report', async () => {
       const res = await request(app)
-        .get(`/api/v1/messes/${messId}/reports/monthly?periodKey=2026-09`)
+        .get(`/api/v1/messes/${resolvedMessId}/reports/monthly?periodKey=2026-09`)
         .set('Authorization', `Bearer ${token}`);
 
       expect(res.status).toBe(200);
@@ -320,7 +342,7 @@ describe('MessMate Phase 4 — Monthly Closing, Financial Reports & Statements S
 
     it('GET /api/v1/messes/:messId/reports/export should return CSV attachment', async () => {
       const res = await request(app)
-        .get(`/api/v1/messes/${messId}/reports/export?type=monthly&periodKey=2026-09`)
+        .get(`/api/v1/messes/${resolvedMessId}/reports/export?type=monthly&periodKey=2026-09`)
         .set('Authorization', `Bearer ${token}`);
 
       expect(res.status).toBe(200);

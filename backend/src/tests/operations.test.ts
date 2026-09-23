@@ -22,7 +22,24 @@ describe('MessMate Phase 2 — Core Operations Test Suite', () => {
       password: 'Password@123',
     });
     authToken = loginRes.body.data.token;
-    messId = 'c3a66302-28a7-48a9-bb71-f500b36e6ea0';
+    
+    const messesRes = await request(app)
+      .get('/api/v1/messes')
+      .set('Authorization', `Bearer ${authToken}`);
+
+    if (messesRes.body.data && messesRes.body.data.length > 0) {
+      messId = messesRes.body.data[0].id;
+    } else {
+      const createMessRes = await request(app)
+        .post('/api/v1/messes')
+        .set('Authorization', `Bearer ${authToken}`)
+        .send({
+          name: 'Operations Test Mess',
+          currency: 'BDT',
+          currencySymbol: '৳',
+        });
+      messId = createMessRes.body.data.id;
+    }
   });
 
   describe('1. Member Management Module', () => {
@@ -211,8 +228,8 @@ describe('MessMate Phase 2 — Core Operations Test Suite', () => {
           payerMemberId: activeMemberId,
           amount: 1800,
           type: 'VARIABLE',
-          category: 'Utilities',
-          description: 'LP Gas Cylinder',
+          category: 'Maintenance',
+          description: 'Emergency plumbing repair',
           date: '2026-09-17',
           billingPeriod: '2026-09',
         });
@@ -230,8 +247,8 @@ describe('MessMate Phase 2 — Core Operations Test Suite', () => {
           payerMemberId: activeMemberId,
           amount: 2500,
           type: 'VARIABLE',
-          category: 'Utilities',
-          description: 'High Value Utility Purchase',
+          category: 'Maintenance',
+          description: 'High Value Maintenance Purchase',
           date: '2026-09-17',
           billingPeriod: '2026-09',
         });

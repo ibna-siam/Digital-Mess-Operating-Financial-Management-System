@@ -11,9 +11,10 @@ import { SettlementService } from '../services/financial/settlementService.js';
 
 describe('MessMate Phase 3 — Financial Engine & Smart Settlement Test Suite', () => {
   let app: Express;
-  const messId = 'mess-greenview-01';
-  let resolvedMessId: string = 'c3a66302-28a7-48a9-bb71-f500b36e6ea0';
+  let messId: string;
+  let resolvedMessId: string;
   let testMemberId: string;
+  let adminUserId: string;
   let token: string;
 
   beforeAll(async () => {
@@ -26,22 +27,44 @@ describe('MessMate Phase 3 — Financial Engine & Smart Settlement Test Suite', 
       password: 'Password@123',
     });
     token = loginRes.body.data.token;
+    adminUserId = loginRes.body.data.user.id;
 
-    const mess = await prisma.mess.findFirst({
-      where: {
-        OR: [
-          { id: messId },
-          { code: { equals: messId, mode: 'insensitive' } },
-          { code: 'GREENVIEW-01' },
-        ],
-      },
+    // Find any existing mess or create one
+    let mess = await prisma.mess.findFirst({
+      include: { members: true },
     });
-    if (mess) resolvedMessId = mess.id;
 
-    const member = await prisma.messMember.findFirst({
-      where: { messId: resolvedMessId, status: 'ACTIVE' },
+    if (!mess) {
+      mess = await prisma.mess.create({
+        data: {
+          name: 'Financial Test Mess',
+          code: 'MM-FIN01',
+          currency: 'BDT',
+          currencySymbol: '৳',
+        },
+        include: { members: true },
+      });
+    }
+
+    resolvedMessId = mess.id;
+    messId = resolvedMessId;
+
+    let member = await prisma.messMember.findUnique({
+      where: { messId_userId: { messId: resolvedMessId, userId: adminUserId } },
     });
-    testMemberId = member ? member.id : '';
+
+    if (!member) {
+      member = await prisma.messMember.create({
+        data: {
+          messId: resolvedMessId,
+          userId: adminUserId,
+          role: 'MANAGER',
+          status: 'ACTIVE',
+        },
+      });
+    }
+
+    testMemberId = member.id;
   });
 
   // -------------------------------------------------------------
@@ -217,7 +240,7 @@ describe('MessMate Phase 3 — Financial Engine & Smart Settlement Test Suite', 
         resolvedMessId,
         original.id,
         'Erroneous bill entered by manager',
-        'usr-admin-demo'
+        adminUserId
       );
 
       expect(reversed.entryType).toBe('REVERSAL');
@@ -274,7 +297,7 @@ describe('MessMate Phase 3 — Financial Engine & Smart Settlement Test Suite', 
   describe('6. Financial Endpoints Integration', () => {
     it('GET /api/v1/messes/:messId/financial-summary should return financial health and reconciliation', async () => {
       const res = await request(app)
-        .get(`/api/v1/messes/${messId}/financial-summary?period=2026-09`)
+        .get(`/api/v1/messes/${resolvedMessId}/financial-summary?period=2026-09`)
         .set('Authorization', `Bearer ${token}`);
 
       expect(res.status).toBe(200);
@@ -288,7 +311,7 @@ describe('MessMate Phase 3 — Financial Engine & Smart Settlement Test Suite', 
 
     it('GET /api/v1/messes/:messId/ledger should return user transaction history', async () => {
       const res = await request(app)
-        .get(`/api/v1/messes/${messId}/ledger`)
+        .get(`/api/v1/messes/${resolvedMessId}/ledger`)
         .set('Authorization', `Bearer ${token}`);
 
       expect(res.status).toBe(200);
@@ -298,7 +321,7 @@ describe('MessMate Phase 3 — Financial Engine & Smart Settlement Test Suite', 
 
     it('POST /api/v1/messes/:messId/advances should record advance deposit with credit ledger impact', async () => {
       const res = await request(app)
-        .post(`/api/v1/messes/${messId}/advances`)
+        .post(`/api/v1/messes/${resolvedMessId}/advances`)
         .set('Authorization', `Bearer ${token}`)
         .send({
           memberId: testMemberId,
@@ -316,7 +339,7 @@ describe('MessMate Phase 3 — Financial Engine & Smart Settlement Test Suite', 
 
     it('GET /api/v1/messes/:messId/settlements should return who-owes-whom plan', async () => {
       const res = await request(app)
-        .get(`/api/v1/messes/${messId}/settlements?period=2026-09`)
+        .get(`/api/v1/messes/${resolvedMessId}/settlements?period=2026-08`)
         .set('Authorization', `Bearer ${token}`);
 
       expect(res.status).toBe(200);
@@ -327,7 +350,7 @@ describe('MessMate Phase 3 — Financial Engine & Smart Settlement Test Suite', 
 
     it('POST /api/v1/messes/:messId/adjustments should require manager/treasurer capability and reason', async () => {
       const res = await request(app)
-        .post(`/api/v1/messes/${messId}/adjustments`)
+        .post(`/api/v1/messes/${resolvedMessId}/adjustments`)
         .set('Authorization', `Bearer ${token}`)
         .send({
           memberId: testMemberId,

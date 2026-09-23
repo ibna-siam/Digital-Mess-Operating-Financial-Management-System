@@ -42,7 +42,7 @@ periodRouter.get('/current', async (req: Request, res: Response, next: NextFunct
  * POST /api/v1/messes/:messId/financial-periods
  * Create/Open a new financial period (Admin/Treasurer only)
  */
-periodRouter.post('/', requireRole(['OWNER', 'MANAGER', 'TREASURER']), async (req: Request, res: Response, next: NextFunction) => {
+periodRouter.post('/', requireRole(['OWNER', 'MANAGER']), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const messId = req.messId || req.params.messId;
     const userId = req.user?.id;
@@ -101,7 +101,7 @@ periodRouter.get('/:periodKey/validation', async (req: Request, res: Response, n
  */
 periodRouter.post(
   '/:periodKey/review',
-  requireRole(['OWNER', 'MANAGER', 'TREASURER']),
+  requireRole(['OWNER', 'MANAGER']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const messId = req.messId || req.params.messId;
@@ -120,7 +120,7 @@ periodRouter.post(
  */
 periodRouter.post(
   '/:periodKey/finalize',
-  requireRole(['OWNER', 'MANAGER', 'TREASURER']),
+  requireRole(['OWNER', 'MANAGER']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const messId = req.messId || req.params.messId;
@@ -139,7 +139,7 @@ periodRouter.post(
  */
 periodRouter.post(
   '/:periodKey/close',
-  requireRole(['OWNER', 'MANAGER', 'TREASURER']),
+  requireRole(['OWNER', 'MANAGER']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const messId = req.messId || req.params.messId;
@@ -158,7 +158,7 @@ periodRouter.post(
  */
 periodRouter.post(
   '/:periodKey/reopen',
-  requireRole(['OWNER', 'MANAGER', 'TREASURER']),
+  requireRole(['OWNER', 'MANAGER']),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const messId = req.messId || req.params.messId;

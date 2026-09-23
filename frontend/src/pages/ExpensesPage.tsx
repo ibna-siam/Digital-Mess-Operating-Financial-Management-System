@@ -35,7 +35,7 @@ export const ExpensesPage: React.FC = () => {
   const [payerMemberId, setPayerMemberId] = useState('');
   const [amount, setAmount] = useState('');
   const [type, setType] = useState<ExpenseType>('VARIABLE');
-  const [category, setCategory] = useState('Utilities');
+  const [category, setCategory] = useState('Maintenance');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [billingPeriod, setBillingPeriod] = useState(new Date().toISOString().slice(0, 7));
@@ -538,6 +538,22 @@ export const ExpensesPage: React.FC = () => {
 
       {/* Add Expense Modal */}
       <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} title="Record New Expense" maxWidth={560}>
+        {/* Single Source-of-Truth Guidance Banner */}
+        <div
+          style={{
+            padding: '10px 14px',
+            marginBottom: '16px',
+            borderRadius: 'var(--radius-md)',
+            backgroundColor: '#F0FDF4',
+            border: '1px solid #BBF7D0',
+            fontSize: '0.8rem',
+            color: '#166534',
+            lineHeight: 1.4,
+          }}
+        >
+          <strong>💡 Source of Truth Note:</strong> Use Expenses strictly for one-time/miscellaneous overhead (repairs, cleaning supplies, tools, furniture). For recurring bills (House Rent, Wi-Fi, Maid/Cook Salary) and utilities (Electricity, Gas, Water), please use <strong>Bills & Utilities</strong>. For groceries, use <strong>Bazar</strong>.
+        </div>
+
         <form onSubmit={handleCreateExpense}>
           {formError && (
             <div
@@ -600,8 +616,8 @@ export const ExpensesPage: React.FC = () => {
                 }}
                 required
               >
-                <option value="VARIABLE">Variable (Bazar / Daily Operational)</option>
-                <option value="FIXED">Fixed Overhead (Rent / Utility / Salary)</option>
+                <option value="VARIABLE">One-Time Operational Expense</option>
+                <option value="FIXED">Recurring Non-Bill Overhead</option>
               </select>
             </div>
           </div>
@@ -625,15 +641,11 @@ export const ExpensesPage: React.FC = () => {
                 }}
                 required
               >
-                <option value="Food">Food / Bazar</option>
-                <option value="House Rent">House Rent</option>
-                <option value="Maid / Cook Salary">Maid / Cook Salary</option>
-                <option value="Internet / WiFi">Internet / WiFi</option>
-                <option value="Electricity">Electricity Bill</option>
-                <option value="Gas / Cylinder">Gas & Cooking Fuel</option>
-                <option value="Water & Sewerage">Water & Sewerage</option>
                 <option value="Maintenance">Maintenance & Repairs</option>
                 <option value="Cleaning Supplies">Cleaning Supplies</option>
+                <option value="Equipment">Equipment & Tools</option>
+                <option value="Furniture">Furniture & Fixtures</option>
+                <option value="Emergency Expense">Emergency Expense</option>
                 <option value="Other">Other Miscellaneous</option>
               </select>
             </div>

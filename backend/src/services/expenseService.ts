@@ -121,6 +121,45 @@ export class ExpenseService {
     };
   }
 
+  public static readonly DISALLOWED_EXPENSE_CATEGORIES: Record<string, string> = {
+    rent: 'House rent must be recorded under Bills & Utilities',
+    'house rent': 'House rent must be recorded under Bills & Utilities',
+    electricity: 'Electricity bills must be recorded under Bills & Utilities',
+    'electricity bill': 'Electricity bills must be recorded under Bills & Utilities',
+    gas: 'Gas and cooking fuel bills must be recorded under Bills & Utilities',
+    'gas & cooking fuel': 'Gas and cooking fuel bills must be recorded under Bills & Utilities',
+    'gas / cylinder': 'Gas and cooking fuel bills must be recorded under Bills & Utilities',
+    cylinder: 'Gas and cooking fuel bills must be recorded under Bills & Utilities',
+    water: 'Water and sewerage bills must be recorded under Bills & Utilities',
+    'water & sewerage': 'Water and sewerage bills must be recorded under Bills & Utilities',
+    'water supply': 'Water and sewerage bills must be recorded under Bills & Utilities',
+    wifi: 'Internet & WiFi bills must be recorded under Bills & Utilities',
+    internet: 'Internet & WiFi bills must be recorded under Bills & Utilities',
+    'internet / wifi': 'Internet & WiFi bills must be recorded under Bills & Utilities',
+    maid: 'Maid and cook salaries must be recorded under Bills & Utilities',
+    cook: 'Maid and cook salaries must be recorded under Bills & Utilities',
+    'maid / cook salary': 'Maid and cook salaries must be recorded under Bills & Utilities',
+    'staff salary': 'Maid and cook salaries must be recorded under Bills & Utilities',
+    food: 'Food and grocery expenses must be recorded under Bazar',
+    bazar: 'Food and grocery expenses must be recorded under Bazar',
+    'food / bazar': 'Food and grocery expenses must be recorded under Bazar',
+    groceries: 'Food and grocery expenses must be recorded under Bazar',
+    grocery: 'Food and grocery expenses must be recorded under Bazar',
+    utility: 'Utility bills must be recorded under Bills & Utilities',
+    utilities: 'Utility bills must be recorded under Bills & Utilities',
+  };
+
+  public static isDisallowedCategory(category: string): boolean {
+    if (!category) return false;
+    const cat = category.trim().toLowerCase();
+    return Boolean(this.DISALLOWED_EXPENSE_CATEGORIES[cat]);
+  }
+
+  public static getDisallowedCategoryMessage(category: string): string {
+    const cat = (category || '').trim().toLowerCase();
+    return this.DISALLOWED_EXPENSE_CATEGORIES[cat] || 'This category cannot be recorded under Expenses. Please use Bills & Utilities or Bazar.';
+  }
+
   public static async createExpense(
     messId: string,
     input: CreateExpenseInput,
@@ -130,12 +169,17 @@ export class ExpenseService {
       throw new ValidationError('Expense amount must be greater than 0');
     }
 
+    const normalizedCategory = (input.category || '').trim().toLowerCase();
+    if (this.isDisallowedCategory(normalizedCategory)) {
+      throw new ValidationError(this.getDisallowedCategoryMessage(normalizedCategory));
+    }
+
     const date = new Date(input.date);
     if (isNaN(date.getTime())) {
       throw new ValidationError('Invalid date format');
     }
 
-    const isPrivileged = submitterRole === 'OWNER' || submitterRole === 'MANAGER' || submitterRole === 'TREASURER';
+    const isPrivileged = submitterRole === 'OWNER' || submitterRole === 'MANAGER';
     const status = isPrivileged || input.amount < 1500 ? ExpenseStatus.APPROVED : ExpenseStatus.PENDING_APPROVAL;
 
     const created = await prisma.expense.create({

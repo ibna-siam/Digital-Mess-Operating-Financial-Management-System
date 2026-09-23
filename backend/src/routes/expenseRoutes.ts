@@ -13,7 +13,15 @@ const createExpenseSchema = z.object({
   payerMemberId: z.string().min(1, 'Payer member ID is required'),
   amount: z.number().min(0.01, 'Amount must be greater than 0'),
   type: z.nativeEnum(ExpenseType).default(ExpenseType.VARIABLE),
-  category: z.string().min(1, 'Category is required'),
+  category: z
+    .string()
+    .min(1, 'Category is required')
+    .refine(
+      (cat) => !ExpenseService.isDisallowedCategory(cat),
+      (cat) => ({
+        message: ExpenseService.getDisallowedCategoryMessage(cat),
+      })
+    ),
   description: z.string().min(1, 'Description is required'),
   date: z.string().min(10, 'Valid date is required (YYYY-MM-DD)'),
   billingPeriod: z.string().optional(),

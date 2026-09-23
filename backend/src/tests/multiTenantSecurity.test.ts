@@ -235,8 +235,8 @@ describe('Phase 15A: Multi-Mess / Multi-Tenant Security & Isolation Suite', () =
         .send({
           payerMemberId: memA!.id,
           amount: 2500,
-          category: 'GROCERY',
-          description: 'Mess A Secret Organic Spices',
+          category: 'CLEANING',
+          description: 'Mess A Secret Cleaning Supplies',
           date: new Date().toISOString().split('T')[0],
           type: 'VARIABLE',
         });
@@ -249,8 +249,8 @@ describe('Phase 15A: Multi-Mess / Multi-Tenant Security & Isolation Suite', () =
         .send({
           payerMemberId: memB!.id,
           amount: 4200,
-          category: 'UTILITY',
-          description: 'Mess B Ultra Fiber Internet',
+          category: 'MAINTENANCE',
+          description: 'Mess B Ultra Maintenance Repair',
           date: new Date().toISOString().split('T')[0],
           type: 'FIXED',
         });
@@ -265,8 +265,8 @@ describe('Phase 15A: Multi-Mess / Multi-Tenant Security & Isolation Suite', () =
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
       const descriptions = res.body.data.map((e: any) => e.description);
-      expect(descriptions).toContain('Mess A Secret Organic Spices');
-      expect(descriptions).not.toContain('Mess B Ultra Fiber Internet');
+      expect(descriptions).toContain('Mess A Secret Cleaning Supplies');
+      expect(descriptions).not.toContain('Mess B Ultra Maintenance Repair');
     });
 
     it('Mess B members should see only Mess B expenses', async () => {
@@ -277,8 +277,8 @@ describe('Phase 15A: Multi-Mess / Multi-Tenant Security & Isolation Suite', () =
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
       const descriptions = res.body.data.map((e: any) => e.description);
-      expect(descriptions).toContain('Mess B Ultra Fiber Internet');
-      expect(descriptions).not.toContain('Mess A Secret Organic Spices');
+      expect(descriptions).toContain('Mess B Ultra Maintenance Repair');
+      expect(descriptions).not.toContain('Mess A Secret Cleaning Supplies');
     });
 
     it('CROSS-TENANT ATTACK: Member A accessing Mess B members MUST be blocked (403 Forbidden)', async () => {

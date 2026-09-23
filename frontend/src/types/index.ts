@@ -1,4 +1,4 @@
-export type AppRole = 'OWNER' | 'MANAGER' | 'TREASURER' | 'MEMBER' | 'VIEWER';
+export type AppRole = 'OWNER' | 'MANAGER' | 'MEMBER' | 'VIEWER';
 
 export type ExpenseType = 'VARIABLE' | 'FIXED';
 export type ExpenseStatus = 'DRAFT' | 'PENDING_APPROVAL' | 'APPROVED' | 'REJECTED';
