@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, beforeEach } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import request from 'supertest';
 import { createApp } from '../app.js';
 import { Express } from 'express';
@@ -21,39 +21,51 @@ describe('MessMate Phase 3 — Financial Engine & Smart Settlement Test Suite', 
     process.env.NODE_ENV = 'test';
     app = createApp();
 
-    // Authenticate as real admin
-    const loginRes = await request(app).post('/api/v1/auth/login').send({
-      email: 'admin@messmate.com',
-      password: 'Password@123',
+    const testEmail = `fintest_${Date.now()}@example.com`;
+    const regRes = await request(app).post('/api/v1/auth/register').send({
+      email: testEmail,
+      password: 'SecurePassword123!',
+      name: 'Financial Test Admin',
+      phone: '+8801700000003',
     });
-    token = loginRes.body.data.token;
-    adminUserId = loginRes.body.data.user.id;
+    token = regRes.body.data.token;
+    adminUserId = regRes.body.data.user.id;
 
-    // Find any existing mess
-    const mess = await prisma.mess.findFirst();
-    if (!mess) {
-      throw new Error('No mess found for test');
-    }
+    const messRes = await request(app)
+      .post('/api/v1/messes')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        name: 'Financial Engine Test Mess',
+        currency: 'BDT',
+        currencySymbol: '৳',
+      });
 
-    resolvedMessId = mess.id;
+    resolvedMessId = messRes.body.data.id;
     messId = resolvedMessId;
 
-    let member = await prisma.messMember.findUnique({
+    const member = await prisma.messMember.findUnique({
       where: { messId_userId: { messId: resolvedMessId, userId: adminUserId } },
     });
 
-    if (!member) {
-      member = await prisma.messMember.create({
-        data: {
-          messId: resolvedMessId,
-          userId: adminUserId,
-          role: 'MANAGER',
-          status: 'ACTIVE',
-        },
-      });
-    }
+    testMemberId = member!.id;
+  });
 
-    testMemberId = member.id;
+  afterAll(async () => {
+    if (resolvedMessId) {
+      await prisma.financialAdjustment.deleteMany({ where: { messId: resolvedMessId } });
+      await prisma.advanceDeposit.deleteMany({ where: { messId: resolvedMessId } });
+      await prisma.ledgerEntry.deleteMany({ where: { messId: resolvedMessId } });
+      await prisma.settlementItem.deleteMany({ where: { plan: { messId: resolvedMessId } } });
+      await prisma.settlementPlan.deleteMany({ where: { messId: resolvedMessId } });
+      await prisma.financialPeriod.deleteMany({ where: { messId: resolvedMessId } });
+      await prisma.auditLog.deleteMany({ where: { messId: resolvedMessId } });
+      await prisma.notification.deleteMany({ where: { messId: resolvedMessId } });
+      await prisma.messMember.deleteMany({ where: { messId: resolvedMessId } });
+      await prisma.mess.deleteMany({ where: { id: resolvedMessId } });
+    }
+    if (adminUserId) {
+      await prisma.user.deleteMany({ where: { id: adminUserId } });
+    }
   });
 
   // -------------------------------------------------------------

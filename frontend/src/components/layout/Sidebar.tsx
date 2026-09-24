@@ -109,9 +109,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onCloseMobile }) => {
             <Building2 size={18} />
           </div>
           <div className="mess-pill-info">
-            <div className="mess-pill-name">{activeMess?.name || 'Green View Mess'}</div>
+            <div className="mess-pill-name">{activeMess?.name || 'Your Mess'}</div>
             <div className="mess-pill-location">
-              {activeMess?.area ? `${activeMess.area}, ${activeMess.city}` : 'Dhaka, Bangladesh'}
+              {activeMess?.area && activeMess?.city
+                ? `${activeMess.area}, ${activeMess.city}`
+                : activeMess?.city || 'Operating Workspace'}
             </div>
             <span className="mess-pill-status">Active</span>
           </div>

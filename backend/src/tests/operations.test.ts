@@ -1,13 +1,15 @@
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
 import { createApp } from '../app.js';
 import { Express } from 'express';
 import { BillService } from '../services/billService.js';
 import { BillStatus, Role } from '@prisma/client';
+import { prisma } from '../config/database.js';
 
 describe('MessMate Phase 2 — Core Operations Test Suite', () => {
   let app: Express;
   let authToken: string;
+  let testUserId: string;
   let messId: string;
   let activeMemberId: string;
   let invitedMemberId: string;
@@ -16,29 +18,42 @@ describe('MessMate Phase 2 — Core Operations Test Suite', () => {
     process.env.NODE_ENV = 'test';
     app = createApp();
 
-    // Authenticate as demo admin/owner
-    const loginRes = await request(app).post('/api/v1/auth/login').send({
-      email: 'admin@messmate.com',
-      password: 'Password@123',
+    const testEmail = `opstest_${Date.now()}@example.com`;
+    const regRes = await request(app).post('/api/v1/auth/register').send({
+      email: testEmail,
+      password: 'SecurePassword123!',
+      name: 'Operations Manager',
+      phone: '+8801700000002',
     });
-    authToken = loginRes.body.data.token;
-    
-    const messesRes = await request(app)
-      .get('/api/v1/messes')
-      .set('Authorization', `Bearer ${authToken}`);
+    authToken = regRes.body.data.token;
+    testUserId = regRes.body.data.user.id;
 
-    if (messesRes.body.data && messesRes.body.data.length > 0) {
-      messId = messesRes.body.data[0].id;
-    } else {
-      const createMessRes = await request(app)
-        .post('/api/v1/messes')
-        .set('Authorization', `Bearer ${authToken}`)
-        .send({
-          name: 'Operations Test Mess',
-          currency: 'BDT',
-          currencySymbol: '৳',
-        });
-      messId = createMessRes.body.data.id;
+    const createMessRes = await request(app)
+      .post('/api/v1/messes')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        name: 'Operations Test Mess',
+        currency: 'BDT',
+        currencySymbol: '৳',
+      });
+    messId = createMessRes.body.data.id;
+  });
+
+  afterAll(async () => {
+    if (messId) {
+      await prisma.expenseAllocation.deleteMany({ where: { expense: { messId } } });
+      await prisma.expense.deleteMany({ where: { messId } });
+      await prisma.bazarItem.deleteMany({ where: { bazarEntry: { messId } } });
+      await prisma.bazarEntry.deleteMany({ where: { messId } });
+      await prisma.meal.deleteMany({ where: { messId } });
+      await prisma.bill.deleteMany({ where: { messId } });
+      await prisma.auditLog.deleteMany({ where: { messId } });
+      await prisma.notification.deleteMany({ where: { messId } });
+      await prisma.messMember.deleteMany({ where: { messId } });
+      await prisma.mess.deleteMany({ where: { id: messId } });
+    }
+    if (testUserId) {
+      await prisma.user.deleteMany({ where: { id: testUserId } });
     }
   });
 

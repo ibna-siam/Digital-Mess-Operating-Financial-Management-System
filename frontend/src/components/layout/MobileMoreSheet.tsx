@@ -227,7 +227,7 @@ export const MobileMoreSheet: React.FC<MobileMoreSheetProps> = ({
               </div>
               <div className="flex items-center gap-1.5 mt-0.5 text-xs text-slate-500 font-medium">
                 <Building2 size={13} className="text-slate-400 shrink-0" />
-                <span className="truncate">{activeMess?.name || 'Padma Student Residence'}</span>
+                <span className="truncate">{activeMess?.name || 'Your Mess'}</span>
                 {activeMess?.code && (
                   <span className="text-[10px] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.2 rounded">
                     {activeMess.code}

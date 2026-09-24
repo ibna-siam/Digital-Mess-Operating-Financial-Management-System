@@ -448,96 +448,106 @@ export const SettlementPage: React.FC = () => {
             <span className="font-mono text-emerald-600 font-semibold">Zero-sum balance verified</span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {items.map((item) => {
-              const isSettled = item.status === 'SETTLED' || (item.settledAmount >= item.amount);
-              const isPartial = item.status === 'PARTIALLY_PAID' || (item.settledAmount > 0 && item.settledAmount < item.amount);
-              const remaining = Math.max(0, item.amount - (item.settledAmount || 0));
+          {items.length === 0 ? (
+            <div className="bg-surface-card border border-surface-border rounded-2xl p-10 text-center text-slate-400 shadow-xs">
+              <Sparkles className="w-10 h-10 mx-auto mb-2 text-slate-300" />
+              <p className="font-bold text-slate-700 text-sm">No Pending Settlements</p>
+              <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+                All member balances are settled, or no financial activity has been calculated for this period.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {items.map((item) => {
+                const isSettled = item.status === 'SETTLED' || (item.settledAmount >= item.amount);
+                const isPartial = item.status === 'PARTIALLY_PAID' || (item.settledAmount > 0 && item.settledAmount < item.amount);
+                const remaining = Math.max(0, item.amount - (item.settledAmount || 0));
 
-              return (
-                <div
-                  key={item.id}
-                  className={`bg-surface-card border rounded-2xl p-5 shadow-sm transition-all hover:border-slate-300 ${
-                    isSettled ? 'border-emerald-200 bg-emerald-50/40' : 'border-surface-border'
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-3 mb-4">
-                    {/* Payer */}
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 font-bold flex items-center justify-center text-sm">
-                        {item.payerName[0]}
+                return (
+                  <div
+                    key={item.id}
+                    className={`bg-surface-card border rounded-2xl p-5 shadow-sm transition-all hover:border-slate-300 ${
+                      isSettled ? 'border-emerald-200 bg-emerald-50/40' : 'border-surface-border'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3 mb-4">
+                      {/* Payer */}
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 font-bold flex items-center justify-center text-sm">
+                          {item.payerName[0]}
+                        </div>
+                        <div>
+                          <div className="text-xs text-slate-500 font-medium">Payer (Owes)</div>
+                          <div className="text-sm font-bold text-slate-900">{item.payerName}</div>
+                        </div>
                       </div>
+
+                      {/* Flow arrow */}
+                      <div className="flex flex-col items-center pt-2 px-2">
+                        <ArrowRight className="w-5 h-5 text-slate-400" />
+                      </div>
+
+                      {/* Receiver */}
+                      <div className="flex items-center gap-3 text-right">
+                        <div>
+                          <div className="text-xs text-slate-500 font-medium">Receiver (Owed)</div>
+                          <div className="text-sm font-bold text-slate-900">{item.receiverName}</div>
+                        </div>
+                        <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 font-bold flex items-center justify-center text-sm">
+                          {item.receiverName[0]}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Transfer Amount & Status */}
+                    <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between mb-4">
                       <div>
-                        <div className="text-xs text-slate-500 font-medium">Payer (Owes)</div>
-                        <div className="text-sm font-bold text-slate-900">{item.payerName}</div>
+                        <span className="text-xs text-slate-500 block">Transfer Amount</span>
+                        <span className="text-xl font-black text-slate-900 font-mono">
+                          ৳ {item.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        </span>
+                      </div>
+
+                      <div className="text-right">
+                        {isSettled ? (
+                          <Badge variant="success">Fully Settled</Badge>
+                        ) : isPartial ? (
+                          <Badge variant="warning">
+                            Paid ৳{item.settledAmount.toFixed(0)} ({remaining.toFixed(0)} left)
+                          </Badge>
+                        ) : (
+                          <Badge variant="neutral">Pending</Badge>
+                        )}
                       </div>
                     </div>
 
-                    {/* Flow arrow */}
-                    <div className="flex flex-col items-center pt-2 px-2">
-                      <ArrowRight className="w-5 h-5 text-slate-400" />
-                    </div>
-
-                    {/* Receiver */}
-                    <div className="flex items-center gap-3 text-right">
-                      <div>
-                        <div className="text-xs text-slate-500 font-medium">Receiver (Owed)</div>
-                        <div className="text-sm font-bold text-slate-900">{item.receiverName}</div>
-                      </div>
-                      <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-600 font-bold flex items-center justify-center text-sm">
-                        {item.receiverName[0]}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Transfer Amount & Status */}
-                  <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between mb-4">
-                    <div>
-                      <span className="text-xs text-slate-500 block">Transfer Amount</span>
-                      <span className="text-xl font-black text-slate-900 font-mono">
-                        ৳ {item.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                    {/* Action Button */}
+                    <div className="flex items-center justify-between pt-1">
+                      <span className="text-xs text-slate-500 font-mono truncate max-w-[200px]">
+                        {item.notes || 'Calculated optimal transfer'}
                       </span>
-                    </div>
 
-                    <div className="text-right">
-                      {isSettled ? (
-                        <Badge variant="success">Fully Settled</Badge>
-                      ) : isPartial ? (
-                        <Badge variant="warning">
-                          Paid ৳{item.settledAmount.toFixed(0)} ({remaining.toFixed(0)} left)
-                        </Badge>
+                      {!isSettled ? (
+                        <Button
+                          variant="primary"
+                          onClick={() => openSettleModal(item)}
+                          className="flex items-center gap-1.5 shadow-md shadow-primary-600/20 text-xs py-1.5 px-3"
+                        >
+                          <Send className="w-3.5 h-3.5" />
+                          <span>Settle Up</span>
+                        </Button>
                       ) : (
-                        <Badge variant="neutral">Pending</Badge>
+                        <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600">
+                          <CheckCircle2 className="w-4 h-4" />
+                          <span>Completed</span>
+                        </div>
                       )}
                     </div>
                   </div>
-
-                  {/* Action Button */}
-                  <div className="flex items-center justify-between pt-1">
-                    <span className="text-xs text-slate-500 font-mono truncate max-w-[200px]">
-                      {item.notes || 'Calculated optimal transfer'}
-                    </span>
-
-                    {!isSettled ? (
-                      <Button
-                        variant="primary"
-                        onClick={() => openSettleModal(item)}
-                        className="flex items-center gap-1.5 shadow-md shadow-primary-600/20 text-xs py-1.5 px-3"
-                      >
-                        <Send className="w-3.5 h-3.5" />
-                        <span>Settle Up</span>
-                      </Button>
-                    ) : (
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600">
-                        <CheckCircle2 className="w-4 h-4" />
-                        <span>Completed</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
 

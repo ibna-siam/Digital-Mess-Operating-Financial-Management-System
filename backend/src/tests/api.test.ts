@@ -32,11 +32,13 @@ describe('MessMate API v1 — Phase 1 Test Suite', () => {
       expect(res.body.error.fields).toBeDefined();
     });
 
+    const testEmail = `testuser_${Date.now()}@example.com`;
+    const testPassword = 'SecurePassword123!';
+
     it('POST /api/v1/auth/register should succeed with valid credentials', async () => {
-      const email = `testuser_${Date.now()}@example.com`;
       const res = await request(app).post('/api/v1/auth/register').send({
-        email,
-        password: 'SecurePassword123!',
+        email: testEmail,
+        password: testPassword,
         name: 'Test Member',
         phone: '+8801700000001',
       });
@@ -44,25 +46,25 @@ describe('MessMate API v1 — Phase 1 Test Suite', () => {
       expect(res.status).toBe(201);
       expect(res.body.success).toBe(true);
       expect(res.body.data.token).toBeDefined();
-      expect(res.body.data.user.email).toBe(email);
+      expect(res.body.data.user.email).toBe(testEmail);
       expect(res.body.data.user.passwordHash).toBeUndefined(); // Verify hash is not exposed
     });
 
     it('POST /api/v1/auth/login should authenticate valid user and return JWT', async () => {
       const res = await request(app).post('/api/v1/auth/login').send({
-        email: 'admin@messmate.com',
-        password: 'Password@123',
+        email: testEmail,
+        password: testPassword,
       });
 
       expect(res.status).toBe(200);
       expect(res.body.success).toBe(true);
       expect(res.body.data.token).toBeDefined();
-      expect(res.body.data.user.email).toBe('admin@messmate.com');
+      expect(res.body.data.user.email).toBe(testEmail);
     });
 
     it('POST /api/v1/auth/login should reject incorrect password', async () => {
       const res = await request(app).post('/api/v1/auth/login').send({
-        email: 'admin@messmate.com',
+        email: testEmail,
         password: 'WrongPassword!',
       });
 
@@ -79,8 +81,8 @@ describe('MessMate API v1 — Phase 1 Test Suite', () => {
 
     it('GET /api/v1/auth/me should return current user profile with valid Bearer token', async () => {
       const loginRes = await request(app).post('/api/v1/auth/login').send({
-        email: 'admin@messmate.com',
-        password: 'Password@123',
+        email: testEmail,
+        password: testPassword,
       });
       const token = loginRes.body.data.token;
 
@@ -90,7 +92,7 @@ describe('MessMate API v1 — Phase 1 Test Suite', () => {
 
       expect(meRes.status).toBe(200);
       expect(meRes.body.success).toBe(true);
-      expect(meRes.body.data.user.email).toBe('admin@messmate.com');
+      expect(meRes.body.data.user.email).toBe(testEmail);
     });
   });
 

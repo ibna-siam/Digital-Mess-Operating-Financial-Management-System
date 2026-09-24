@@ -26,46 +26,55 @@ describe('MessMate Phase 4 — Monthly Closing, Financial Reports & Statements S
     process.env.NODE_ENV = 'test';
     app = createApp();
 
-    const loginRes = await request(app).post('/api/v1/auth/login').send({
-      email: 'admin@messmate.com',
-      password: 'Password@123',
+    const testEmail = `monthend_${Date.now()}@example.com`;
+    const regRes = await request(app).post('/api/v1/auth/register').send({
+      email: testEmail,
+      password: 'SecurePassword123!',
+      name: 'MonthEnd Admin',
+      phone: '+8801700000004',
     });
-    token = loginRes.body.data.token;
-    adminUserId = loginRes.body.data.user.id;
+    token = regRes.body.data.token;
+    adminUserId = regRes.body.data.user.id;
 
-    const mess = await prisma.mess.findFirst();
-    if (!mess) {
-      throw new Error('No mess found for test');
-    }
+    const messRes = await request(app)
+      .post('/api/v1/messes')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        name: 'MonthEnd Test Mess',
+        currency: 'BDT',
+        currencySymbol: '৳',
+      });
 
-    resolvedMessId = mess.id;
+    resolvedMessId = messRes.body.data.id;
     messId = resolvedMessId;
 
-    let member = await prisma.messMember.findUnique({
+    const member = await prisma.messMember.findUnique({
       where: { messId_userId: { messId: resolvedMessId, userId: adminUserId } },
     });
 
-    if (!member) {
-      member = await prisma.messMember.create({
-        data: {
-          messId: resolvedMessId,
-          userId: adminUserId,
-          role: 'MANAGER',
-          status: 'ACTIVE',
-        },
-      });
-    }
-
-    testMemberId = member.id;
+    testMemberId = member!.id;
   });
 
   afterAll(async () => {
-    try {
-      await prisma.financialPeriod.updateMany({
-        where: { messId: resolvedMessId, periodKey: '2026-09' },
-        data: { status: 'ACTIVE' },
-      });
-    } catch {}
+    if (resolvedMessId) {
+      try {
+        await prisma.periodEvent.deleteMany({ where: { messId: resolvedMessId } });
+        await prisma.financialSnapshot.deleteMany({ where: { messId: resolvedMessId } });
+        await prisma.financialPeriod.deleteMany({ where: { messId: resolvedMessId } });
+        await prisma.expenseAllocation.deleteMany({ where: { expense: { messId: resolvedMessId } } });
+        await prisma.expense.deleteMany({ where: { messId: resolvedMessId } });
+        await prisma.meal.deleteMany({ where: { messId: resolvedMessId } });
+        await prisma.auditLog.deleteMany({ where: { messId: resolvedMessId } });
+        await prisma.notification.deleteMany({ where: { messId: resolvedMessId } });
+        await prisma.messMember.deleteMany({ where: { messId: resolvedMessId } });
+        await prisma.mess.deleteMany({ where: { id: resolvedMessId } });
+      } catch {}
+    }
+    if (adminUserId) {
+      try {
+        await prisma.user.deleteMany({ where: { id: adminUserId } });
+      } catch {}
+    }
   });
 
   beforeEach(() => {

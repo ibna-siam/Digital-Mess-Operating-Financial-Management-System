@@ -92,12 +92,12 @@ Open your browser at: `http://localhost:5173`
 
 ---
 
-## 🔐 Authentication & Seed Credentials
+## 🔐 User Authentication & Onboarding
 
-For quick local preview and testing:
-- **Email**: `admin@messmate.com`
-- **Password**: `Password@123`
-- *(Alternatively, use the "Fill Demo Credentials" button on the Login page)*
+MessMate uses real production email authentication:
+1. Open the application and navigate to `/register`.
+2. Enter your details and choose either **Create New Mess** (Manager) or **Join Existing Mess** (Resident Member with 8-character Join Code).
+3. Upon registration, you are immediately routed to your operating mess workspace.
 
 ---
 

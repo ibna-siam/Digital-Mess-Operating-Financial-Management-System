@@ -388,10 +388,10 @@ export const LedgerPage: React.FC = () => {
             </div>
           </div>
           <div className="text-2xl font-bold text-slate-900 tracking-tight">
-            ৳ {memberBalance ? memberBalance.foodShare.toLocaleString('en-US', { minimumFractionDigits: 2 }) : '2,400.00'}
+            ৳ {memberBalance ? memberBalance.foodShare.toLocaleString('en-US', { minimumFractionDigits: 2 }) : '0.00'}
           </div>
           <p className="text-xs text-slate-500 mt-1.5 flex items-center gap-1">
-            Rate: <span className="text-amber-600 font-semibold">৳ {financialSummary?.currentMealRate?.toFixed(2) || '60.00'}/meal</span>
+            Rate: <span className="text-amber-600 font-semibold">৳ {financialSummary?.currentMealRate !== undefined ? financialSummary.currentMealRate.toFixed(2) : '0.00'}/meal</span>
           </p>
         </div>
 
@@ -404,10 +404,12 @@ export const LedgerPage: React.FC = () => {
             </div>
           </div>
           <div className="text-2xl font-bold text-slate-900 tracking-tight">
-            ৳ {memberBalance ? (memberBalance.rentShare + memberBalance.utilityShare).toLocaleString('en-US', { minimumFractionDigits: 2 }) : '5,000.00'}
+            ৳ {memberBalance ? (memberBalance.rentShare + memberBalance.utilityShare).toLocaleString('en-US', { minimumFractionDigits: 2 }) : '0.00'}
           </div>
           <p className="text-xs text-slate-500 mt-1.5">
-            Rent (৳ 4,000) + Utilities (৳ 1,000)
+            {memberBalance
+              ? `Rent (৳ ${memberBalance.rentShare.toLocaleString()}) + Utilities (৳ ${memberBalance.utilityShare.toLocaleString()})`
+              : 'Fixed monthly obligations'}
           </p>
         </div>
 
@@ -420,7 +422,7 @@ export const LedgerPage: React.FC = () => {
             </div>
           </div>
           <div className="text-2xl font-bold text-emerald-600 tracking-tight">
-            ৳ {memberBalance ? memberBalance.totalContributions.toLocaleString('en-US', { minimumFractionDigits: 2 }) : '5,000.00'}
+            ৳ {memberBalance ? memberBalance.totalContributions.toLocaleString('en-US', { minimumFractionDigits: 2 }) : '0.00'}
           </div>
           <p className="text-xs text-slate-500 mt-1.5 flex items-center gap-1">
             Advances + bazar contributed

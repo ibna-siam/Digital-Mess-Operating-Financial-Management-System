@@ -65,7 +65,9 @@ export const MealsPage: React.FC = () => {
       setSummary(summaryData);
 
       // Find current user's entry
-      const myEntry = dailyData.find((m) => m.memberName.toLowerCase().includes(user?.name?.toLowerCase() || 'siam'));
+      const myEntry = dailyData.find(
+        (m) => Boolean(user?.name && m.memberName.toLowerCase().includes(user.name.toLowerCase()))
+      );
       if (myEntry) {
         setMyBreakfast(myEntry.breakfast > 0);
         setMyLunch(myEntry.lunch > 0);
