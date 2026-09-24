@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Calendar,
+  CalendarCheck,
   CheckCircle2,
   AlertTriangle,
   XCircle,
@@ -198,69 +199,52 @@ export const MonthEndPage: React.FC = () => {
   const hasBlockingIssues = (validation?.blockingIssues?.length || 0) > 0;
 
   return (
-    <div className="page-enter" style={{ display: 'flex', flexDirection: 'column', gap: 24, paddingBottom: 60 }}>
+    <div className="space-y-6 page-enter pb-16">
       {/* Header & Controls */}
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 16,
-          backgroundColor: '#ffffff',
-          padding: '20px 24px',
-          borderRadius: 16,
-          border: '1px solid #e2e8f0',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-        }}
-      >
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 4 }}>
-            <h1 style={{ fontSize: 24, fontWeight: 700, color: '#0f172a', margin: 0 }}>
-              Month-End Review Center
-            </h1>
-            {getStatusBadge(period?.status)}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-sm">
+        <div className="flex items-start gap-3 sm:gap-4">
+          <div className="p-3 bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-xl border border-emerald-500/20 flex-shrink-0">
+            <CalendarCheck className="w-6 h-6" />
           </div>
-          <p style={{ margin: 0, fontSize: 14, color: '#64748b' }}>
-            Authoritative financial closing, reconciliation, audit trail and historical period management.
-          </p>
+          <div>
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+                Month-End Review Center
+              </h1>
+              {getStatusBadge(period?.status)}
+            </div>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-xl">
+              Authoritative financial closing, reconciliation, audit trail and historical period management.
+            </p>
+          </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+        <div className="flex items-center gap-2.5 flex-wrap">
           {/* Period Selector */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Calendar size={18} color="#64748b" />
+          <div className="flex items-center bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 shadow-sm">
+            <Calendar className="w-4 h-4 text-slate-400 mr-2 flex-shrink-0" />
             <select
               value={selectedPeriodKey}
               onChange={(e) => setSelectedPeriodKey(e.target.value)}
-              style={{
-                padding: '8px 12px',
-                borderRadius: 8,
-                border: '1px solid #cbd5e1',
-                fontSize: 14,
-                fontWeight: 600,
-                color: '#1e293b',
-                backgroundColor: '#f8fafc',
-                cursor: 'pointer',
-              }}
+              className="bg-transparent text-sm font-semibold text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer pr-1"
             >
               {periods.length > 0 ? (
                 periods.map((p) => (
-                  <option key={p.periodKey} value={p.periodKey}>
+                  <option key={p.periodKey} value={p.periodKey} className="dark:bg-slate-900">
                     {p.periodKey} ({p.status})
                   </option>
                 ))
               ) : (
-                <option value={selectedPeriodKey}>{selectedPeriodKey}</option>
+                <option value={selectedPeriodKey} className="dark:bg-slate-900">{selectedPeriodKey}</option>
               )}
             </select>
           </div>
 
           <Button
             variant="secondary"
-            icon={<History size={16} />}
+            icon={<History size={15} />}
             onClick={() => setShowEventsModal(true)}
-            className="text-xs py-2 px-3"
+            className="text-xs font-semibold py-2 px-3 rounded-xl shadow-sm"
           >
             Audit History ({auditEvents.length})
           </Button>
@@ -272,7 +256,7 @@ export const MonthEndPage: React.FC = () => {
               icon={<FileCheck size={16} />}
               onClick={handleStartReview}
               isLoading={isProcessing}
-              className="text-xs py-2 px-3"
+              className="text-xs font-semibold py-2 px-3.5 rounded-xl shadow-sm"
             >
               Start Review
             </Button>
@@ -285,7 +269,7 @@ export const MonthEndPage: React.FC = () => {
               onClick={handleFinalizeMonth}
               disabled={hasBlockingIssues}
               isLoading={isProcessing}
-              className="text-xs py-2 px-3"
+              className="text-xs font-semibold py-2 px-3.5 rounded-xl shadow-sm"
             >
               Finalize Month
             </Button>
@@ -297,7 +281,7 @@ export const MonthEndPage: React.FC = () => {
               icon={<Lock size={16} />}
               onClick={() => setShowCloseModal(true)}
               isLoading={isProcessing}
-              className="text-xs py-2 px-3"
+              className="text-xs font-semibold py-2 px-3.5 rounded-xl shadow-sm"
             >
               Close Month & Lock
             </Button>
@@ -308,7 +292,7 @@ export const MonthEndPage: React.FC = () => {
               variant="secondary"
               icon={<Unlock size={16} />}
               onClick={() => setShowReopenModal(true)}
-              className="text-xs py-2 px-3"
+              className="text-xs font-semibold py-2 px-3.5 rounded-xl shadow-sm"
             >
               Request Reopen
             </Button>
@@ -318,24 +302,15 @@ export const MonthEndPage: React.FC = () => {
 
       {/* Closed Banner */}
       {isClosed && (
-        <div
-          style={{
-            backgroundColor: '#f1f5f9',
-            border: '1px solid #cbd5e1',
-            borderRadius: 12,
-            padding: '14px 20px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 14,
-            color: '#334155',
-          }}
-        >
-          <Lock size={22} color="#475569" />
-          <div style={{ flex: 1 }}>
-            <div style={{ fontWeight: 600, fontSize: 15, color: '#0f172a' }}>
+        <div className="bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-2xl p-4 sm:p-5 flex items-center gap-3.5">
+          <div className="p-2.5 rounded-xl bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 flex-shrink-0">
+            <Lock size={20} />
+          </div>
+          <div className="flex-1">
+            <div className="font-semibold text-sm sm:text-base text-slate-900 dark:text-white">
               Financial Period {selectedPeriodKey} is CLOSED & IMMUTABLE
             </div>
-            <div style={{ fontSize: 13, color: '#64748b' }}>
+            <div className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
               Closed on {period?.closedAt ? new Date(period.closedAt).toLocaleDateString() : '—'}. Operations for this month are locked.
             </div>
           </div>
@@ -344,273 +319,218 @@ export const MonthEndPage: React.FC = () => {
 
       {/* Success/Error Alerts */}
       {errorMessage && (
-        <div
-          style={{
-            backgroundColor: '#fef2f2',
-            border: '1px solid #fecaca',
-            borderRadius: 12,
-            padding: '14px 20px',
-            color: '#991b1b',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 12,
-          }}
-        >
-          <XCircle size={20} color="#dc2626" />
-          <span style={{ fontSize: 14 }}>{errorMessage}</span>
+        <div className="bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 rounded-2xl p-4 flex items-center gap-3 text-rose-800 dark:text-rose-300 text-sm">
+          <XCircle size={18} className="text-rose-600 flex-shrink-0" />
+          <span>{errorMessage}</span>
         </div>
       )}
 
       {successMessage && (
-        <div
-          style={{
-            backgroundColor: '#f0fdf4',
-            border: '1px solid #bbf7d0',
-            borderRadius: 12,
-            padding: '14px 20px',
-            color: '#166534',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 12,
-          }}
-        >
-          <CheckCircle2 size={20} color="#16a34a" />
-          <span style={{ fontSize: 14 }}>{successMessage}</span>
+        <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 rounded-2xl p-4 flex items-center gap-3 text-emerald-800 dark:text-emerald-300 text-sm">
+          <CheckCircle2 size={18} className="text-emerald-600 flex-shrink-0" />
+          <span>{successMessage}</span>
         </div>
       )}
 
       {/* Summary KPI Cards */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: 16,
-        }}
-      >
-        <div
-          style={{
-            backgroundColor: '#ffffff',
-            borderRadius: 14,
-            padding: 18,
-            border: '1px solid #e2e8f0',
-            boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#64748b', fontSize: 13, marginBottom: 8 }}>
-            <Utensils size={16} /> Total Meals
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+        {/* Card 1: Total Meals */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Meals</span>
+            <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+              <Utensils size={16} />
+            </div>
           </div>
-          <div style={{ fontSize: 24, fontWeight: 700, color: '#0f172a' }}>
-            {validation?.summary.totalMeals.toFixed(1) || '0.0'}
-          </div>
-          <div style={{ fontSize: 12, color: '#64748b', marginTop: 4 }}>
-            Food Cost: ৳{validation?.summary.totalFoodCost.toFixed(2) || '0.00'}
+          <div>
+            <div className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+              {validation?.summary.totalMeals.toFixed(1) || '0.0'}
+            </div>
+            <div className="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 mt-1">
+              Food Cost: ৳{validation?.summary.totalFoodCost.toFixed(2) || '0.00'}
+            </div>
           </div>
         </div>
 
-        <div
-          style={{
-            backgroundColor: '#ffffff',
-            borderRadius: 14,
-            padding: 18,
-            border: '1px solid #e2e8f0',
-            boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#64748b', fontSize: 13, marginBottom: 8 }}>
-            <TrendingUp size={16} /> Calculated Meal Rate
+        {/* Card 2: Calculated Meal Rate */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Calculated Meal Rate</span>
+            <div className="p-2 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400">
+              <TrendingUp size={16} />
+            </div>
           </div>
-          <div style={{ fontSize: 24, fontWeight: 700, color: '#2563eb' }}>
-            ৳{validation?.summary.mealRate.toFixed(2) || '0.00'}
-          </div>
-          <div style={{ fontSize: 12, color: '#64748b', marginTop: 4 }}>
-            Per counted meal
+          <div>
+            <div className="text-xl sm:text-2xl font-bold tracking-tight text-blue-600 dark:text-blue-400">
+              ৳{validation?.summary.mealRate.toFixed(2) || '0.00'}
+            </div>
+            <div className="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 mt-1">
+              Per counted meal
+            </div>
           </div>
         </div>
 
-        <div
-          style={{
-            backgroundColor: '#ffffff',
-            borderRadius: 14,
-            padding: 18,
-            border: '1px solid #e2e8f0',
-            boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#64748b', fontSize: 13, marginBottom: 8 }}>
-            <Receipt size={16} /> Total Expenses
+        {/* Card 3: Total Expenses */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Expenses</span>
+            <div className="p-2 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
+              <Receipt size={16} />
+            </div>
           </div>
-          <div style={{ fontSize: 24, fontWeight: 700, color: '#0f172a' }}>
-            ৳{validation?.summary.totalExpenses.toFixed(2) || '0.00'}
-          </div>
-          <div style={{ fontSize: 12, color: '#64748b', marginTop: 4 }}>
-            Fixed & variable overhead
+          <div>
+            <div className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+              ৳{validation?.summary.totalExpenses.toFixed(2) || '0.00'}
+            </div>
+            <div className="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 mt-1">
+              Fixed & variable overhead
+            </div>
           </div>
         </div>
 
-        <div
-          style={{
-            backgroundColor: '#ffffff',
-            borderRadius: 14,
-            padding: 18,
-            border: '1px solid #e2e8f0',
-            boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#64748b', fontSize: 13, marginBottom: 8 }}>
-            <Wallet size={16} /> Total Contributions
+        {/* Card 4: Total Contributions */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm relative overflow-hidden flex flex-col justify-between">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Contributions</span>
+            <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+              <Wallet size={16} />
+            </div>
           </div>
-          <div style={{ fontSize: 24, fontWeight: 700, color: '#16a34a' }}>
-            ৳{validation?.summary.totalContributions.toFixed(2) || '0.00'}
-          </div>
-          <div style={{ fontSize: 12, color: '#64748b', marginTop: 4 }}>
-            Deposits & Bazar
+          <div>
+            <div className="text-xl sm:text-2xl font-bold tracking-tight text-emerald-600 dark:text-emerald-400">
+              ৳{validation?.summary.totalContributions.toFixed(2) || '0.00'}
+            </div>
+            <div className="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 mt-1">
+              Deposits & Bazar
+            </div>
           </div>
         </div>
 
-        <div
-          style={{
-            backgroundColor: '#ffffff',
-            borderRadius: 14,
-            padding: 18,
-            border: '1px solid #e2e8f0',
-            boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#64748b', fontSize: 13, marginBottom: 8 }}>
-            <AlertTriangle size={16} /> Outstanding Debt
+        {/* Card 5: Full Width Outstanding Debt Pool / Settlement Banner */}
+        <div className="col-span-2 lg:col-span-4 bg-gradient-to-r from-rose-50/70 via-white to-amber-50/40 dark:from-rose-950/20 dark:via-slate-900 dark:to-amber-950/10 rounded-2xl p-4 sm:p-5 border border-rose-200/80 dark:border-rose-900/40 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start sm:items-center gap-3.5">
+            <div className="p-2.5 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 flex-shrink-0">
+              <AlertTriangle size={20} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+                  Settlement Debt Pool
+                </h3>
+                <span className="text-[11px] px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300 font-medium">
+                  Pending Transfers
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Total outstanding member obligations pending peer-to-peer settlement clearing.
+              </p>
+            </div>
           </div>
-          <div style={{ fontSize: 24, fontWeight: 700, color: '#dc2626' }}>
-            ৳{validation?.summary.outstandingBalance.toFixed(2) || '0.00'}
-          </div>
-          <div style={{ fontSize: 12, color: '#64748b', marginTop: 4 }}>
-            Settlement pending pool
+          <div className="sm:text-right flex sm:flex-col items-baseline sm:items-end justify-between border-t sm:border-t-0 pt-2 sm:pt-0 border-rose-100 dark:border-rose-900/30">
+            <div className="text-xl sm:text-2xl font-extrabold text-rose-600 dark:text-rose-400">
+              ৳{validation?.summary.outstandingBalance.toFixed(2) || '0.00'}
+            </div>
+            <div className="text-[11px] text-slate-500 dark:text-slate-400">
+              Reconciliation: {validation?.summary.isReconciled ? '✓ Zero-sum verified' : 'Discrepancy pending'}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content Layout: Checklist & Validation Alerts */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
         {/* Automated Month-End Checklist */}
-        <div
-          style={{
-            backgroundColor: '#ffffff',
-            borderRadius: 16,
-            padding: 24,
-            border: '1px solid #e2e8f0',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
-            <h2 style={{ fontSize: 17, fontWeight: 700, color: '#0f172a', margin: 0 }}>
-              Automated Month-End Checklist
-            </h2>
-            <span style={{ fontSize: 12, color: '#64748b' }}>
-              Live evaluation from Phase 3 Financial Engine
-            </span>
-          </div>
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+          <div>
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div>
+                <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                  Automated Month-End Checklist
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Live evaluation from Phase 3 Financial Engine
+                </p>
+              </div>
+            </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {validation?.checklist?.map((item) => {
-              let icon = <CheckCircle2 size={18} color="#16a34a" />;
-              let badgeVariant: 'success' | 'warning' | 'danger' = 'success';
+            <div className="flex flex-col gap-2.5">
+              {validation?.checklist?.map((item) => {
+                let icon = <CheckCircle2 size={18} className="text-emerald-500 flex-shrink-0" />;
+                let badgeVariant: 'success' | 'warning' | 'danger' = 'success';
 
-              if (item.status === 'WARNING') {
-                icon = <AlertTriangle size={18} color="#f59e0b" />;
-                badgeVariant = 'warning';
-              } else if (item.status === 'BLOCKED') {
-                icon = <XCircle size={18} color="#dc2626" />;
-                badgeVariant = 'danger';
-              }
+                if (item.status === 'WARNING') {
+                  icon = <AlertTriangle size={18} className="text-amber-500 flex-shrink-0" />;
+                  badgeVariant = 'warning';
+                } else if (item.status === 'BLOCKED') {
+                  icon = <XCircle size={18} className="text-rose-500 flex-shrink-0" />;
+                  badgeVariant = 'danger';
+                }
 
-              return (
-                <div
-                  key={item.id}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '12px 16px',
-                    borderRadius: 10,
-                    backgroundColor: '#f8fafc',
-                    border: '1px solid #f1f5f9',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    {icon}
-                    <div>
-                      <div style={{ fontWeight: 600, fontSize: 14, color: '#1e293b' }}>
-                        {item.title}
+                return (
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between p-3 rounded-xl bg-slate-50/70 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/70 transition-colors"
+                  >
+                    <div className="flex items-center gap-3 min-w-0 pr-2">
+                      {icon}
+                      <div className="min-w-0">
+                        <div className="font-semibold text-xs sm:text-sm text-slate-800 dark:text-slate-200 truncate">
+                          {item.title}
+                        </div>
+                        <div className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">
+                          {item.details}
+                        </div>
                       </div>
-                      <div style={{ fontSize: 12, color: '#64748b' }}>{item.details}</div>
                     </div>
+                    <Badge variant={badgeVariant}>{item.status}</Badge>
                   </div>
-                  <Badge variant={badgeVariant}>{item.status}</Badge>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
 
         {/* Validation Issues & Blocking Banners */}
-        <div
-          style={{
-            backgroundColor: '#ffffff',
-            borderRadius: 16,
-            padding: 24,
-            border: '1px solid #e2e8f0',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 16,
-          }}
-        >
-          <h2 style={{ fontSize: 17, fontWeight: 700, color: '#0f172a', margin: 0 }}>
-            Audit & Closing Readiness
-          </h2>
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-5 sm:p-6 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col gap-4">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+            <div>
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                Audit & Closing Readiness
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Eligibility verification for ledger locking
+              </p>
+            </div>
+          </div>
 
           {/* Blocking Issues */}
           {validation?.blockingIssues && validation.blockingIssues.length > 0 ? (
-            <div
-              style={{
-                backgroundColor: '#fef2f2',
-                border: '1px solid #fecaca',
-                borderRadius: 12,
-                padding: 16,
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#991b1b', fontWeight: 600, marginBottom: 8 }}>
-                <XCircle size={18} color="#dc2626" />
+            <div className="bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 rounded-xl p-4">
+              <div className="flex items-center gap-2 text-rose-800 dark:text-rose-300 font-semibold text-xs sm:text-sm mb-2">
+                <XCircle size={18} className="text-rose-600 flex-shrink-0" />
                 BLOCKING ISSUES ({validation.blockingIssues.length})
               </div>
-              <p style={{ fontSize: 13, color: '#7f1d1d', margin: '0 0 10px 0' }}>
+              <p className="text-xs text-rose-700 dark:text-rose-400 mb-2">
                 Cannot finalize or close this period until the following issues are resolved:
               </p>
-              <ul style={{ margin: 0, paddingLeft: 20, fontSize: 13, color: '#991b1b' }}>
+              <ul className="space-y-1 pl-5 list-disc text-xs text-rose-800 dark:text-rose-300">
                 {validation.blockingIssues.map((b, idx) => (
-                  <li key={idx} style={{ marginBottom: 4 }}>
+                  <li key={idx}>
                     {b.message}
                   </li>
                 ))}
               </ul>
             </div>
           ) : (
-            <div
-              style={{
-                backgroundColor: '#f0fdf4',
-                border: '1px solid #bbf7d0',
-                borderRadius: 12,
-                padding: 16,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-              }}
-            >
-              <CheckCircle2 size={22} color="#16a34a" />
+            <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 rounded-xl p-4 flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex-shrink-0">
+                <CheckCircle2 size={20} />
+              </div>
               <div>
-                <div style={{ fontWeight: 600, fontSize: 14, color: '#166534' }}>
+                <div className="font-semibold text-xs sm:text-sm text-emerald-900 dark:text-emerald-200">
                   Zero Blocking Issues
                 </div>
-                <div style={{ fontSize: 12, color: '#15803d' }}>
+                <div className="text-xs text-emerald-700 dark:text-emerald-400">
                   Financial reconciliation passed. Period is eligible for finalization.
                 </div>
               </div>
@@ -619,24 +539,17 @@ export const MonthEndPage: React.FC = () => {
 
           {/* Warnings */}
           {validation?.warnings && validation.warnings.length > 0 && (
-            <div
-              style={{
-                backgroundColor: '#fffbeb',
-                border: '1px solid #fde68a',
-                borderRadius: 12,
-                padding: 16,
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#92400e', fontWeight: 600, marginBottom: 8 }}>
-                <AlertTriangle size={18} color="#d97706" />
+            <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 rounded-xl p-4">
+              <div className="flex items-center gap-2 text-amber-800 dark:text-amber-300 font-semibold text-xs sm:text-sm mb-2">
+                <AlertTriangle size={18} className="text-amber-600 flex-shrink-0" />
                 WARNINGS ({validation.warnings.length})
               </div>
-              <p style={{ fontSize: 13, color: '#78350f', margin: '0 0 8px 0' }}>
+              <p className="text-xs text-amber-700 dark:text-amber-400 mb-2">
                 Non-blocking items recommended for review before closing:
               </p>
-              <ul style={{ margin: 0, paddingLeft: 20, fontSize: 13, color: '#92400e' }}>
+              <ul className="space-y-1 pl-5 list-disc text-xs text-amber-800 dark:text-amber-300">
                 {validation.warnings.map((w, idx) => (
-                  <li key={idx} style={{ marginBottom: 4 }}>
+                  <li key={idx}>
                     {w.message}
                   </li>
                 ))}
@@ -645,22 +558,12 @@ export const MonthEndPage: React.FC = () => {
           )}
 
           {/* Reconciliation Status Card */}
-          <div
-            style={{
-              padding: 16,
-              borderRadius: 12,
-              backgroundColor: '#f8fafc',
-              border: '1px solid #e2e8f0',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
             <div>
-              <div style={{ fontWeight: 600, fontSize: 14, color: '#1e293b' }}>
+              <div className="font-semibold text-xs sm:text-sm text-slate-800 dark:text-slate-200">
                 Zero-Sum Shared Ledger Reconciliation
               </div>
-              <div style={{ fontSize: 12, color: '#64748b' }}>
+              <div className="text-xs text-slate-500 dark:text-slate-400">
                 Debits and credits must balance within ৳0.05
               </div>
             </div>
@@ -677,68 +580,46 @@ export const MonthEndPage: React.FC = () => {
         onClose={() => setShowCloseModal(false)}
         title={`Close & Lock Financial Period ${selectedPeriodKey}?`}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: '8px 0' }}>
-          <div
-            style={{
-              backgroundColor: '#fffbeb',
-              border: '1px solid #fde68a',
-              borderRadius: 10,
-              padding: 14,
-              color: '#92400e',
-              fontSize: 13,
-            }}
-          >
+        <div className="space-y-4 py-2">
+          <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 rounded-xl p-3.5 text-xs text-amber-800 dark:text-amber-300">
             <strong>Important Safety Notice:</strong> Closing a financial month is a formal accounting action.
             All meals, expenses, bazar and bills for this period will become strictly <strong>read-only</strong>.
           </div>
 
-          <div style={{ backgroundColor: '#f8fafc', padding: 14, borderRadius: 10, fontSize: 13 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-              <span style={{ color: '#64748b' }}>Period Key:</span>
-              <span style={{ fontWeight: 600 }}>{selectedPeriodKey}</span>
+          <div className="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl text-xs space-y-2 border border-slate-100 dark:border-slate-800">
+            <div className="flex justify-between items-center">
+              <span className="text-slate-500 dark:text-slate-400">Period Key:</span>
+              <span className="font-semibold text-slate-800 dark:text-slate-200">{selectedPeriodKey}</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-              <span style={{ color: '#64748b' }}>Total Expenses:</span>
-              <span style={{ fontWeight: 600 }}>৳{validation?.summary.totalExpenses.toFixed(2)}</span>
+            <div className="flex justify-between items-center">
+              <span className="text-slate-500 dark:text-slate-400">Total Expenses:</span>
+              <span className="font-semibold text-slate-800 dark:text-slate-200">৳{validation?.summary.totalExpenses.toFixed(2)}</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-              <span style={{ color: '#64748b' }}>Meal Rate:</span>
-              <span style={{ fontWeight: 600 }}>৳{validation?.summary.mealRate.toFixed(2)}</span>
+            <div className="flex justify-between items-center">
+              <span className="text-slate-500 dark:text-slate-400">Meal Rate:</span>
+              <span className="font-semibold text-slate-800 dark:text-slate-200">৳{validation?.summary.mealRate.toFixed(2)}</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: '#64748b' }}>Outstanding Debt:</span>
-              <span style={{ fontWeight: 600, color: '#dc2626' }}>৳{validation?.summary.outstandingBalance.toFixed(2)}</span>
+            <div className="flex justify-between items-center pt-1 border-t border-slate-200 dark:border-slate-750">
+              <span className="text-slate-500 dark:text-slate-400">Outstanding Debt:</span>
+              <span className="font-bold text-rose-600 dark:text-rose-400">৳{validation?.summary.outstandingBalance.toFixed(2)}</span>
             </div>
           </div>
 
-          <div style={{ fontSize: 13, color: '#475569' }}>
+          <div className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
             Closing will automatically carry forward each member's closing balance into the next month's opening balance as an immutable ledger record.
           </div>
 
-          <label
-            style={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: 10,
-              fontSize: 13,
-              fontWeight: 600,
-              color: '#0f172a',
-              cursor: 'pointer',
-              backgroundColor: '#f1f5f9',
-              padding: 12,
-              borderRadius: 8,
-            }}
-          >
+          <label className="flex items-start gap-2.5 p-3 rounded-xl bg-slate-100 dark:bg-slate-800/80 cursor-pointer text-xs font-medium text-slate-800 dark:text-slate-200 border border-slate-200/60 dark:border-slate-700">
             <input
               type="checkbox"
               checked={confirmUnderstood}
               onChange={(e) => setConfirmUnderstood(e.target.checked)}
-              style={{ marginTop: 2, cursor: 'pointer' }}
+              className="mt-0.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
             />
-            <span>I understand that closing this month will make financial records read-only.</span>
+            <span>I understand that closing this month will permanently lock operations and make all financial records read-only.</span>
           </label>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 8 }}>
+          <div className="flex justify-end gap-2.5 pt-2">
             <Button variant="secondary" onClick={() => setShowCloseModal(false)}>
               Cancel
             </Button>
@@ -760,13 +641,13 @@ export const MonthEndPage: React.FC = () => {
         onClose={() => setShowReopenModal(false)}
         title={`Reopen Financial Period ${selectedPeriodKey}`}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: '8px 0' }}>
-          <p style={{ fontSize: 13, color: '#64748b', margin: 0 }}>
+        <div className="space-y-4 py-2">
+          <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
             Reopening a closed month unlocks financial records for authorized corrections. Every reopening action is permanently logged to the audit trail with the requester's name, timestamp, and reason.
           </p>
 
           <div>
-            <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#334155', marginBottom: 6 }}>
+            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
               Explanatory Reason for Reopening *
             </label>
             <textarea
@@ -774,18 +655,11 @@ export const MonthEndPage: React.FC = () => {
               onChange={(e) => setReopenReason(e.target.value)}
               placeholder="e.g. Correcting two incorrectly recorded lunch entries from Bazar day..."
               rows={3}
-              style={{
-                width: '100%',
-                padding: 10,
-                borderRadius: 8,
-                border: '1px solid #cbd5e1',
-                fontSize: 13,
-                fontFamily: 'inherit',
-              }}
+              className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
             />
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, marginTop: 8 }}>
+          <div className="flex justify-end gap-2.5 pt-2">
             <Button variant="secondary" onClick={() => setShowReopenModal(false)}>
               Cancel
             </Button>
@@ -808,35 +682,27 @@ export const MonthEndPage: React.FC = () => {
         title={`Audit Trail History - ${selectedPeriodKey}`}
         maxWidth={640}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: '8px 0', maxHeight: 400, overflowY: 'auto' }}>
+        <div className="space-y-3 py-2 max-h-[420px] overflow-y-auto">
           {auditEvents.length === 0 ? (
-            <p style={{ fontSize: 13, color: '#64748b', textAlign: 'center', padding: 20 }}>
+            <p className="text-xs text-slate-500 dark:text-slate-400 text-center py-8">
               No audit events recorded for this period yet.
             </p>
           ) : (
             auditEvents.map((event) => (
               <div
                 key={event.id}
-                style={{
-                  padding: 12,
-                  borderRadius: 10,
-                  backgroundColor: '#f8fafc',
-                  border: '1px solid #e2e8f0',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 4,
-                }}
+                className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 space-y-1.5"
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div className="flex justify-between items-center">
                   <Badge variant="neutral">{event.eventType}</Badge>
-                  <span style={{ fontSize: 12, color: '#64748b' }}>
+                  <span className="text-[11px] text-slate-400 dark:text-slate-500">
                     {new Date(event.createdAt).toLocaleString()}
                   </span>
                 </div>
-                <div style={{ fontSize: 13, color: '#1e293b', marginTop: 4 }}>
+                <div className="text-xs text-slate-800 dark:text-slate-200 font-medium">
                   {event.notes || 'No extra notes provided'}
                 </div>
-                <div style={{ fontSize: 11, color: '#64748b' }}>
+                <div className="text-[11px] text-slate-500 dark:text-slate-400">
                   Actor: {event.actorName || event.actorId || 'System Administrator'}
                 </div>
               </div>

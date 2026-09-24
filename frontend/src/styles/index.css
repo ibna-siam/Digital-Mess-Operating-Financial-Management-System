@@ -949,7 +949,7 @@ button, input, select, textarea {
   .main-wrapper {
     margin-left: 0;
     width: 100vw;
-    padding-bottom: var(--mobile-bottom-height);
+    padding-bottom: calc(var(--mobile-bottom-height) + 28px + env(safe-area-inset-bottom, 16px));
   }
   .mobile-bottom-nav {
     display: flex;
@@ -958,7 +958,7 @@ button, input, select, textarea {
     padding: 0 16px;
   }
   .page-content {
-    padding: 16px;
+    padding: 16px 16px 36px 16px;
   }
   .kpi-grid {
     grid-template-columns: 1fr 1fr;

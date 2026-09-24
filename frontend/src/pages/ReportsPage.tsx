@@ -1134,66 +1134,62 @@ export const ReportsPage: React.FC = () => {
               )}
 
               {/* KPI Summary Grid */}
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                  gap: 14,
-                }}
-              >
-                <div style={{ backgroundColor: '#fff', padding: 16, borderRadius: 12, border: '1px solid #e2e8f0' }}>
-                  <div style={{ fontSize: 12, color: '#64748b' }}>Total Expenses</div>
-                  <div style={{ fontSize: 22, fontWeight: 700, color: '#0f172a', marginTop: 4 }}>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+                <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+                  <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Total Expenses</div>
+                  <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mt-1">
                     ৳{monthlyReport.summary.totalExpenses.toFixed(2)}
                   </div>
-                  <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>
+                  <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
                     Food: ৳{monthlyReport.summary.foodCost.toFixed(2)} | Fixed: ৳{monthlyReport.summary.fixedCosts.toFixed(2)}
                   </div>
                 </div>
 
-                <div style={{ backgroundColor: '#fff', padding: 16, borderRadius: 12, border: '1px solid #e2e8f0' }}>
-                  <div style={{ fontSize: 12, color: '#64748b' }}>Meal Rate</div>
-                  <div style={{ fontSize: 22, fontWeight: 700, color: '#2563eb', marginTop: 4 }}>
+                <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+                  <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Meal Rate</div>
+                  <div className="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400 mt-1">
                     ৳{monthlyReport.summary.mealRate.toFixed(2)}
                   </div>
-                  <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>
+                  <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
                     {monthlyReport.summary.totalMeals.toFixed(1)} total counted meals
                   </div>
                 </div>
 
-                <div style={{ backgroundColor: '#fff', padding: 16, borderRadius: 12, border: '1px solid #e2e8f0' }}>
-                  <div style={{ fontSize: 12, color: '#64748b' }}>Average / Member</div>
-                  <div style={{ fontSize: 22, fontWeight: 700, color: '#0f172a', marginTop: 4 }}>
+                <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+                  <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Average / Member</div>
+                  <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mt-1">
                     ৳{monthlyReport.summary.averageCostPerMember.toFixed(2)}
                   </div>
-                  <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>
+                  <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
                     Across {monthlyReport.summary.activeMembersCount} active members
                   </div>
                 </div>
 
-                <div style={{ backgroundColor: '#fff', padding: 16, borderRadius: 12, border: '1px solid #e2e8f0' }}>
-                  <div style={{ fontSize: 12, color: '#64748b' }}>Total Collected / Bazar</div>
-                  <div style={{ fontSize: 22, fontWeight: 700, color: '#16a34a', marginTop: 4 }}>
+                <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-sm">
+                  <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Total Collected / Bazar</div>
+                  <div className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">
                     ৳{monthlyReport.summary.totalContributions.toFixed(2)}
                   </div>
-                  <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>
+                  <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
                     Settled payments: ৳{monthlyReport.summary.totalPayments.toFixed(2)}
                   </div>
                 </div>
 
-                <div style={{ backgroundColor: '#fff', padding: 16, borderRadius: 12, border: '1px solid #e2e8f0' }}>
-                  <div style={{ fontSize: 12, color: '#64748b' }}>Outstanding Debt Pool</div>
-                  <div style={{ fontSize: 22, fontWeight: 700, color: '#dc2626', marginTop: 4 }}>
-                    ৳{monthlyReport.summary.outstandingAmount.toFixed(2)}
+                <div className="col-span-2 lg:col-span-4 bg-white dark:bg-slate-900 p-4 rounded-xl border border-rose-200/70 dark:border-rose-900/40 shadow-sm flex items-center justify-between">
+                  <div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Outstanding Debt Pool</div>
+                    <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
+                      Pending transfers across members
+                    </div>
                   </div>
-                  <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>
-                    Pending transfers
+                  <div className="text-xl sm:text-2xl font-bold text-rose-600 dark:text-rose-400">
+                    ৳{monthlyReport.summary.outstandingAmount.toFixed(2)}
                   </div>
                 </div>
               </div>
 
               {/* Month to Month Comparison & Expense Categories */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                 {/* Month to Month Comparison */}
                 <div
                   style={{
@@ -1518,13 +1514,7 @@ export const ReportsPage: React.FC = () => {
           {/* ========================================================= */}
           {activeTab === 'meals' && mealReport && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(3, 1fr)',
-                  gap: 16,
-                }}
-              >
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div style={{ backgroundColor: '#fff', padding: 18, borderRadius: 12, border: '1px solid #e2e8f0' }}>
                   <div style={{ fontSize: 12, color: '#64748b' }}>Total Food Cost</div>
                   <div style={{ fontSize: 24, fontWeight: 700, color: '#0f172a', marginTop: 4 }}>
@@ -1583,13 +1573,7 @@ export const ReportsPage: React.FC = () => {
           {/* ========================================================= */}
           {activeTab === 'settlement' && settlementReport && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(4, 1fr)',
-                  gap: 16,
-                }}
-              >
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <div style={{ backgroundColor: '#fff', padding: 18, borderRadius: 12, border: '1px solid #e2e8f0' }}>
                   <div style={{ fontSize: 12, color: '#64748b' }}>Total Debt Pool</div>
                   <div style={{ fontSize: 22, fontWeight: 700, color: '#dc2626', marginTop: 4 }}>
