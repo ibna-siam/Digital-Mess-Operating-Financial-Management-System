@@ -15,49 +15,63 @@ import {
   Clock,
   Sparkles,
   Search,
+  CheckCircle2,
 } from 'lucide-react';
 import { notificationApi } from '../lib/notificationApi.js';
 import { NotificationItem, NotificationCategory } from '../types/notification.js';
 import { useSocketEvent } from '../context/SocketContext.js';
 import { useAuth } from '../context/AuthContext.js';
+import { Button } from '../components/ui/Button.js';
+import { Badge } from '../components/ui/Badge.js';
 
-const CATEGORIES: { label: string; value: string; icon: any }[] = [
+const CATEGORIES: { label: string; value: string; icon: React.FC<{ className?: string }> }[] = [
   { label: 'All', value: 'ALL', icon: Bell },
   { label: 'Financial', value: 'FINANCIAL', icon: CreditCard },
   { label: 'Members', value: 'MEMBERS', icon: Users },
   { label: 'Operations', value: 'OPERATIONS', icon: AlertCircle },
   { label: 'Utilities', value: 'UTILITIES', icon: Zap },
   { label: 'Month-End', value: 'MONTH_END', icon: Calendar },
-  { label: 'Announcements', value: 'ANNOUNCEMENT', icon: Megaphone },
+  { label: 'Bulletins', value: 'ANNOUNCEMENT', icon: Megaphone },
 ];
 
-function getCategoryBadge(category: NotificationCategory) {
+function getCategoryIconConfig(category: NotificationCategory) {
   switch (category) {
     case 'FINANCIAL':
-      return { bg: '#eff6ff', color: '#1d4ed8', border: '#bfdbfe' };
+      return {
+        Icon: CreditCard,
+        bg: 'bg-emerald-50 text-emerald-600 border-emerald-200',
+        badgeVariant: 'success' as const,
+      };
     case 'MEMBERS':
-      return { bg: '#ecfdf5', color: '#047857', border: '#a7f3d0' };
+      return {
+        Icon: Users,
+        bg: 'bg-blue-50 text-blue-600 border-blue-200',
+        badgeVariant: 'primary' as const,
+      };
     case 'UTILITIES':
-      return { bg: '#fffbeb', color: '#b45309', border: '#fde68a' };
+      return {
+        Icon: Zap,
+        bg: 'bg-amber-50 text-amber-600 border-amber-200',
+        badgeVariant: 'warning' as const,
+      };
     case 'MONTH_END':
-      return { bg: '#f5f3ff', color: '#6d28d9', border: '#ddd6fe' };
+      return {
+        Icon: Calendar,
+        bg: 'bg-purple-50 text-purple-600 border-purple-200',
+        badgeVariant: 'neutral' as const,
+      };
     case 'ANNOUNCEMENT':
-      return { bg: '#fef2f2', color: '#b91c1c', border: '#fecaca' };
+      return {
+        Icon: Megaphone,
+        bg: 'bg-rose-50 text-rose-600 border-rose-200',
+        badgeVariant: 'danger' as const,
+      };
     default:
-      return { bg: '#f8fafc', color: '#475569', border: '#e2e8f0' };
-  }
-}
-
-function getPriorityBadge(priority: string) {
-  switch (priority) {
-    case 'URGENT':
-      return { label: 'URGENT', bg: '#fee2e2', color: '#dc2626' };
-    case 'HIGH':
-      return { label: 'HIGH', bg: '#ffedd5', color: '#c2410c' };
-    case 'LOW':
-      return { label: 'LOW', bg: '#f1f5f9', color: '#64748b' };
-    default:
-      return null;
+      return {
+        Icon: AlertCircle,
+        bg: 'bg-slate-100 text-slate-700 border-slate-200',
+        badgeVariant: 'neutral' as const,
+      };
   }
 }
 
@@ -161,6 +175,8 @@ export const NotificationsPage: React.FC = () => {
     }
   };
 
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
+
   const filteredItems = notifications.filter(
     (n) =>
       !searchTerm ||
@@ -169,79 +185,44 @@ export const NotificationsPage: React.FC = () => {
   );
 
   return (
-    <div style={{ maxWidth: 1040, margin: '0 auto', padding: '24px 16px' }}>
+    <div className="max-w-5xl mx-auto space-y-6 animate-fade-in pb-16">
       {/* Page Header */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: 16,
-          marginBottom: 24,
-        }}
-      >
-        <div>
-          <h1
-            style={{
-              fontSize: '1.6rem',
-              fontWeight: 700,
-              color: 'var(--text-main, #0f172a)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 10,
-            }}
-          >
-            <Bell size={26} style={{ color: 'var(--color-primary, #2563eb)' }} />
-            Notification Center
-          </h1>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted, #64748b)', marginTop: 4 }}>
-            Stay updated with financial settlements, member movements, utilities, and mess bulletins.
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center shrink-0">
+              <Bell className="w-5 h-5" />
+            </div>
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight">Notification Center</h1>
+            {unreadCount > 0 && (
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-rose-100 text-rose-700 border border-rose-200">
+                {unreadCount} Unread
+              </span>
+            )}
+          </div>
+          <p className="text-xs sm:text-sm text-slate-500">
+            Real-time activity feed for financial transactions, member movements, utility deadlines, and mess bulletins.
           </p>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <button
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <Button
+            variant="secondary"
+            size="sm"
             onClick={handleMarkAllRead}
-            className="btn btn-secondary"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              fontSize: '0.82rem',
-              padding: '8px 14px',
-              borderRadius: 'var(--radius-md, 8px)',
-              cursor: 'pointer',
-            }}
+            disabled={unreadCount === 0}
+            className="flex items-center gap-1.5 text-xs font-bold py-2 px-3.5 rounded-xl"
           >
-            <CheckCheck size={16} /> Mark All as Read
-          </button>
+            <CheckCheck className="w-4 h-4 text-emerald-600" />
+            <span>Mark All as Read</span>
+          </Button>
         </div>
       </div>
 
-      {/* Filters bar */}
-      <div
-        style={{
-          backgroundColor: '#ffffff',
-          borderRadius: 'var(--radius-lg, 12px)',
-          padding: '16px',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
-          border: '1px solid var(--color-border, #e2e8f0)',
-          marginBottom: 20,
-        }}
-      >
+      {/* Categories & Filter Bar */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-xs space-y-3">
         {/* Category Pills */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            overflowX: 'auto',
-            paddingBottom: 12,
-            borderBottom: '1px solid #f1f5f9',
-            marginBottom: 12,
-          }}
-        >
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-slate-100 scrollbar-none">
           {CATEGORIES.map((cat) => {
             const Icon = cat.icon;
             const isSelected = selectedCategory === cat.value;
@@ -252,41 +233,23 @@ export const NotificationsPage: React.FC = () => {
                   setSelectedCategory(cat.value);
                   setPage(1);
                 }}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  padding: '6px 14px',
-                  borderRadius: 20,
-                  fontSize: '0.8rem',
-                  fontWeight: isSelected ? 600 : 500,
-                  border: isSelected ? '1px solid #2563eb' : '1px solid #e2e8f0',
-                  backgroundColor: isSelected ? '#eff6ff' : '#ffffff',
-                  color: isSelected ? '#1d4ed8' : '#475569',
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  transition: 'all 0.15s ease',
-                }}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                  isSelected
+                    ? 'bg-slate-900 text-white shadow-xs'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
+                }`}
               >
-                <Icon size={14} />
-                {cat.label}
+                <Icon className={`w-3.5 h-3.5 ${isSelected ? 'text-emerald-400' : 'text-slate-500'}`} />
+                <span>{cat.label}</span>
               </button>
             );
           })}
         </div>
 
-        {/* Read / Unread Status + Search input */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: 12,
-          }}
-        >
+        {/* Read / Unread Status + Quick Search */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
           {/* Status Tabs */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl w-fit">
             {(['all', 'unread', 'read'] as const).map((mode) => (
               <button
                 key={mode}
@@ -294,17 +257,11 @@ export const NotificationsPage: React.FC = () => {
                   setReadFilter(mode);
                   setPage(1);
                 }}
-                style={{
-                  padding: '5px 12px',
-                  borderRadius: 6,
-                  fontSize: '0.78rem',
-                  fontWeight: readFilter === mode ? 600 : 500,
-                  border: 'none',
-                  backgroundColor: readFilter === mode ? '#0f172a' : '#f1f5f9',
-                  color: readFilter === mode ? '#ffffff' : '#64748b',
-                  cursor: 'pointer',
-                  textTransform: 'capitalize',
-                }}
+                className={`px-3 py-1 rounded-lg text-xs font-bold capitalize transition-all ${
+                  readFilter === mode
+                    ? 'bg-white text-slate-900 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
               >
                 {mode}
               </button>
@@ -312,225 +269,117 @@ export const NotificationsPage: React.FC = () => {
           </div>
 
           {/* Quick Search */}
-          <div style={{ position: 'relative', minWidth: 240 }}>
-            <Search
-              size={15}
-              style={{
-                position: 'absolute',
-                left: 10,
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: '#94a3b8',
-              }}
-            />
+          <div className="relative min-w-[240px]">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search notifications..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '6px 10px 6px 32px',
-                fontSize: '0.8rem',
-                border: '1px solid #cbd5e1',
-                borderRadius: 6,
-                outline: 'none',
-              }}
+              className="w-full pl-9 pr-4 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all font-medium"
             />
           </div>
         </div>
       </div>
 
-      {/* Notification List */}
-      <div
-        style={{
-          backgroundColor: '#ffffff',
-          borderRadius: 'var(--radius-lg, 12px)',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
-          border: '1px solid var(--color-border, #e2e8f0)',
-          overflow: 'hidden',
-        }}
-      >
+      {/* Notifications List */}
+      <div className="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden divide-y divide-slate-100">
         {isLoading ? (
-          <div style={{ padding: '60px 16px', textAlign: 'center', color: '#64748b' }}>
-            <div className="spinner" style={{ marginBottom: 12 }} />
-            <p style={{ fontSize: '0.88rem' }}>Loading notifications...</p>
+          <div className="py-20 text-center text-slate-400 space-y-2">
+            <div className="w-8 h-8 rounded-full border-2 border-emerald-600 border-t-transparent animate-spin mx-auto" />
+            <p className="text-xs font-medium">Loading notifications...</p>
           </div>
         ) : filteredItems.length === 0 ? (
-          <div style={{ padding: '64px 16px', textAlign: 'center' }}>
-            <Sparkles size={40} style={{ color: '#cbd5e1', margin: '0 auto 12px' }} />
-            <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#0f172a' }}>No notifications found</h3>
-            <p style={{ fontSize: '0.82rem', color: '#64748b', marginTop: 4 }}>
+          <div className="py-20 text-center px-4 space-y-2">
+            <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+              <Sparkles className="w-6 h-6" />
+            </div>
+            <h3 className="font-extrabold text-slate-800 text-base">No notifications found</h3>
+            <p className="text-xs text-slate-500 max-w-sm mx-auto">
               {searchTerm
                 ? 'No notifications match your search query.'
                 : readFilter === 'unread'
-                ? 'You have no unread notifications.'
+                ? 'You are all caught up! No unread notifications.'
                 : 'There are no notifications in this category.'}
             </p>
           </div>
         ) : (
           filteredItems.map((item) => {
-            const badge = getCategoryBadge(item.category);
-            const priorityBadge = getPriorityBadge(item.priority);
+            const { Icon, bg, badgeVariant } = getCategoryIconConfig(item.category);
 
             return (
               <div
                 key={item.id}
                 onClick={() => handleItemClick(item)}
-                style={{
-                  padding: '16px 20px',
-                  borderBottom: '1px solid #f1f5f9',
-                  backgroundColor: item.isRead ? '#ffffff' : '#f8faff',
-                  borderLeft: item.isRead ? '3px solid transparent' : '3px solid #2563eb',
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  justifyContent: 'space-between',
-                  gap: 16,
-                  cursor: item.actionUrl ? 'pointer' : 'default',
-                  transition: 'background-color 0.15s ease',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = item.isRead ? '#f8fafc' : '#f0f7ff';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = item.isRead ? '#ffffff' : '#f8faff';
-                }}
+                className={`p-4 sm:p-5 flex items-start justify-between gap-4 transition-colors ${
+                  item.isRead ? 'bg-white hover:bg-slate-50/70' : 'bg-emerald-50/30 hover:bg-emerald-50/50'
+                } ${item.actionUrl ? 'cursor-pointer' : 'cursor-default'}`}
               >
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, flex: 1 }}>
-                  {/* Category icon container */}
+                <div className="flex items-start gap-3.5 flex-1 min-w-0">
+                  {/* Category icon squircle */}
                   <div
-                    style={{
-                      width: 38,
-                      height: 38,
-                      borderRadius: 10,
-                      backgroundColor: badge.bg,
-                      border: `1px solid ${badge.border}`,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
-                      marginTop: 2,
-                    }}
+                    className={`w-10 h-10 rounded-2xl border flex items-center justify-center shrink-0 mt-0.5 ${bg}`}
                   >
-                    {item.category === 'FINANCIAL' ? (
-                      <CreditCard size={18} style={{ color: badge.color }} />
-                    ) : item.category === 'MEMBERS' ? (
-                      <Users size={18} style={{ color: badge.color }} />
-                    ) : item.category === 'UTILITIES' ? (
-                      <Zap size={18} style={{ color: badge.color }} />
-                    ) : item.category === 'MONTH_END' ? (
-                      <Calendar size={18} style={{ color: badge.color }} />
-                    ) : item.category === 'ANNOUNCEMENT' ? (
-                      <Megaphone size={18} style={{ color: badge.color }} />
-                    ) : (
-                      <AlertCircle size={18} style={{ color: badge.color }} />
-                    )}
+                    <Icon className="w-5 h-5" />
                   </div>
 
                   {/* Notification Content */}
-                  <div style={{ flex: 1 }}>
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        flexWrap: 'wrap',
-                        gap: 8,
-                        marginBottom: 4,
-                      }}
-                    >
+                  <div className="space-y-1 flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {!item.isRead && (
+                        <span className="w-2 h-2 rounded-full bg-emerald-600 shrink-0 animate-pulse" />
+                      )}
                       <span
-                        style={{
-                          fontSize: '0.92rem',
-                          fontWeight: item.isRead ? 600 : 700,
-                          color: '#0f172a',
-                        }}
+                        className={`text-sm tracking-tight truncate ${
+                          item.isRead ? 'font-semibold text-slate-900' : 'font-extrabold text-slate-900'
+                        }`}
                       >
                         {item.title}
                       </span>
 
-                      {/* Category tag */}
-                      <span
-                        style={{
-                          fontSize: '0.68rem',
-                          fontWeight: 600,
-                          backgroundColor: badge.bg,
-                          color: badge.color,
-                          border: `1px solid ${badge.border}`,
-                          padding: '1px 7px',
-                          borderRadius: 10,
-                        }}
-                      >
+                      <Badge variant={badgeVariant} className="text-[10px] py-0 px-2">
                         {item.category}
-                      </span>
+                      </Badge>
 
-                      {/* Priority tag */}
-                      {priorityBadge && (
-                        <span
-                          style={{
-                            fontSize: '0.66rem',
-                            fontWeight: 700,
-                            backgroundColor: priorityBadge.bg,
-                            color: priorityBadge.color,
-                            padding: '1px 6px',
-                            borderRadius: 10,
-                          }}
-                        >
-                          {priorityBadge.label}
+                      {item.priority === 'URGENT' && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-700 border border-rose-200">
+                          URGENT
+                        </span>
+                      )}
+                      {item.priority === 'HIGH' && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-700 border border-amber-200">
+                          HIGH
                         </span>
                       )}
                     </div>
 
-                    <p
-                      style={{
-                        fontSize: '0.84rem',
-                        color: '#475569',
-                        margin: 0,
-                        lineHeight: 1.5,
-                      }}
-                    >
+                    <p className="text-xs text-slate-600 leading-relaxed font-medium">
                       {item.message}
                     </p>
 
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 12,
-                        marginTop: 8,
-                        fontSize: '0.74rem',
-                        color: '#94a3b8',
-                      }}
-                    >
-                      <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                        <Clock size={12} /> {formatDate(item.createdAt)}
+                    <div className="flex items-center gap-3 text-[11px] text-slate-400 font-medium pt-1">
+                      <span className="flex items-center gap-1 font-mono">
+                        <Clock className="w-3 h-3" /> {formatDate(item.createdAt)}
                       </span>
                       {item.isRead && item.readAt && (
-                        <span>Read on {formatDate(item.readAt)}</span>
+                        <span className="flex items-center gap-1 text-slate-400">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Read
+                        </span>
                       )}
                     </div>
                   </div>
                 </div>
 
-                {/* Right actions */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                {/* Mark as read button */}
+                <div className="flex items-center gap-2 shrink-0">
                   {!item.isRead && (
                     <button
                       onClick={(e) => handleMarkAsRead(item.id, e)}
                       title="Mark as read"
-                      style={{
-                        backgroundColor: '#ffffff',
-                        border: '1px solid #cbd5e1',
-                        borderRadius: 6,
-                        padding: '6px 10px',
-                        fontSize: '0.75rem',
-                        color: '#475569',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 4,
-                      }}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors shadow-2xs"
                     >
-                      <Check size={13} /> Mark read
+                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      <span className="hidden sm:inline">Mark read</span>
                     </button>
                   )}
                 </div>
@@ -541,58 +390,31 @@ export const NotificationsPage: React.FC = () => {
 
         {/* Server-side Pagination Footer */}
         {totalPages > 1 && (
-          <div
-            style={{
-              padding: '14px 20px',
-              borderTop: '1px solid #e2e8f0',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              backgroundColor: '#f8fafc',
-            }}
-          >
-            <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
-              Showing Page {page} of {totalPages} ({totalCount} notifications)
+          <div className="p-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <span className="text-slate-500 font-medium">
+              Showing Page <strong>{page}</strong> of <strong>{totalPages}</strong> ({totalCount} total alerts)
             </span>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <button
+            <div className="flex items-center gap-2">
+              <Button
+                variant="secondary"
+                size="sm"
                 disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 4,
-                  padding: '6px 12px',
-                  borderRadius: 6,
-                  border: '1px solid #cbd5e1',
-                  backgroundColor: page <= 1 ? '#f1f5f9' : '#ffffff',
-                  color: page <= 1 ? '#94a3b8' : '#334155',
-                  cursor: page <= 1 ? 'not-allowed' : 'pointer',
-                  fontSize: '0.8rem',
-                }}
+                className="flex items-center gap-1 text-xs font-bold py-1.5 px-3 rounded-xl"
               >
-                <ChevronLeft size={15} /> Previous
-              </button>
+                <ChevronLeft className="w-3.5 h-3.5" /> Previous
+              </Button>
 
-              <button
+              <Button
+                variant="secondary"
+                size="sm"
                 disabled={page >= totalPages}
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 4,
-                  padding: '6px 12px',
-                  borderRadius: 6,
-                  border: '1px solid #cbd5e1',
-                  backgroundColor: page >= totalPages ? '#f1f5f9' : '#ffffff',
-                  color: page >= totalPages ? '#94a3b8' : '#334155',
-                  cursor: page >= totalPages ? 'not-allowed' : 'pointer',
-                  fontSize: '0.8rem',
-                }}
+                className="flex items-center gap-1 text-xs font-bold py-1.5 px-3 rounded-xl"
               >
-                Next <ChevronRight size={15} />
-              </button>
+                Next <ChevronRight className="w-3.5 h-3.5" />
+              </Button>
             </div>
           </div>
         )}
@@ -600,3 +422,5 @@ export const NotificationsPage: React.FC = () => {
     </div>
   );
 };
+
+export default NotificationsPage;
