@@ -487,13 +487,13 @@ export const MessSettingsPage: React.FC = () => {
   };
 
   const tabsConfig = [
-    { id: 'profile' as const, label: 'Profile & Identity', icon: Building2 },
-    { id: 'rules' as const, label: 'Dining & Meals', icon: Sliders },
-    { id: 'categories' as const, label: 'Custom Categories', icon: Tags },
-    { id: 'policies' as const, label: 'Financial Policies', icon: ShieldAlert },
-    { id: 'display-alerts' as const, label: 'Display & Alerts', icon: Palette },
-    { id: 'invitations' as const, label: 'Invitations', icon: Mail, count: invitations.length },
-    { id: 'leave-requests' as const, label: 'Clearance Queue', icon: Clock, count: leaveRequests.length },
+    { id: 'profile' as const, label: 'Profile & Identity', shortLabel: 'Profile', icon: Building2 },
+    { id: 'rules' as const, label: 'Dining & Meals', shortLabel: 'Dining', icon: Sliders },
+    { id: 'categories' as const, label: 'Custom Categories', shortLabel: 'Categories', icon: Tags },
+    { id: 'policies' as const, label: 'Financial Policies', shortLabel: 'Policies', icon: ShieldAlert },
+    { id: 'display-alerts' as const, label: 'Display & Alerts', shortLabel: 'Display', icon: Palette },
+    { id: 'invitations' as const, label: 'Invitations', shortLabel: 'Invites', icon: Mail, count: invitations.length },
+    { id: 'leave-requests' as const, label: 'Clearance Queue', shortLabel: 'Clearance', icon: Clock, count: leaveRequests.length },
   ];
 
   if (isLoading) {
@@ -501,7 +501,7 @@ export const MessSettingsPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6 animate-fade-in pb-16">
+    <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6 animate-fade-in pb-32 sm:pb-16 px-1 sm:px-0">
       {/* Toast Notification */}
       {feedback && (
         <div
@@ -520,63 +520,56 @@ export const MessSettingsPage: React.FC = () => {
         </div>
       )}
 
-      {/* Modern Workspace Hero Header */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm relative overflow-hidden">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 relative z-10">
-          <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white flex items-center justify-center shrink-0 shadow-md">
-              <Building2 className="w-7 h-7" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2.5 flex-wrap">
-                <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-                  {name || activeMess?.name || 'Mess Settings'}
-                </h1>
-                <Badge variant="primary" className="font-semibold text-xs">
-                  {activeMess?.myRole || 'MANAGER'}
-                </Badge>
-                {activeMess?.code && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                    <KeyRound className="w-3.5 h-3.5 text-emerald-600" />
-                    {activeMess.code}
-                  </span>
-                )}
-              </div>
-              <p className="text-slate-500 text-xs sm:text-sm mt-1 max-w-2xl">
-                Configure operational dining rules, custom categories, financial grace policies, cryptographic member invites, and exit clearance queue.
-              </p>
-            </div>
+      {/* Modern Compact Responsive Header */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white flex items-center justify-center shrink-0 shadow-xs">
+            <Building2 className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight truncate">
+                {name || activeMess?.name || 'Mess Settings'}
+              </h1>
+              <Badge variant="primary" className="text-[10px] sm:text-xs py-0 px-2 font-bold">
+                {activeMess?.myRole || 'MANAGER'}
+              </Badge>
+            </div>
+            <p className="text-slate-500 text-xs mt-0.5 truncate">
+              Operational dining rules, categories, finances, and member queue.
+            </p>
+          </div>
+        </div>
 
-          <div className="flex items-center gap-2.5 flex-wrap">
-            <Button
-              variant="secondary"
-              onClick={triggerPwaInstall}
-              className="flex items-center gap-2 text-xs font-semibold py-2.5 px-4 rounded-xl shadow-xs"
-            >
-              <DownloadCloud className="w-4 h-4 text-emerald-600" />
-              <span>Install App (PWA)</span>
-            </Button>
-            <Button
-              variant="primary"
-              onClick={() => {
-                setCreatedInviteUrl(null);
-                setInviteEmail('');
-                setInviteName('');
-                setIsInviteModalOpen(true);
-              }}
-              className="flex items-center gap-2 text-xs font-semibold py-2.5 px-4 rounded-xl shadow-sm bg-emerald-600 hover:bg-emerald-700 text-white"
-            >
-              <UserPlus className="w-4 h-4" />
-              <span>Invite Member</span>
-            </Button>
-          </div>
+        <div className="flex items-center gap-2 pt-1 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+          <Button
+            variant="secondary"
+            onClick={triggerPwaInstall}
+            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 text-xs font-semibold py-2 px-3 rounded-xl shadow-2xs"
+            title="Install App as PWA"
+          >
+            <DownloadCloud className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Install PWA</span>
+          </Button>
+          <Button
+            variant="primary"
+            onClick={() => {
+              setCreatedInviteUrl(null);
+              setInviteEmail('');
+              setInviteName('');
+              setIsInviteModalOpen(true);
+            }}
+            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 text-xs font-semibold py-2 px-3.5 rounded-xl shadow-xs bg-emerald-600 hover:bg-emerald-700 text-white"
+          >
+            <UserPlus className="w-3.5 h-3.5" />
+            <span>Invite Member</span>
+          </Button>
         </div>
       </div>
 
       {/* Modern Segmented Navigation Pill Tabs */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-2 shadow-xs">
-        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5 px-1">
+      <div className="bg-white border border-slate-200 rounded-2xl p-1.5 shadow-xs">
+        <div className="flex items-center gap-1 overflow-x-auto scrollbar-none py-0.5 px-0.5">
           {tabsConfig.map((t) => {
             const Icon = t.icon;
             const isActive = activeTab === t.id;
@@ -584,17 +577,18 @@ export const MessSettingsPage: React.FC = () => {
               <button
                 key={t.id}
                 onClick={() => setActiveTab(t.id)}
-                className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
                   isActive
-                    ? 'bg-slate-900 text-white shadow-sm'
+                    ? 'bg-slate-900 text-white shadow-xs'
                     : 'bg-transparent text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-emerald-400' : 'text-slate-500'}`} />
-                <span>{t.label}</span>
+                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-emerald-400' : 'text-slate-500'}`} />
+                <span className="hidden sm:inline">{t.label}</span>
+                <span className="inline sm:hidden">{t.shortLabel}</span>
                 {t.count !== undefined && (
                   <span
-                    className={`ml-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-black ${
+                    className={`ml-0.5 px-1.5 py-0.2 rounded-full text-[10px] font-black ${
                       isActive ? 'bg-slate-800 text-emerald-300' : 'bg-slate-200 text-slate-700'
                     }`}
                   >
@@ -607,167 +601,140 @@ export const MessSettingsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Settings Card Container */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
+      {/* Main Settings Form & View Panels */}
+      <div className="space-y-4">
         {/* ======================================================== */}
         {/* TAB 1: Profile & Identity */}
         {/* ======================================================== */}
         {activeTab === 'profile' && (
-          <form onSubmit={handleSaveProfile} className="space-y-8 max-w-4xl">
+          <form onSubmit={handleSaveProfile} className="space-y-4">
             {/* Join Code Highlight Card */}
-            <div className="bg-gradient-to-br from-emerald-50/80 via-teal-50/40 to-slate-50 border border-emerald-500/20 rounded-3xl p-5 sm:p-6 shadow-xs relative overflow-hidden">
-              {/* Header Row */}
-              <div className="flex items-center justify-between gap-3 mb-2.5">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-                    <KeyRound className="w-4 h-4" />
+            <div className="bg-gradient-to-br from-emerald-50/90 via-teal-50/40 to-slate-50 border border-emerald-500/20 rounded-2xl p-4 sm:p-5 shadow-xs">
+              <div className="flex items-center justify-between gap-3 mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                    <KeyRound className="w-3.5 h-3.5" />
                   </div>
-                  <div>
-                    <span className="text-xs font-black text-emerald-950 uppercase tracking-wider block">
-                      Mess Invitation Join Code
-                    </span>
-                    <span className="text-[11px] text-emerald-700/80 font-medium hidden sm:inline">
-                      Official access token for resident onboarding
-                    </span>
-                  </div>
+                  <span className="text-xs font-bold text-emerald-950 uppercase tracking-wider">
+                    Mess Join Code
+                  </span>
                 </div>
-
                 {isManager && (
                   <button
                     type="button"
                     onClick={() => setShowRegenModal(true)}
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-amber-800 bg-white/80 hover:bg-amber-50 border border-slate-200/80 hover:border-amber-300 rounded-xl px-2.5 py-1.5 transition-all shadow-2xs"
+                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-500 hover:text-amber-800 bg-white/90 hover:bg-amber-50 border border-slate-200 rounded-lg px-2 py-1 transition-all"
                     title="Invalidate old code and generate new one"
                   >
-                    <RotateCcw className="w-3.5 h-3.5 text-amber-600" />
+                    <RotateCcw className="w-3 h-3 text-amber-600" />
                     <span>Regenerate</span>
                   </button>
                 )}
               </div>
 
-              <p className="text-xs text-slate-600 mb-4 leading-relaxed max-w-xl">
-                Share this unique code with roommates or students. They can enter it during sign-up to immediately link to this mess workspace.
+              <p className="text-[11px] sm:text-xs text-slate-600 mb-3 leading-relaxed">
+                Roommates can enter this unique code during sign-up to join this workspace.
               </p>
 
               {/* Unified High-Contrast Token Bar */}
-              <div className="bg-white border-2 border-emerald-500/20 rounded-2xl p-1.5 pl-4 sm:pl-5 flex items-center justify-between gap-3 shadow-xs hover:border-emerald-500/40 transition-colors">
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="font-mono text-base sm:text-xl font-black text-slate-900 tracking-wider sm:tracking-widest select-all truncate">
-                    {mess?.code || activeMess?.code || 'NO-CODE'}
-                  </span>
-                </div>
+              <div className="bg-white border-2 border-emerald-500/20 rounded-xl p-1 pl-3.5 sm:pl-4 flex items-center justify-between gap-2 shadow-xs">
+                <span className="font-mono text-base sm:text-lg font-black text-slate-900 tracking-wider select-all truncate">
+                  {mess?.code || activeMess?.code || 'NO-CODE'}
+                </span>
 
                 <button
                   type="button"
                   onClick={handleCopyCode}
-                  className={`inline-flex items-center justify-center gap-1.5 px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-xs shrink-0 active:scale-95 ${
+                  className={`inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 sm:py-2 rounded-lg text-xs font-bold transition-all shrink-0 active:scale-95 ${
                     codeCopied
                       ? 'bg-emerald-700 text-white'
-                      : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                      : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs'
                   }`}
                 >
                   {codeCopied ? (
                     <>
-                      <Check className="w-4 h-4 text-emerald-200" />
+                      <Check className="w-3.5 h-3.5" />
                       <span>Copied!</span>
                     </>
                   ) : (
                     <>
-                      <Copy className="w-4 h-4" />
+                      <Copy className="w-3.5 h-3.5" />
                       <span>Copy Code</span>
                     </>
                   )}
                 </button>
               </div>
-
-              <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500 font-medium">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                  Single-click to copy to clipboard
-                </span>
-                <span className="text-slate-400 hidden sm:inline">
-                  Valid for unlimited resident registrations
-                </span>
-              </div>
             </div>
 
-            {/* Section 1: Basic Identity */}
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-emerald-600" /> Workspace Identity & Overview
-                </h3>
-                <p className="text-xs text-slate-500">Official organizational title and public mess introduction.</p>
-              </div>
+            {/* Inset Card 1: Workspace Identity */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-xs space-y-3">
+              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                <Building2 className="w-3.5 h-3.5 text-emerald-600" /> Workspace Identity
+              </h3>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                    Mess / Residence Name *
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    Mess / Residence Name <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
-                    placeholder="e.g. Padma Student Residence, Green View Flat"
-                    className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all font-medium"
+                    placeholder="e.g. Padma Student Residence"
+                    className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium"
                   />
                 </div>
 
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Description & Welcome Message
                   </label>
                   <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    rows={3}
-                    placeholder="Co-living residence for university students and software developers. Managed on a monthly zero-sum cost basis."
-                    className="w-full bg-slate-50/50 border border-slate-200 rounded-xl p-3 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all font-medium"
+                    rows={2}
+                    placeholder="Shared co-living flat for university graduates and developers..."
+                    className="w-full bg-slate-50/80 border border-slate-200 rounded-xl p-3 text-slate-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Section 2: Physical Coordinates */}
-            <div className="space-y-4 pt-4 border-t border-slate-100">
-              <div>
-                <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-emerald-600" /> Geographic & Postal Location
-                </h3>
-                <p className="text-xs text-slate-500">Helps members locate deliveries, utility bills, and address records.</p>
-              </div>
+            {/* Inset Card 2: Location */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-xs space-y-3">
+              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-emerald-600" /> Location & Coordinates
+              </h3>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Area / Neighborhood
                   </label>
                   <input
                     type="text"
                     value={area}
                     onChange={(e) => setArea(e.target.value)}
-                    placeholder="e.g. Dhanmondi, Banani, Sector 4"
-                    className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all font-medium"
+                    placeholder="e.g. Dhanmondi, Road 8/A"
+                    className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                    City
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">City</label>
                   <input
                     type="text"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    placeholder="e.g. Dhaka, Chattogram, Sylhet"
-                    className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all font-medium"
+                    placeholder="e.g. Dhaka"
+                    className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium"
                   />
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Full Street Address
                   </label>
                   <input
@@ -775,82 +742,77 @@ export const MessSettingsPage: React.FC = () => {
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     placeholder="e.g. Flat 4B, House 12, Road 7/A, Block C"
-                    className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all font-medium"
+                    className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Section 3: Official Contacts & Currency */}
-            <div className="space-y-4 pt-4 border-t border-slate-100">
-              <div>
-                <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <DollarSign className="w-4 h-4 text-emerald-600" /> Contacts & Financial Locale
-                </h3>
-                <p className="text-xs text-slate-500">Standard operational currency and notification endpoints.</p>
-              </div>
+            {/* Inset Card 3: Contacts & Financial Locale */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-xs space-y-3">
+              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                <DollarSign className="w-3.5 h-3.5 text-emerald-600" /> Contacts & Currency
+              </h3>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5 text-slate-400" /> Manager Contact Phone
+                  <label className="block text-xs font-semibold text-slate-700 mb-1 flex items-center gap-1">
+                    <Phone className="w-3 h-3 text-slate-400" /> Manager Phone
                   </label>
                   <input
                     type="text"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="+880 1700 000000"
-                    className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all font-medium"
+                    className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                    <Mail className="w-3.5 h-3.5 text-slate-400" /> Official Mess Email
+                  <label className="block text-xs font-semibold text-slate-700 mb-1 flex items-center gap-1">
+                    <Mail className="w-3 h-3 text-slate-400" /> Official Email
                   </label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="manager@messmate.com"
-                    className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all font-medium"
+                    className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 font-medium"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                    Currency ISO Code
-                  </label>
-                  <input
-                    type="text"
-                    value={currency}
-                    onChange={(e) => setCurrency(e.target.value)}
-                    className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all font-medium"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                    Currency Symbol
-                  </label>
-                  <input
-                    type="text"
-                    value={currencySymbol}
-                    onChange={(e) => setCurrencySymbol(e.target.value)}
-                    className="w-full bg-slate-50/50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all font-medium"
-                  />
+                <div className="grid grid-cols-2 gap-2 sm:col-span-2">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">Currency Code</label>
+                    <input
+                      type="text"
+                      value={currency}
+                      onChange={(e) => setCurrency(e.target.value)}
+                      className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 text-sm font-semibold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1">Currency Symbol</label>
+                    <input
+                      type="text"
+                      value={currencySymbol}
+                      onChange={(e) => setCurrencySymbol(e.target.value)}
+                      className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 text-sm font-semibold"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="pt-4 flex justify-end">
+            {/* Bottom Save Action */}
+            <div className="pt-2 flex justify-end">
               <Button
                 type="submit"
                 variant="primary"
                 disabled={isSavingProfile}
-                className="flex items-center gap-2 py-2.5 px-6 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+                className="w-full sm:w-auto py-2.5 px-6 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm flex items-center justify-center gap-2"
               >
-                <Save className="w-4 h-4" /> {isSavingProfile ? 'Saving Changes...' : 'Save Profile Changes'}
+                <Save className="w-4 h-4" /> {isSavingProfile ? 'Saving...' : 'Save Profile Changes'}
               </Button>
             </div>
           </form>
@@ -860,161 +822,163 @@ export const MessSettingsPage: React.FC = () => {
         {/* TAB 2: Dining & Operating Rules */}
         {/* ======================================================== */}
         {activeTab === 'rules' && (
-          <form onSubmit={handleSaveRules} className="space-y-6 max-w-3xl">
-            <div>
-              <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                <Utensils className="w-4 h-4 text-emerald-600" /> Meal Automation & Cutoff Policies
-              </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Define the default daily meal counts, entry cutoff hours, and guest meal rates.
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              {/* Default Meal Count */}
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-0.5">
-                  <h4 className="text-sm font-bold text-slate-900">Default Meal Count per Day</h4>
-                  <p className="text-xs text-slate-500">
-                    Pre-fills meal record counts when manager initiates daily batch entry.
-                  </p>
-                </div>
-                <div className="flex items-center gap-1.5 bg-white p-1 rounded-xl border border-slate-200 shadow-xs">
-                  {[1, 2, 3].map((val) => (
-                    <button
-                      key={val}
-                      type="button"
-                      onClick={() => setDefaultMealCount(val)}
-                      className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                        defaultMealCount === val
-                          ? 'bg-slate-900 text-white shadow-xs'
-                          : 'text-slate-600 hover:bg-slate-100'
-                      }`}
-                    >
-                      {val} {val === 1 ? 'Meal' : 'Meals'}
-                    </button>
-                  ))}
-                </div>
+          <form onSubmit={handleSaveRules} className="space-y-4">
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <Utensils className="w-4 h-4 text-emerald-600" /> Meal Automation & Cutoff Rules
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Daily meal defaults, entry cutoff hours, and guest meal rates.
+                </p>
               </div>
 
-              {/* Cutoff Hour */}
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-0.5">
-                  <h4 className="text-sm font-bold text-slate-900">Daily Meal Change Cutoff Hour</h4>
-                  <p className="text-xs text-slate-500">
-                    Members cannot modify next day meal status past this 24-hr clock time.
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs font-bold text-slate-700 bg-white px-3 py-1.5 rounded-xl border border-slate-200">
-                    {mealCutoffHour === 0
-                      ? '12:00 AM'
-                      : mealCutoffHour < 12
-                      ? `${mealCutoffHour}:00 AM`
-                      : mealCutoffHour === 12
-                      ? '12:00 PM'
-                      : `${mealCutoffHour - 12}:00 PM`}
-                  </span>
-                  <select
-                    value={mealCutoffHour}
-                    onChange={(e) => setMealCutoffHour(Number(e.target.value))}
-                    className="bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-slate-900 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  >
-                    {Array.from({ length: 24 }).map((_, i) => (
-                      <option key={i} value={i}>
-                        {i}:00 ({i === 0 ? '12 AM' : i < 12 ? `${i} AM` : i === 12 ? '12 PM' : `${i - 12} PM`})
-                      </option>
+              <div className="space-y-3">
+                {/* Default Meal Count */}
+                <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900">Default Meal Count per Day</h4>
+                    <p className="text-[11px] text-slate-500">
+                      Pre-fills meal count on daily entry.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-200 self-start sm:self-auto">
+                    {[1, 2, 3].map((val) => (
+                      <button
+                        key={val}
+                        type="button"
+                        onClick={() => setDefaultMealCount(val)}
+                        className={`px-3 py-1 rounded-lg text-xs font-bold transition-all ${
+                          defaultMealCount === val
+                            ? 'bg-slate-900 text-white shadow-xs'
+                            : 'text-slate-600 hover:bg-slate-100'
+                        }`}
+                      >
+                        {val} {val === 1 ? 'Meal' : 'Meals'}
+                      </button>
                     ))}
-                  </select>
+                  </div>
                 </div>
-              </div>
 
-              {/* Guest Meals Switch Card */}
-              <div
-                onClick={() => setAllowGuestMeals(!allowGuestMeals)}
-                className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex items-center justify-between cursor-pointer hover:border-slate-300 transition-all select-none"
-              >
-                <div className="space-y-0.5">
-                  <h4 className="text-sm font-bold text-slate-900">Allow Guest Meals</h4>
-                  <p className="text-xs text-slate-500">
-                    Allow residents to host occasional visiting guests and record guest meal counts.
-                  </p>
+                {/* Cutoff Hour */}
+                <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900">Daily Meal Change Cutoff Hour</h4>
+                    <p className="text-[11px] text-slate-500">
+                      Members cannot modify next day meals past this time.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 self-start sm:self-auto">
+                    <span className="text-xs font-bold text-slate-700 bg-white px-2.5 py-1 rounded-lg border border-slate-200">
+                      {mealCutoffHour === 0
+                        ? '12:00 AM'
+                        : mealCutoffHour < 12
+                        ? `${mealCutoffHour}:00 AM`
+                        : mealCutoffHour === 12
+                        ? '12:00 PM'
+                        : `${mealCutoffHour - 12}:00 PM`}
+                    </span>
+                    <select
+                      value={mealCutoffHour}
+                      onChange={(e) => setMealCutoffHour(Number(e.target.value))}
+                      className="bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-slate-900 text-xs font-bold"
+                    >
+                      {Array.from({ length: 24 }).map((_, i) => (
+                        <option key={i} value={i}>
+                          {i}:00 ({i === 0 ? '12 AM' : i < 12 ? `${i} AM` : i === 12 ? '12 PM' : `${i - 12} PM`})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
+
+                {/* Guest Meals Switch Card */}
                 <div
-                  className={`w-12 h-6 rounded-full transition-colors relative flex items-center px-1 ${
-                    allowGuestMeals ? 'bg-emerald-600' : 'bg-slate-300'
-                  }`}
+                  onClick={() => setAllowGuestMeals(!allowGuestMeals)}
+                  className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 flex items-center justify-between cursor-pointer hover:border-slate-300 transition-all select-none"
                 >
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900">Allow Guest Meals</h4>
+                    <p className="text-[11px] text-slate-500">
+                      Residents can record occasional visiting guest meals.
+                    </p>
+                  </div>
                   <div
-                    className={`w-4 h-4 rounded-full bg-white transition-transform ${
-                      allowGuestMeals ? 'translate-x-6' : 'translate-x-0'
+                    className={`w-11 h-6 rounded-full transition-colors relative flex items-center px-1 shrink-0 ${
+                      allowGuestMeals ? 'bg-emerald-600' : 'bg-slate-300'
                     }`}
-                  />
+                  >
+                    <div
+                      className={`w-4 h-4 rounded-full bg-white transition-transform ${
+                        allowGuestMeals ? 'translate-x-5' : 'translate-x-0'
+                      }`}
+                    />
+                  </div>
                 </div>
+
+                {/* Guest Meal Rates Grid */}
+                {allowGuestMeals && (
+                  <div className="bg-emerald-50/50 border border-emerald-500/20 rounded-xl p-3.5 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-[11px] font-bold text-emerald-950 uppercase tracking-wider">
+                        Guest Meal Tariffs ({currencySymbol})
+                      </h4>
+                      <span className="text-[10px] text-emerald-700 font-semibold">Credited to Food Pool</span>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="bg-white border border-emerald-100 rounded-lg p-2.5">
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          Breakfast
+                        </label>
+                        <input
+                          type="number"
+                          min={0}
+                          value={guestBreakfastRate}
+                          onChange={(e) => setGuestBreakfastRate(Number(e.target.value))}
+                          className="w-full bg-slate-50 border border-slate-200 rounded px-2 py-1 text-slate-900 font-bold text-xs"
+                        />
+                      </div>
+
+                      <div className="bg-white border border-emerald-100 rounded-lg p-2.5">
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          Lunch
+                        </label>
+                        <input
+                          type="number"
+                          min={0}
+                          value={guestLunchRate}
+                          onChange={(e) => setGuestLunchRate(Number(e.target.value))}
+                          className="w-full bg-slate-50 border border-slate-200 rounded px-2 py-1 text-slate-900 font-bold text-xs"
+                        />
+                      </div>
+
+                      <div className="bg-white border border-emerald-100 rounded-lg p-2.5">
+                        <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">
+                          Dinner
+                        </label>
+                        <input
+                          type="number"
+                          min={0}
+                          value={guestDinnerRate}
+                          onChange={(e) => setGuestDinnerRate(Number(e.target.value))}
+                          className="w-full bg-slate-50 border border-slate-200 rounded px-2 py-1 text-slate-900 font-bold text-xs"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-
-              {/* Guest Meal Rates Grid */}
-              {allowGuestMeals && (
-                <div className="bg-emerald-50/50 border border-emerald-500/20 rounded-2xl p-5 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-xs font-black text-emerald-950 uppercase tracking-wider">
-                      Standard Guest Meal Tariffs ({currencySymbol})
-                    </h4>
-                    <span className="text-xs text-emerald-700 font-semibold">Credited to Food Cost Pool</span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div className="bg-white border border-emerald-100 rounded-xl p-3">
-                      <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
-                        Breakfast ({currencySymbol})
-                      </label>
-                      <input
-                        type="number"
-                        min={0}
-                        value={guestBreakfastRate}
-                        onChange={(e) => setGuestBreakfastRate(Number(e.target.value))}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-slate-900 font-bold text-sm"
-                      />
-                    </div>
-
-                    <div className="bg-white border border-emerald-100 rounded-xl p-3">
-                      <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
-                        Lunch ({currencySymbol})
-                      </label>
-                      <input
-                        type="number"
-                        min={0}
-                        value={guestLunchRate}
-                        onChange={(e) => setGuestLunchRate(Number(e.target.value))}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-slate-900 font-bold text-sm"
-                      />
-                    </div>
-
-                    <div className="bg-white border border-emerald-100 rounded-xl p-3">
-                      <label className="block text-[11px] font-bold text-slate-600 uppercase mb-1">
-                        Dinner ({currencySymbol})
-                      </label>
-                      <input
-                        type="number"
-                        min={0}
-                        value={guestDinnerRate}
-                        onChange={(e) => setGuestDinnerRate(Number(e.target.value))}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-slate-900 font-bold text-sm"
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
 
-            <div className="pt-4 flex justify-end">
+            <div className="pt-2 flex justify-end">
               <Button
                 type="submit"
                 variant="primary"
                 disabled={isSavingRules}
-                className="flex items-center gap-2 py-2.5 px-6 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+                className="w-full sm:w-auto py-2.5 px-6 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm flex items-center justify-center gap-2"
               >
-                <Save className="w-4 h-4" /> {isSavingRules ? 'Saving Rules...' : 'Save Dining Rules'}
+                <Save className="w-4 h-4" /> {isSavingRules ? 'Saving...' : 'Save Dining Rules'}
               </Button>
             </div>
           </form>
@@ -1024,35 +988,34 @@ export const MessSettingsPage: React.FC = () => {
         {/* TAB 3: Custom Categories */}
         {/* ======================================================== */}
         {activeTab === 'categories' && (
-          <div className="space-y-6 max-w-4xl">
-            <div>
-              <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                <Tags className="w-4 h-4 text-emerald-600" /> Dynamic Tag Categories
+          <div className="space-y-4">
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-xs">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <Tags className="w-4 h-4 text-emerald-600" /> Category Tags
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
-                Customize dropdown classification tags across Bazar expenses, fixed month-end bills, and utility readings.
+                Customize dropdown classification tags across Bazar expenses, fixed bills, and utilities.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Category 1: Variable Bazar Expenses */}
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col justify-between space-y-4">
+              <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col justify-between space-y-3 shadow-xs">
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
                       <Utensils className="w-3.5 h-3.5 text-emerald-600" /> Variable Expenses
                     </h4>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-600">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
                       {expenseCategories.length}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-500 mb-3">Daily grocery, meat, and emergency bazar tags.</p>
 
-                  <div className="flex flex-wrap gap-1.5 min-h-[140px] content-start">
+                  <div className="flex flex-wrap gap-1.5 min-h-[110px] content-start pt-1">
                     {expenseCategories.map((cat) => (
                       <span
                         key={cat}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white border border-slate-200 text-xs font-medium text-slate-700 shadow-2xs group hover:border-rose-200 hover:bg-rose-50/50 transition-colors"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200 text-xs font-medium text-slate-700 group hover:border-rose-200 hover:bg-rose-50/50 transition-colors"
                       >
                         {cat}
                         <button
@@ -1067,20 +1030,20 @@ export const MessSettingsPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-slate-200 flex items-center gap-1.5">
+                <div className="pt-2 border-t border-slate-100 flex items-center gap-1.5">
                   <input
                     type="text"
                     value={newExpenseCat}
                     onChange={(e) => setNewExpenseCat(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleAddCategory('expense', newExpenseCat, setNewExpenseCat)}
                     placeholder="New category..."
-                    className="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-900 font-medium"
+                    className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs text-slate-900 font-medium"
                   />
                   <Button
                     variant="secondary"
                     size="sm"
                     onClick={() => handleAddCategory('expense', newExpenseCat, setNewExpenseCat)}
-                    className="py-1.5 px-3 text-xs"
+                    className="py-1 px-2.5 text-xs"
                   >
                     <Plus size={13} />
                   </Button>
@@ -1088,23 +1051,22 @@ export const MessSettingsPage: React.FC = () => {
               </div>
 
               {/* Category 2: Fixed Monthly Bills */}
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col justify-between space-y-4">
+              <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col justify-between space-y-3 shadow-xs">
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                      <Receipt className="w-3.5 h-3.5 text-blue-600" /> Fixed Monthly Bills
+                  <div className="flex items-center justify-between mb-1.5">
+                    <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                      <Receipt className="w-3.5 h-3.5 text-blue-600" /> Fixed Bills
                     </h4>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-600">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
                       {fixedBillCategories.length}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-500 mb-3">House rent, cook salary, security, and cleaning.</p>
 
-                  <div className="flex flex-wrap gap-1.5 min-h-[140px] content-start">
+                  <div className="flex flex-wrap gap-1.5 min-h-[110px] content-start pt-1">
                     {fixedBillCategories.map((cat) => (
                       <span
                         key={cat}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white border border-slate-200 text-xs font-medium text-slate-700 shadow-2xs group hover:border-rose-200 hover:bg-rose-50/50 transition-colors"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200 text-xs font-medium text-slate-700 group hover:border-rose-200 hover:bg-rose-50/50 transition-colors"
                       >
                         {cat}
                         <button
@@ -1119,20 +1081,20 @@ export const MessSettingsPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-slate-200 flex items-center gap-1.5">
+                <div className="pt-2 border-t border-slate-100 flex items-center gap-1.5">
                   <input
                     type="text"
                     value={newFixedCat}
                     onChange={(e) => setNewFixedCat(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleAddCategory('fixed', newFixedCat, setNewFixedCat)}
                     placeholder="New bill category..."
-                    className="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-900 font-medium"
+                    className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs text-slate-900 font-medium"
                   />
                   <Button
                     variant="secondary"
                     size="sm"
                     onClick={() => handleAddCategory('fixed', newFixedCat, setNewFixedCat)}
-                    className="py-1.5 px-3 text-xs"
+                    className="py-1 px-2.5 text-xs"
                   >
                     <Plus size={13} />
                   </Button>
@@ -1140,23 +1102,22 @@ export const MessSettingsPage: React.FC = () => {
               </div>
 
               {/* Category 3: Utility Bills */}
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col justify-between space-y-4">
+              <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col justify-between space-y-3 shadow-xs">
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
                       <Zap className="w-3.5 h-3.5 text-amber-600" /> Utility Categories
                     </h4>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-600">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
                       {utilityCategories.length}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-500 mb-3">Electricity, broadband Wi-Fi, WASA, gas cylinders.</p>
 
-                  <div className="flex flex-wrap gap-1.5 min-h-[140px] content-start">
+                  <div className="flex flex-wrap gap-1.5 min-h-[110px] content-start pt-1">
                     {utilityCategories.map((cat) => (
                       <span
                         key={cat}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white border border-slate-200 text-xs font-medium text-slate-700 shadow-2xs group hover:border-rose-200 hover:bg-rose-50/50 transition-colors"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200 text-xs font-medium text-slate-700 group hover:border-rose-200 hover:bg-rose-50/50 transition-colors"
                       >
                         {cat}
                         <button
@@ -1171,20 +1132,20 @@ export const MessSettingsPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-slate-200 flex items-center gap-1.5">
+                <div className="pt-2 border-t border-slate-100 flex items-center gap-1.5">
                   <input
                     type="text"
                     value={newUtilityCat}
                     onChange={(e) => setNewUtilityCat(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleAddCategory('utility', newUtilityCat, setNewUtilityCat)}
-                    placeholder="New utility category..."
-                    className="flex-1 bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-900 font-medium"
+                    placeholder="New utility..."
+                    className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs text-slate-900 font-medium"
                   />
                   <Button
                     variant="secondary"
                     size="sm"
                     onClick={() => handleAddCategory('utility', newUtilityCat, setNewUtilityCat)}
-                    className="py-1.5 px-3 text-xs"
+                    className="py-1 px-2.5 text-xs"
                   >
                     <Plus size={13} />
                   </Button>
@@ -1192,15 +1153,15 @@ export const MessSettingsPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="pt-4 flex justify-end">
+            <div className="pt-2 flex justify-end">
               <Button
                 type="button"
                 variant="primary"
                 disabled={isSavingCategories}
                 onClick={handleSaveCategories}
-                className="flex items-center gap-2 py-2.5 px-6 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+                className="w-full sm:w-auto py-2.5 px-6 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm flex items-center justify-center gap-2"
               >
-                <Save className="w-4 h-4" /> {isSavingCategories ? 'Saving Tags...' : 'Save Category Configurations'}
+                <Save className="w-4 h-4" /> {isSavingCategories ? 'Saving...' : 'Save Category Configurations'}
               </Button>
             </div>
           </div>
@@ -1210,142 +1171,134 @@ export const MessSettingsPage: React.FC = () => {
         {/* TAB 4: Financial Policies */}
         {/* ======================================================== */}
         {activeTab === 'policies' && (
-          <form onSubmit={handleSavePolicies} className="space-y-6 max-w-3xl">
-            <div>
-              <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                <ShieldAlert className="w-4 h-4 text-emerald-600" /> Financial Governance & Closing Policies
-              </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Establish transparent financial policies for monthly rent collection, automatic utility drafting, and period finalization.
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              {/* Rent Due Day */}
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-0.5">
-                  <h4 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-                    <Calendar className="w-4 h-4 text-emerald-600" /> Monthly Rent Due Day
-                  </h4>
-                  <p className="text-xs text-slate-500">
-                    Day of the month when house rent is due from members (1 to 28).
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold text-slate-600">Every</span>
-                  <input
-                    type="number"
-                    min={1}
-                    max={28}
-                    value={rentDueDay}
-                    onChange={(e) => setRentDueDay(Number(e.target.value))}
-                    className="w-20 bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-slate-900 text-sm font-bold text-center focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  />
-                  <span className="text-xs font-semibold text-slate-600">th of the month</span>
-                </div>
+          <form onSubmit={handleSavePolicies} className="space-y-4">
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <ShieldAlert className="w-4 h-4 text-emerald-600" /> Financial Policies
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Rules for monthly rent collection, automatic utility drafting, and period locking.
+                </p>
               </div>
 
-              {/* Grace Period */}
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-0.5">
-                  <h4 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-                    <Clock className="w-4 h-4 text-blue-600" /> Month-End Grace Period (Days)
-                  </h4>
-                  <p className="text-xs text-slate-500">
-                    Buffer days after calendar month-end before automated late penalties or finalize alerts appear.
-                  </p>
+              <div className="space-y-3">
+                {/* Rent Due Day */}
+                <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-emerald-600" /> Monthly Rent Due Day
+                    </h4>
+                    <p className="text-[11px] text-slate-500">Day when rent is due from members.</p>
+                  </div>
+                  <div className="flex items-center gap-2 self-start sm:self-auto">
+                    <span className="text-xs text-slate-600 font-medium">Every</span>
+                    <input
+                      type="number"
+                      min={1}
+                      max={28}
+                      value={rentDueDay}
+                      onChange={(e) => setRentDueDay(Number(e.target.value))}
+                      className="w-16 bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-900 text-xs font-bold text-center"
+                    />
+                    <span className="text-xs text-slate-600 font-medium">th of month</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    min={0}
-                    max={15}
-                    value={gracePeriodDays}
-                    onChange={(e) => setGracePeriodDays(Number(e.target.value))}
-                    className="w-20 bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-slate-900 text-sm font-bold text-center focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  />
-                  <span className="text-xs font-semibold text-slate-600">Days</span>
-                </div>
-              </div>
 
-              {/* Default Split Method */}
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-0.5">
-                  <h4 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-                    <FileSpreadsheet className="w-4 h-4 text-indigo-600" /> Default Expense Split Method
-                  </h4>
-                  <p className="text-xs text-slate-500">
-                    Fallback allocation mathematical rule for miscellaneous shared purchases.
-                  </p>
+                {/* Grace Period */}
+                <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-blue-600" /> Month-End Grace Period
+                    </h4>
+                    <p className="text-[11px] text-slate-500">Buffer days before finalization warning.</p>
+                  </div>
+                  <div className="flex items-center gap-2 self-start sm:self-auto">
+                    <input
+                      type="number"
+                      min={0}
+                      max={15}
+                      value={gracePeriodDays}
+                      onChange={(e) => setGracePeriodDays(Number(e.target.value))}
+                      className="w-16 bg-white border border-slate-200 rounded-lg px-2 py-1 text-slate-900 text-xs font-bold text-center"
+                    />
+                    <span className="text-xs text-slate-600 font-medium">Days</span>
+                  </div>
                 </div>
-                <select
-                  value={defaultSplitMethod}
-                  onChange={(e) => setDefaultSplitMethod(e.target.value as any)}
-                  className="bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
-                  <option value="EQUAL">Equal Split (1 / N)</option>
-                  <option value="MEAL_BASED">Meal Ratio Proportional</option>
-                  <option value="ROOM_BASED">Room Bed Proportional</option>
-                </select>
-              </div>
 
-              {/* Auto Generate Utilities */}
-              <div
-                onClick={() => setAutoGenerateUtilities(!autoGenerateUtilities)}
-                className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex items-center justify-between cursor-pointer hover:border-slate-300 transition-all select-none"
-              >
-                <div className="space-y-0.5">
-                  <h4 className="text-sm font-bold text-slate-900">Auto-Generate Recurring Utilities</h4>
-                  <p className="text-xs text-slate-500">
-                    Automatically draft house rent, Wi-Fi broadband, and maid bills on the 1st of every month.
-                  </p>
+                {/* Split Method */}
+                <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900 flex items-center gap-1.5">
+                      <FileSpreadsheet className="w-3.5 h-3.5 text-indigo-600" /> Default Split Method
+                    </h4>
+                    <p className="text-[11px] text-slate-500">Fallback rule for shared purchases.</p>
+                  </div>
+                  <select
+                    value={defaultSplitMethod}
+                    onChange={(e) => setDefaultSplitMethod(e.target.value as any)}
+                    className="bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-slate-900 text-xs font-bold self-start sm:self-auto"
+                  >
+                    <option value="EQUAL">Equal Split (1/N)</option>
+                    <option value="MEAL_BASED">Meal Ratio</option>
+                    <option value="ROOM_BASED">Room Bed</option>
+                  </select>
                 </div>
+
+                {/* Auto Utilities */}
                 <div
-                  className={`w-12 h-6 rounded-full transition-colors relative flex items-center px-1 ${
-                    autoGenerateUtilities ? 'bg-emerald-600' : 'bg-slate-300'
-                  }`}
+                  onClick={() => setAutoGenerateUtilities(!autoGenerateUtilities)}
+                  className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 flex items-center justify-between cursor-pointer hover:border-slate-300 transition-all select-none"
                 >
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900">Auto-Generate Utilities</h4>
+                    <p className="text-[11px] text-slate-500">Draft rent and bills on the 1st of month.</p>
+                  </div>
                   <div
-                    className={`w-4 h-4 rounded-full bg-white transition-transform ${
-                      autoGenerateUtilities ? 'translate-x-6' : 'translate-x-0'
+                    className={`w-11 h-6 rounded-full transition-colors relative flex items-center px-1 shrink-0 ${
+                      autoGenerateUtilities ? 'bg-emerald-600' : 'bg-slate-300'
                     }`}
-                  />
+                  >
+                    <div
+                      className={`w-4 h-4 rounded-full bg-white transition-transform ${
+                        autoGenerateUtilities ? 'translate-x-5' : 'translate-x-0'
+                      }`}
+                    />
+                  </div>
                 </div>
-              </div>
 
-              {/* Allow Reopen Requests */}
-              <div
-                onClick={() => setAllowMemberReopenRequests(!allowMemberReopenRequests)}
-                className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex items-center justify-between cursor-pointer hover:border-slate-300 transition-all select-none"
-              >
-                <div className="space-y-0.5">
-                  <h4 className="text-sm font-bold text-slate-900">Allow Member Reopen Requests</h4>
-                  <p className="text-xs text-slate-500">
-                    Permit residents to submit audit recalculation requests on finalized billing cycles.
-                  </p>
-                </div>
+                {/* Reopen Requests */}
                 <div
-                  className={`w-12 h-6 rounded-full transition-colors relative flex items-center px-1 ${
-                    allowMemberReopenRequests ? 'bg-emerald-600' : 'bg-slate-300'
-                  }`}
+                  onClick={() => setAllowMemberReopenRequests(!allowMemberReopenRequests)}
+                  className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 flex items-center justify-between cursor-pointer hover:border-slate-300 transition-all select-none"
                 >
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900">Allow Reopen Requests</h4>
+                    <p className="text-[11px] text-slate-500">Permit recalculation requests on closed periods.</p>
+                  </div>
                   <div
-                    className={`w-4 h-4 rounded-full bg-white transition-transform ${
-                      allowMemberReopenRequests ? 'translate-x-6' : 'translate-x-0'
+                    className={`w-11 h-6 rounded-full transition-colors relative flex items-center px-1 shrink-0 ${
+                      allowMemberReopenRequests ? 'bg-emerald-600' : 'bg-slate-300'
                     }`}
-                  />
+                  >
+                    <div
+                      className={`w-4 h-4 rounded-full bg-white transition-transform ${
+                        allowMemberReopenRequests ? 'translate-x-5' : 'translate-x-0'
+                      }`}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="pt-4 flex justify-end">
+            <div className="pt-2 flex justify-end">
               <Button
                 type="submit"
                 variant="primary"
                 disabled={isSavingPolicies}
-                className="flex items-center gap-2 py-2.5 px-6 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+                className="w-full sm:w-auto py-2.5 px-6 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm flex items-center justify-center gap-2"
               >
-                <Save className="w-4 h-4" /> {isSavingPolicies ? 'Saving Policies...' : 'Save Financial Policies'}
+                <Save className="w-4 h-4" /> {isSavingPolicies ? 'Saving...' : 'Save Financial Policies'}
               </Button>
             </div>
           </form>
@@ -1355,165 +1308,133 @@ export const MessSettingsPage: React.FC = () => {
         {/* TAB 5: Display & Alerts */}
         {/* ======================================================== */}
         {activeTab === 'display-alerts' && (
-          <form onSubmit={handleSavePreferences} className="space-y-6 max-w-3xl">
-            <div>
-              <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                <Palette className="w-4 h-4 text-emerald-600" /> Visual Formatting & System Notifications
-              </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Configure table visual density, date serialization standards, and alert push notifications.
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              {/* Date Format */}
-              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-0.5">
-                  <h4 className="text-sm font-bold text-slate-900">System Date Presentation</h4>
-                  <p className="text-xs text-slate-500">
-                    Standard format applied across reports, ledgers, and transaction timestamps.
-                  </p>
-                </div>
-                <select
-                  value={dateFormat}
-                  onChange={(e) => setDateFormat(e.target.value)}
-                  className="bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                >
-                  <option value="YYYY-MM-DD">YYYY-MM-DD (ISO 8601)</option>
-                  <option value="DD/MM/YYYY">DD/MM/YYYY (UK / Bangladesh Standard)</option>
-                  <option value="MM/DD/YYYY">MM/DD/YYYY (US Standard)</option>
-                </select>
+          <form onSubmit={handleSavePreferences} className="space-y-4">
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
+              <div>
+                <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <Palette className="w-4 h-4 text-emerald-600" /> Display & Alert Preferences
+                </h3>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Visual formatting, table density, and notification channels.
+                </p>
               </div>
 
-              {/* Compact Density */}
-              <div
-                onClick={() => setCompactTableDensity(!compactTableDensity)}
-                className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex items-center justify-between cursor-pointer hover:border-slate-300 transition-all select-none"
-              >
-                <div className="space-y-0.5">
-                  <h4 className="text-sm font-bold text-slate-900">Compact Table Density</h4>
-                  <p className="text-xs text-slate-500">
-                    Condense row vertical padding for power users and smaller laptop viewports.
-                  </p>
+              <div className="space-y-3">
+                {/* Date Format */}
+                <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900">System Date Format</h4>
+                    <p className="text-[11px] text-slate-500">Applied across ledgers and reports.</p>
+                  </div>
+                  <select
+                    value={dateFormat}
+                    onChange={(e) => setDateFormat(e.target.value)}
+                    className="bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-slate-900 text-xs font-bold self-start sm:self-auto"
+                  >
+                    <option value="YYYY-MM-DD">YYYY-MM-DD (ISO)</option>
+                    <option value="DD/MM/YYYY">DD/MM/YYYY (UK/BD)</option>
+                    <option value="MM/DD/YYYY">MM/DD/YYYY (US)</option>
+                  </select>
                 </div>
-                <div
-                  className={`w-12 h-6 rounded-full transition-colors relative flex items-center px-1 ${
-                    compactTableDensity ? 'bg-emerald-600' : 'bg-slate-300'
-                  }`}
-                >
-                  <div
-                    className={`w-4 h-4 rounded-full bg-white transition-transform ${
-                      compactTableDensity ? 'translate-x-6' : 'translate-x-0'
-                    }`}
-                  />
-                </div>
-              </div>
 
-              {/* Decimal Fractions */}
-              <div
-                onClick={() => setShowDecimals(!showDecimals)}
-                className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex items-center justify-between cursor-pointer hover:border-slate-300 transition-all select-none"
-              >
-                <div className="space-y-0.5">
-                  <h4 className="text-sm font-bold text-slate-900">Display Currency Fractions (.00)</h4>
-                  <p className="text-xs text-slate-500">
-                    Show exact 2-decimal fractional currency figures across all balance cards.
-                  </p>
-                </div>
+                {/* Compact Density */}
                 <div
-                  className={`w-12 h-6 rounded-full transition-colors relative flex items-center px-1 ${
-                    showDecimals ? 'bg-emerald-600' : 'bg-slate-300'
-                  }`}
+                  onClick={() => setCompactTableDensity(!compactTableDensity)}
+                  className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 flex items-center justify-between cursor-pointer hover:border-slate-300 transition-all select-none"
                 >
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900">Compact Table Density</h4>
+                    <p className="text-[11px] text-slate-500">Reduce table row padding for smaller screens.</p>
+                  </div>
                   <div
-                    className={`w-4 h-4 rounded-full bg-white transition-transform ${
-                      showDecimals ? 'translate-x-6' : 'translate-x-0'
+                    className={`w-11 h-6 rounded-full transition-colors relative flex items-center px-1 shrink-0 ${
+                      compactTableDensity ? 'bg-emerald-600' : 'bg-slate-300'
                     }`}
-                  />
+                  >
+                    <div
+                      className={`w-4 h-4 rounded-full bg-white transition-transform ${
+                        compactTableDensity ? 'translate-x-5' : 'translate-x-0'
+                      }`}
+                    />
+                  </div>
                 </div>
-              </div>
 
-              {/* Email Alerts */}
-              <div
-                onClick={() => setEmailAlerts(!emailAlerts)}
-                className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex items-center justify-between cursor-pointer hover:border-slate-300 transition-all select-none"
-              >
-                <div className="space-y-0.5">
-                  <h4 className="text-sm font-bold text-slate-900">Email Digest Notifications</h4>
-                  <p className="text-xs text-slate-500">
-                    Receive email digests on month-end finalization and manager announcements.
-                  </p>
-                </div>
+                {/* Decimal Fractions */}
                 <div
-                  className={`w-12 h-6 rounded-full transition-colors relative flex items-center px-1 ${
-                    emailAlerts ? 'bg-emerald-600' : 'bg-slate-300'
-                  }`}
+                  onClick={() => setShowDecimals(!showDecimals)}
+                  className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 flex items-center justify-between cursor-pointer hover:border-slate-300 transition-all select-none"
                 >
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900">Display Currency Decimals (.00)</h4>
+                    <p className="text-[11px] text-slate-500">Show exact paisa/cents on figures.</p>
+                  </div>
                   <div
-                    className={`w-4 h-4 rounded-full bg-white transition-transform ${
-                      emailAlerts ? 'translate-x-6' : 'translate-x-0'
+                    className={`w-11 h-6 rounded-full transition-colors relative flex items-center px-1 shrink-0 ${
+                      showDecimals ? 'bg-emerald-600' : 'bg-slate-300'
                     }`}
-                  />
+                  >
+                    <div
+                      className={`w-4 h-4 rounded-full bg-white transition-transform ${
+                        showDecimals ? 'translate-x-5' : 'translate-x-0'
+                      }`}
+                    />
+                  </div>
                 </div>
-              </div>
 
-              {/* Push Alerts */}
-              <div
-                onClick={() => setPushAlerts(!pushAlerts)}
-                className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex items-center justify-between cursor-pointer hover:border-slate-300 transition-all select-none"
-              >
-                <div className="space-y-0.5">
-                  <h4 className="text-sm font-bold text-slate-900">PWA Mobile Push Notifications</h4>
-                  <p className="text-xs text-slate-500">
-                    Receive instant push alerts on mobile devices when installed as a PWA.
-                  </p>
-                </div>
+                {/* Email Alerts */}
                 <div
-                  className={`w-12 h-6 rounded-full transition-colors relative flex items-center px-1 ${
-                    pushAlerts ? 'bg-emerald-600' : 'bg-slate-300'
-                  }`}
+                  onClick={() => setEmailAlerts(!emailAlerts)}
+                  className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 flex items-center justify-between cursor-pointer hover:border-slate-300 transition-all select-none"
                 >
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900">Email Digest Notifications</h4>
+                    <p className="text-[11px] text-slate-500">Receive email alerts on month-end finalization.</p>
+                  </div>
                   <div
-                    className={`w-4 h-4 rounded-full bg-white transition-transform ${
-                      pushAlerts ? 'translate-x-6' : 'translate-x-0'
+                    className={`w-11 h-6 rounded-full transition-colors relative flex items-center px-1 shrink-0 ${
+                      emailAlerts ? 'bg-emerald-600' : 'bg-slate-300'
                     }`}
-                  />
+                  >
+                    <div
+                      className={`w-4 h-4 rounded-full bg-white transition-transform ${
+                        emailAlerts ? 'translate-x-5' : 'translate-x-0'
+                      }`}
+                    />
+                  </div>
                 </div>
-              </div>
 
-              {/* Bill Due Reminders */}
-              <div
-                onClick={() => setBillDueReminders(!billDueReminders)}
-                className="bg-slate-50 border border-slate-200 rounded-2xl p-5 flex items-center justify-between cursor-pointer hover:border-slate-300 transition-all select-none"
-              >
-                <div className="space-y-0.5">
-                  <h4 className="text-sm font-bold text-slate-900">Advance Deposit & Rent Reminders</h4>
-                  <p className="text-xs text-slate-500">
-                    Automatically prompt residents 48 hours prior to the monthly rent due date.
-                  </p>
-                </div>
+                {/* Push Alerts */}
                 <div
-                  className={`w-12 h-6 rounded-full transition-colors relative flex items-center px-1 ${
-                    billDueReminders ? 'bg-emerald-600' : 'bg-slate-300'
-                  }`}
+                  onClick={() => setPushAlerts(!pushAlerts)}
+                  className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 flex items-center justify-between cursor-pointer hover:border-slate-300 transition-all select-none"
                 >
+                  <div>
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900">PWA Mobile Push Notifications</h4>
+                    <p className="text-[11px] text-slate-500">Receive instant push alerts on phone.</p>
+                  </div>
                   <div
-                    className={`w-4 h-4 rounded-full bg-white transition-transform ${
-                      billDueReminders ? 'translate-x-6' : 'translate-x-0'
+                    className={`w-11 h-6 rounded-full transition-colors relative flex items-center px-1 shrink-0 ${
+                      pushAlerts ? 'bg-emerald-600' : 'bg-slate-300'
                     }`}
-                  />
+                  >
+                    <div
+                      className={`w-4 h-4 rounded-full bg-white transition-transform ${
+                        pushAlerts ? 'translate-x-5' : 'translate-x-0'
+                      }`}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="pt-4 flex justify-end">
+            <div className="pt-2 flex justify-end">
               <Button
                 type="submit"
                 variant="primary"
                 disabled={isSavingPreferences}
-                className="flex items-center gap-2 py-2.5 px-6 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+                className="w-full sm:w-auto py-2.5 px-6 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm flex items-center justify-center gap-2"
               >
-                <Save className="w-4 h-4" /> {isSavingPreferences ? 'Saving Preferences...' : 'Save Preferences'}
+                <Save className="w-4 h-4" /> {isSavingPreferences ? 'Saving...' : 'Save Preferences'}
               </Button>
             </div>
           </form>
@@ -1523,14 +1444,14 @@ export const MessSettingsPage: React.FC = () => {
         {/* TAB 6: Invitations */}
         {/* ======================================================== */}
         {activeTab === 'invitations' && (
-          <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-4">
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-emerald-600" /> Active & Historical Invitations
+                <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-emerald-600" /> Active & Past Invitations
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Cryptographically secured single-use tokens valid for 7 days.
+                  Single-use cryptographic invite tokens valid for 7 days.
                 </p>
               </div>
               <Button
@@ -1540,51 +1461,49 @@ export const MessSettingsPage: React.FC = () => {
                   setCreatedInviteUrl(null);
                   setIsInviteModalOpen(true);
                 }}
-                className="flex items-center gap-1.5 py-2 px-4 rounded-xl font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs self-start sm:self-auto"
+                className="self-start sm:self-auto flex items-center gap-1.5 py-2 px-3 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white"
               >
-                <UserPlus className="w-4 h-4" />
+                <UserPlus className="w-3.5 h-3.5" />
                 <span>Invite Member</span>
               </Button>
             </div>
 
             {invitations.length === 0 ? (
-              <div className="text-center py-16 bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3">
-                  <Mail className="w-6 h-6" />
-                </div>
+              <div className="text-center py-12 bg-white rounded-2xl border border-dashed border-slate-200">
+                <Mail className="w-8 h-8 text-slate-300 mx-auto mb-2" />
                 <h4 className="text-sm font-bold text-slate-800">No invitations generated</h4>
-                <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-                  Click 'Invite Member' to create a single-use token or share the Mess Join Code with your roommates.
+                <p className="text-xs text-slate-500 mt-0.5 max-w-sm mx-auto">
+                  Click 'Invite Member' to create a link or share the Mess Join Code with roommates.
                 </p>
               </div>
             ) : (
               <>
                 {/* Desktop View Table */}
-                <div className="hidden md:block overflow-x-auto border border-slate-200 rounded-2xl shadow-xs">
+                <div className="hidden md:block overflow-x-auto bg-white border border-slate-200 rounded-2xl shadow-xs">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead className="bg-slate-50 text-slate-700 uppercase tracking-wider font-bold text-[10px] border-b border-slate-200">
                       <tr>
-                        <th className="py-3.5 px-4">Invitee Email</th>
-                        <th className="py-3.5 px-4">Role</th>
-                        <th className="py-3.5 px-4">Room No</th>
-                        <th className="py-3.5 px-4">Status</th>
-                        <th className="py-3.5 px-4">Expires At</th>
-                        <th className="py-3.5 px-4 text-right">Actions</th>
+                        <th className="py-3 px-4">Invitee Email</th>
+                        <th className="py-3 px-4">Role</th>
+                        <th className="py-3 px-4">Room No</th>
+                        <th className="py-3 px-4">Status</th>
+                        <th className="py-3 px-4">Expires</th>
+                        <th className="py-3 px-4 text-right">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                       {invitations.map((inv) => (
                         <tr key={inv.id} className="hover:bg-slate-50/60 transition-colors">
-                          <td className="py-3.5 px-4 font-semibold text-slate-900">{inv.email}</td>
-                          <td className="py-3.5 px-4">
+                          <td className="py-3 px-4 font-semibold text-slate-900">{inv.email}</td>
+                          <td className="py-3 px-4">
                             <Badge variant={inv.role === 'MANAGER' ? 'primary' : 'neutral'}>
                               {inv.role}
                             </Badge>
                           </td>
-                          <td className="py-3.5 px-4 text-slate-600 font-mono">
+                          <td className="py-3 px-4 text-slate-600 font-mono">
                             {inv.roomNo || 'Unassigned'}
                           </td>
-                          <td className="py-3.5 px-4">
+                          <td className="py-3 px-4">
                             <Badge
                               variant={
                                 inv.status === 'ACCEPTED'
@@ -1599,10 +1518,10 @@ export const MessSettingsPage: React.FC = () => {
                               {inv.status}
                             </Badge>
                           </td>
-                          <td className="py-3.5 px-4 text-slate-500 font-mono text-[11px]">
+                          <td className="py-3 px-4 text-slate-500 font-mono text-[11px]">
                             {new Date(inv.expiresAt).toLocaleDateString()}
                           </td>
-                          <td className="py-3.5 px-4 text-right">
+                          <td className="py-3 px-4 text-right">
                             <div className="flex items-center justify-end gap-1.5">
                               {inv.status === 'PENDING' && (
                                 <>
@@ -1636,21 +1555,21 @@ export const MessSettingsPage: React.FC = () => {
                 </div>
 
                 {/* Mobile View Feed Cards */}
-                <div className="block md:hidden space-y-3">
+                <div className="block md:hidden space-y-2.5">
                   {invitations.map((inv) => (
                     <div
                       key={inv.id}
-                      className="bg-slate-50/60 border border-slate-200 rounded-2xl p-4 space-y-3"
+                      className="bg-white border border-slate-200 rounded-2xl p-3.5 space-y-2.5 shadow-xs"
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <div className="space-y-0.5">
-                          <span className="font-bold text-slate-900 text-sm block break-all">
+                        <div className="space-y-0.5 min-w-0">
+                          <span className="font-bold text-slate-900 text-xs sm:text-sm block truncate">
                             {inv.email}
                           </span>
-                          <div className="flex items-center gap-2 flex-wrap text-xs text-slate-500">
+                          <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
                             <span>Room: <strong className="text-slate-700">{inv.roomNo || 'Unassigned'}</strong></span>
                             <span>•</span>
-                            <span>Expires: {new Date(inv.expiresAt).toLocaleDateString()}</span>
+                            <span>Exp: {new Date(inv.expiresAt).toLocaleDateString()}</span>
                           </div>
                         </div>
                         <Badge
@@ -1663,13 +1582,14 @@ export const MessSettingsPage: React.FC = () => {
                               ? 'neutral'
                               : 'warning'
                           }
+                          className="text-[10px] py-0 px-2"
                         >
                           {inv.status}
                         </Badge>
                       </div>
 
-                      <div className="flex items-center justify-between pt-2 border-t border-slate-200/60 text-xs">
-                        <Badge variant={inv.role === 'MANAGER' ? 'primary' : 'neutral'}>
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
+                        <Badge variant={inv.role === 'MANAGER' ? 'primary' : 'neutral'} className="text-[10px]">
                           {inv.role}
                         </Badge>
 
@@ -1686,7 +1606,7 @@ export const MessSettingsPage: React.FC = () => {
                               }}
                               className="flex items-center gap-1 py-1 px-2.5 text-xs font-semibold"
                             >
-                              <Copy className="w-3.5 h-3.5" /> Copy Link
+                              <Copy className="w-3 h-3" /> Copy
                             </Button>
                             <Button
                               variant="danger"
@@ -1711,39 +1631,37 @@ export const MessSettingsPage: React.FC = () => {
         {/* TAB 7: Leave & Clearance Queue */}
         {/* ======================================================== */}
         {activeTab === 'leave-requests' && (
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+          <div className="space-y-4">
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-xs">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                 <Clock className="w-4 h-4 text-emerald-600" /> Member Leave & Exit Clearance Queue
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
-                Review departures, perform financial clearance audits, and release room bed inventory.
+                Review departure requests, perform financial clearance audits, and release room beds.
               </p>
             </div>
 
             {leaveRequests.length === 0 ? (
-              <div className="text-center py-16 bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-3">
-                  <ShieldCheck className="w-6 h-6" />
-                </div>
+              <div className="text-center py-12 bg-white rounded-2xl border border-dashed border-slate-200">
+                <ShieldCheck className="w-8 h-8 text-emerald-600 mx-auto mb-2" />
                 <h4 className="text-sm font-bold text-slate-800">Clearance queue is clean</h4>
-                <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-                  No active temporary leave or permanent exit requests currently pending approval.
+                <p className="text-xs text-slate-500 mt-0.5 max-w-sm mx-auto">
+                  No active temporary leave or exit requests currently pending approval.
                 </p>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {leaveRequests.map((req) => (
                   <div
                     key={req.id}
-                    className="p-5 bg-slate-50/80 border border-slate-200 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-slate-300 transition-all"
+                    className="p-4 bg-white border border-slate-200 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs"
                   >
-                    <div className="space-y-1.5">
-                      <div className="flex items-center gap-2.5 flex-wrap">
-                        <span className="font-extrabold text-slate-900 text-sm sm:text-base">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-extrabold text-slate-900 text-sm">
                           {req.member?.user.name || 'Member'}
                         </span>
-                        <Badge variant={req.type === 'PERMANENT_EXIT' ? 'danger' : 'primary'}>
+                        <Badge variant={req.type === 'PERMANENT_EXIT' ? 'danger' : 'primary'} className="text-[10px]">
                           {req.type === 'PERMANENT_EXIT' ? 'Permanent Exit' : 'Temporary Leave'}
                         </Badge>
                         <Badge
@@ -1754,12 +1672,13 @@ export const MessSettingsPage: React.FC = () => {
                               ? 'danger'
                               : 'warning'
                           }
+                          className="text-[10px]"
                         >
                           {req.status}
                         </Badge>
                       </div>
 
-                      <div className="text-xs text-slate-600 flex flex-wrap items-center gap-x-4 gap-y-1 font-medium">
+                      <div className="text-[11px] text-slate-600 flex flex-wrap items-center gap-x-3 gap-y-1">
                         <span>From: <strong>{new Date(req.startDate).toLocaleDateString()}</strong></span>
                         {req.endDate && (
                           <span>Until: <strong>{new Date(req.endDate).toLocaleDateString()}</strong></span>
@@ -1768,14 +1687,14 @@ export const MessSettingsPage: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 flex-wrap">
+                    <div className="flex items-center gap-2 flex-wrap pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
                       <Button
                         variant="secondary"
                         size="sm"
                         onClick={() => inspectClearance(req.memberId)}
-                        className="flex items-center gap-1.5 py-2 px-3 text-xs font-bold"
+                        className="flex items-center gap-1 py-1.5 px-3 text-xs font-semibold"
                       >
-                        <FileCheck className="w-3.5 h-3.5 text-emerald-600" /> Clearance Audit
+                        <FileCheck className="w-3.5 h-3.5 text-emerald-600" /> Audit
                       </Button>
 
                       {req.status === 'PENDING' && (
@@ -1784,7 +1703,7 @@ export const MessSettingsPage: React.FC = () => {
                             variant="primary"
                             size="sm"
                             onClick={() => handleApproveLeave(req.id)}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 text-xs font-bold shadow-xs"
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white py-1.5 px-3 text-xs font-semibold shadow-xs"
                           >
                             Approve
                           </Button>
@@ -1792,7 +1711,7 @@ export const MessSettingsPage: React.FC = () => {
                             variant="danger"
                             size="sm"
                             onClick={() => handleRejectLeave(req.id)}
-                            className="py-2 px-3 text-xs font-bold"
+                            className="py-1.5 px-3 text-xs font-semibold"
                           >
                             Reject
                           </Button>
@@ -1817,17 +1736,17 @@ export const MessSettingsPage: React.FC = () => {
       >
         {createdInviteUrl ? (
           <div className="space-y-4 text-center py-2">
-            <div className="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-xs">
-              <CheckCircle2 className="w-7 h-7" />
+            <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-xs">
+              <CheckCircle2 className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="font-extrabold text-slate-900 text-lg">Single-Use Link Generated!</h4>
+              <h4 className="font-extrabold text-slate-900 text-base">Single-Use Link Generated!</h4>
               <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
                 Share this secure URL with the roommate. The token expires in 7 days and can only be used once.
               </p>
             </div>
 
-            <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-left font-mono text-xs text-emerald-700 break-all select-all flex items-center justify-between gap-3 shadow-inner">
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-left font-mono text-xs text-emerald-700 break-all select-all flex items-center justify-between gap-2">
               <span className="truncate">{createdInviteUrl}</span>
               <Button
                 variant="secondary"
@@ -1862,7 +1781,7 @@ export const MessSettingsPage: React.FC = () => {
                 onChange={(e) => setInviteEmail(e.target.value)}
                 required
                 placeholder="roommate@example.com"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all font-medium"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all font-medium"
               />
             </div>
 
@@ -1875,7 +1794,7 @@ export const MessSettingsPage: React.FC = () => {
                 value={inviteName}
                 onChange={(e) => setInviteName(e.target.value)}
                 placeholder="e.g. Tanvir Hasan"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all font-medium"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all font-medium"
               />
             </div>
 
@@ -1887,7 +1806,7 @@ export const MessSettingsPage: React.FC = () => {
                 <select
                   value={inviteRole}
                   onChange={(e) => setInviteRole(e.target.value as any)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-900 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 >
                   <option value="MEMBER">MEMBER (Resident)</option>
                   <option value="MANAGER">MANAGER (Financial Admin)</option>
@@ -1903,12 +1822,12 @@ export const MessSettingsPage: React.FC = () => {
                   value={inviteRoomNo}
                   onChange={(e) => setInviteRoomNo(e.target.value)}
                   placeholder="e.g. Room A-2, Bed 1"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 text-sm font-medium"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 text-sm font-medium"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-slate-100">
+            <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
               <Button
                 variant="secondary"
                 type="button"
@@ -1943,7 +1862,7 @@ export const MessSettingsPage: React.FC = () => {
         ) : clearanceData ? (
           <div className="space-y-4 text-sm">
             {/* Financial Ledger Summary Box */}
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-2.5">
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
               <div className="flex justify-between items-center text-xs">
                 <span className="text-slate-500 font-semibold uppercase">Resident Member:</span>
                 <span className="font-extrabold text-slate-900 text-sm">{clearanceData.memberName}</span>
@@ -1960,7 +1879,7 @@ export const MessSettingsPage: React.FC = () => {
                   {currencySymbol}{clearanceData.financialSummary.totalDebits.toFixed(2)}
                 </span>
               </div>
-              <div className="flex justify-between items-center border-t border-slate-200 pt-2.5">
+              <div className="flex justify-between items-center border-t border-slate-200 pt-2">
                 <span className="text-slate-800 font-bold">Net Final Balance:</span>
                 <span
                   className={`font-mono text-base font-black ${
@@ -1977,7 +1896,7 @@ export const MessSettingsPage: React.FC = () => {
               <h5 className="text-[11px] font-black text-slate-600 uppercase tracking-wider">
                 Clearance Gate Prerequisites
               </h5>
-              <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2.5 text-xs">
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2 text-xs">
                 <div className="flex items-center justify-between">
                   <span className="text-slate-700 font-medium">Room Bed Inventory Vacated</span>
                   {clearanceData.exitChecklist.roomVacated ? (
@@ -1995,7 +1914,7 @@ export const MessSettingsPage: React.FC = () => {
                   )}
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-700 font-medium">No Unposted Utility Reading Bills</span>
+                  <span className="text-slate-700 font-medium">No Unposted Utility Bills</span>
                   {clearanceData.exitChecklist.noPendingUtilityBills ? (
                     <Badge variant="success">Clean</Badge>
                   ) : (
@@ -2064,3 +1983,5 @@ export const MessSettingsPage: React.FC = () => {
     </div>
   );
 };
+
+export default MessSettingsPage;
