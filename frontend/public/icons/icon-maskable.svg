@@ -1,8 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <rect width="512" height="512" rx="112" fill="#10B981"/>
+  <rect width="512" height="512" fill="#10B981"/>
+  <!-- Safe zone emblem (centered at 256, 256) -->
   <g stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- House roof & walls -->
     <path d="M156 195 L256 115 L356 195 L356 385 L156 385 Z" stroke-width="30"/>
+    <!-- Door -->
     <path d="M210 385 L210 275 L302 275 L302 385" stroke-width="30"/>
   </g>
+  <!-- Dot / Accent -->
   <circle cx="256" cy="195" r="20" fill="#FFFFFF"/>
 </svg>

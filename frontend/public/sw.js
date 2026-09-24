@@ -5,17 +5,17 @@
    Full Web Push Notification & Background Sync lifecycle.
    =================================================================== */
 
-const CACHE_NAME = 'messmate-sw-v2-static';
+const CACHE_NAME = 'messmate-sw-v3-static';
 const SHELL_ASSETS = [
   '/',
   '/index.html',
   '/offline.html',
   '/manifest.json',
+  '/icons/favicon-32.png',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/icons/icon-maskable-192.png',
   '/icons/icon-maskable-512.png',
-  '/icons/icon-192.svg',
   '/icons/icon-512.svg',
 ];
 

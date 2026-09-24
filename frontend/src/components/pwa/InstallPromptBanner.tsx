@@ -77,7 +77,7 @@ export const InstallPromptBanner: React.FC = () => {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <img
-            src="/icons/icon-192.svg"
+            src="/icons/icon-192.png"
             alt="MessMate"
             style={{ width: '32px', height: '32px', borderRadius: '8px' }}
           />

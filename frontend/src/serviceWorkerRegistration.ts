@@ -9,7 +9,7 @@ type Config = {
 
 export function register(config?: Config) {
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
+    const registerValidSW = () => {
       const swUrl = '/sw.js';
 
       navigator.serviceWorker
@@ -45,7 +45,13 @@ export function register(config?: Config) {
         .catch((error) => {
           console.error('[PWA] Error during service worker registration:', error);
         });
-    });
+    };
+
+    if (document.readyState === 'complete') {
+      registerValidSW();
+    } else {
+      window.addEventListener('load', registerValidSW);
+    }
   }
 }
 
