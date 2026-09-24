@@ -615,50 +615,79 @@ export const MessSettingsPage: React.FC = () => {
         {activeTab === 'profile' && (
           <form onSubmit={handleSaveProfile} className="space-y-8 max-w-4xl">
             {/* Join Code Highlight Card */}
-            <div className="bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-slate-50 border border-emerald-500/20 rounded-2xl p-5 sm:p-6 shadow-xs">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-                      <KeyRound className="w-4 h-4" />
-                    </div>
-                    <span className="text-xs font-black text-emerald-950 uppercase tracking-wider">
+            <div className="bg-gradient-to-br from-emerald-50/80 via-teal-50/40 to-slate-50 border border-emerald-500/20 rounded-3xl p-5 sm:p-6 shadow-xs relative overflow-hidden">
+              {/* Header Row */}
+              <div className="flex items-center justify-between gap-3 mb-2.5">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                    <KeyRound className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-black text-emerald-950 uppercase tracking-wider block">
                       Mess Invitation Join Code
                     </span>
+                    <span className="text-[11px] text-emerald-700/80 font-medium hidden sm:inline">
+                      Official access token for resident onboarding
+                    </span>
                   </div>
-                  <p className="text-xs text-slate-600 max-w-md">
-                    Share this unique code with roommates or students. They can enter it during sign-up to immediately link to this mess.
-                  </p>
                 </div>
 
-                <div className="flex items-center gap-2.5 flex-wrap">
-                  <div className="font-mono text-lg sm:text-xl font-extrabold text-slate-900 bg-white border border-slate-300 rounded-xl px-4 py-2 tracking-widest shadow-xs">
-                    {mess?.code || activeMess?.code || 'NO-CODE'}
-                  </div>
-                  <Button
+                {isManager && (
+                  <button
                     type="button"
-                    variant="secondary"
-                    size="sm"
-                    onClick={handleCopyCode}
-                    className="flex items-center gap-1.5 py-2 px-3 text-xs font-bold"
+                    onClick={() => setShowRegenModal(true)}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-amber-800 bg-white/80 hover:bg-amber-50 border border-slate-200/80 hover:border-amber-300 rounded-xl px-2.5 py-1.5 transition-all shadow-2xs"
+                    title="Invalidate old code and generate new one"
                   >
-                    {codeCopied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
-                    {codeCopied ? 'Copied!' : 'Copy Code'}
-                  </Button>
-                  {isManager && (
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => setShowRegenModal(true)}
-                      className="flex items-center gap-1.5 py-2 px-3 text-xs font-bold text-amber-800 hover:bg-amber-50 border-amber-300"
-                      title="Invalidate old code and generate new one"
-                    >
-                      <RotateCcw className="w-3.5 h-3.5" />
-                      Regenerate
-                    </Button>
-                  )}
+                    <RotateCcw className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Regenerate</span>
+                  </button>
+                )}
+              </div>
+
+              <p className="text-xs text-slate-600 mb-4 leading-relaxed max-w-xl">
+                Share this unique code with roommates or students. They can enter it during sign-up to immediately link to this mess workspace.
+              </p>
+
+              {/* Unified High-Contrast Token Bar */}
+              <div className="bg-white border-2 border-emerald-500/20 rounded-2xl p-1.5 pl-4 sm:pl-5 flex items-center justify-between gap-3 shadow-xs hover:border-emerald-500/40 transition-colors">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="font-mono text-base sm:text-xl font-black text-slate-900 tracking-wider sm:tracking-widest select-all truncate">
+                    {mess?.code || activeMess?.code || 'NO-CODE'}
+                  </span>
                 </div>
+
+                <button
+                  type="button"
+                  onClick={handleCopyCode}
+                  className={`inline-flex items-center justify-center gap-1.5 px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-xs shrink-0 active:scale-95 ${
+                    codeCopied
+                      ? 'bg-emerald-700 text-white'
+                      : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                  }`}
+                >
+                  {codeCopied ? (
+                    <>
+                      <Check className="w-4 h-4 text-emerald-200" />
+                      <span>Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4" />
+                      <span>Copy Code</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500 font-medium">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  Single-click to copy to clipboard
+                </span>
+                <span className="text-slate-400 hidden sm:inline">
+                  Valid for unlimited resident registrations
+                </span>
               </div>
             </div>
 
