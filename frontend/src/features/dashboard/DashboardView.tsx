@@ -27,13 +27,24 @@ export const DashboardView: React.FC = () => {
   const messId = activeMess?.id || '';
   const userName = user?.name ? user.name.split(' ')[0] : 'Member';
 
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [stats, setStats] = useState<DashboardStats | null>(() => {
+    if (!messId) return null;
+    try {
+      const cached = localStorage.getItem(`messmate_dash_${messId}`);
+      return cached ? JSON.parse(cached) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [isLoading, setIsLoading] = useState<boolean>(() => !Boolean(stats));
 
   const loadDashboard = React.useCallback(async () => {
     try {
       const data = await apiClient<DashboardStats>(`/dashboard/${messId}`);
       setStats(data);
+      if (messId) {
+        localStorage.setItem(`messmate_dash_${messId}`, JSON.stringify(data));
+      }
     } catch (err) {
       console.error('Failed to load live dashboard stats:', err);
     } finally {

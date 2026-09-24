@@ -61,7 +61,35 @@ const RoleRoute: React.FC<{
   return <>{children}</>;
 };
 
+// Prefetch critical chunks during browser idle time so tab clicks are instant
+const prefetchKeyRoutes = () => {
+  const loaders = [
+    () => import('../features/dashboard/DashboardView.js'),
+    () => import('../pages/MealsPage.js'),
+    () => import('../pages/BazarPage.js'),
+    () => import('../pages/ExpensesPage.js'),
+    () => import('../pages/LedgerPage.js'),
+    () => import('../pages/MembersPage.js'),
+    () => import('../pages/BillsUtilitiesPage.js'),
+  ];
+  loaders.forEach((loader, idx) => {
+    setTimeout(() => {
+      loader().catch(() => {});
+    }, 1200 + idx * 300);
+  });
+};
+
 export const AppRoutes: React.FC = () => {
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if ('requestIdleCallback' in window) {
+        (window as any).requestIdleCallback(() => prefetchKeyRoutes());
+      } else {
+        setTimeout(prefetchKeyRoutes, 1500);
+      }
+    }
+  }, []);
+
   return (
     <Routes>
       {/* Public routes */}

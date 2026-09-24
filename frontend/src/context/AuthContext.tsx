@@ -35,7 +35,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     return null;
   });
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(() => {
+    const hasToken = Boolean(localStorage.getItem('messmate_token'));
+    const hasUser = Boolean(localStorage.getItem('messmate_user'));
+    // Optimistic instantaneous start: If we have cached token & user, render immediately (0ms)
+    return hasToken && !hasUser;
+  });
 
   const refreshMesses = async (): Promise<Mess[]> => {
     try {

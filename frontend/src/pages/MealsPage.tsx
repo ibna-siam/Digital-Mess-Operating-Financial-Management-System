@@ -54,7 +54,9 @@ export const MealsPage: React.FC = () => {
   }, [currentDate]);
 
   const fetchMealData = async (date: string) => {
-    setIsLoading(true);
+    if (meals.length === 0) {
+      setIsLoading(true);
+    }
     try {
       const [dailyData, summaryData] = await Promise.all([
         apiClient<MealRecord[]>(`/messes/${messId}/meals?date=${date}`),

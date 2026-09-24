@@ -26,7 +26,7 @@ interface CacheEntry<T> {
   timestamp: number;
 }
 
-const DEFAULT_CACHE_TTL_MS = 0; // Disable stale response caching to ensure fresh authoritative data
+const DEFAULT_CACHE_TTL_MS = 60000; // 60s in-memory cache for blazing fast instant UI navigation
 const apiCache = new Map<string, CacheEntry<any>>();
 const inFlightRequests = new Map<string, Promise<any>>();
 
@@ -117,7 +117,6 @@ export async function apiClient<T>(
       try {
         response = await fetch(`${API_BASE}${endpoint}`, {
           ...options,
-          cache: 'no-store',
           headers,
         });
       } catch (networkErr: unknown) {
@@ -126,7 +125,6 @@ export async function apiClient<T>(
         try {
           response = await fetch(`${API_BASE}${endpoint}`, {
             ...options,
-            cache: 'no-store',
             headers,
           });
         } catch {
